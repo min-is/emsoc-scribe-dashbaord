@@ -430,13 +430,26 @@ h1 {
     opacity: 0;
     pointer-events: none; /* Initially not interactive */
     border-radius: 8px; /* Add rounded corners */
-    display: flex; /* Use flexbox to position the button */
+    display: flex; /* Use flexbox to arrange items */
     flex-direction: column; /* Stack items vertically */
+    align-items: flex-start; /* Align items to the left */
 }
 
 #preferencesPanel.open {
     opacity: 1;
     pointer-events: auto; /* Make interactive when open */
+}
+
+#preferencesPanel h3 {
+    color: #ffab40; /* Match sidebar header color */
+    margin-top: 0; /* Align to the top of the panel */
+    margin-bottom: 5px; /* Less space below the name */
+    border-bottom: none; /* Remove the border below the name */
+    padding-bottom: 0; /* Remove padding below the name */
+    font-size: 20px;
+    font-weight: bold;
+    text-align: left;
+    width: 100%; /* Ensure full width for alignment context */
 }
 
 #preferencesPanel button#pinPreferencesBtn {
@@ -448,30 +461,21 @@ h1 {
     cursor: pointer;
     font-family: 'Calibre', 'Arial', sans-serif;
     font-size: 14px; /* Smaller button text */
-    margin-top: 0; /* Align to the top */
-    margin-bottom: 10px; /* Add some space below */
-    margin-right: 10px; /* Keep some right margin */
-    align-self: flex-end; /* Push to the right */
-    transition: background-color 0.2s ease-in-out;
+    margin-top: 5px; /* Space below the name */
+    margin-bottom: 10px; /* Space below the button */
+    margin-right: auto; /* Push to the right */
+    align-self: flex-end; /* Align to the right within the panel */
+    /* width: auto; Adjust width to content if needed */
 }
 
 #preferencesPanel button#pinPreferencesBtn:hover {
     background-color: rgba(70, 70, 70, 0.7);
 }
 
-#preferencesPanel h3 {
-    color: #ffab40; /* Match sidebar header color */
-    margin-top: 10px; /* Add some space below the pin button */
-    margin-bottom: 10px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding-bottom: 10px;
-    font-size: 20px;
-    font-weight: bold;
-    text-align: left;
-}
-
 #preferencesPanel #panelProviderDetails { /* Ensure you are using the correct ID */
     text-align: left;
+    margin-top: 10px; /* Space above the details */
+    width: 100%; /* Take full width */
 }
 
 #preferencesPanel h4 {
@@ -488,8 +492,6 @@ h1 {
     color: #ccc;
     line-height: 1.3;
 }
-
-/* The close button styles are no longer needed */
 
 /* Hide the original providerPreferencesSection */
 #providerPreferencesSection {

@@ -135,12 +135,6 @@ function displayProviderPreferences(preferences, providerName) {
             const preferenceItem = document.createElement('p');
             preferenceItem.classList.add('preference-item');
             preferenceItem.textContent = data;
-            container.appendChild(preferenceItem);
-        } else {
-            const noPreference = document.createElement('p');
-            noPreference.classList.add('preference-item');
-            noPreference.textContent = `No specific preferences.`;
-            container.appendChild(noPreference);
         }
     }
 }
@@ -164,7 +158,7 @@ async function fetchProviderPreferences(providerId, providerName) {
                     }
                 });
             }
-            preferencesPanel.innerHTML = `<button id="pinPreferencesBtn">Pin Preferences</button><h3>${providerName} Preferences</h3><div id="panelProviderDetails"></div>`;
+            preferencesPanel.innerHTML = `<h3>${providerName} Preferences</h3><button id="pinPreferencesBtn">Pin Preferences</button><div id="panelProviderDetails"></div>`;
             const panelDetailsDiv = preferencesPanel.querySelector('#panelProviderDetails');
             panelDetailsDiv.innerHTML = document.getElementById('preferenceDetailsContent').innerHTML;
 
