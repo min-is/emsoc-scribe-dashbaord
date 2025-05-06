@@ -4,12 +4,12 @@ const resultsDiv = document.getElementById('results');
 const toggleSidebarBtn = document.getElementById('toggleSidebarBtn');
 const sidebar = document.getElementById('sidebar');
 const providerListDiv = document.getElementById('providerList');
-const providerPreferencesSection = document.getElementById('providerPreferencesSection');
-const providerDetailsDiv = document.getElementById('providerDetails');
-const pinPreferencesBtn = document.getElementById('pinPreferencesBtn'); // Get the new pin button
-
-let pinnedPreferences = null; // To store the pinned preferences element
-let currentProviderId = null; // To store the ID of the currently viewed provider
+// const providerPreferencesSection = document.getElementById('providerPreferencesSection'); // No longer directly used
+const providerDetailsDiv = document.getElementById('providerDetails'); // Still used for content generation
+const pinPreferencesBtn = document.getElementById('pinPreferencesBtn'); // Might need to re-target if moved
+let pinnedPreferences = null;
+let currentProviderId = null;
+let preferencesPanel = null; // New element for the sliding panel
 
 // Function to toggle the sidebar
 toggleSidebarBtn.addEventListener('click', () => {
@@ -17,7 +17,9 @@ toggleSidebarBtn.addEventListener('click', () => {
     if (pinnedPreferences) {
         pinnedPreferences.style.display = sidebar.classList.contains('open') ? 'none' : 'block';
     }
-    providerPreferencesSection.style.display = 'none'; // Hide preferences when toggling provider list
+    if (preferencesPanel) {
+        preferencesPanel.classList.remove('slide-in'); // Close the preferences panel if open
+    }
 });
 
 async function fetchAndDisplayProviders() {
@@ -65,95 +67,9 @@ async function fetchAndDisplayProviders() {
 // Fetch provider list when the script loads
 fetchAndDisplayProviders();
 
-// Function to fetch and display the preferences for a specific provider
-async function fetchProviderPreferences(providerId, providerName) { // Accept providerName
-    try {
-        const response = await fetch(`/provider/${providerId}`);
-        if (response.ok) {
-            const preferences = await response.json();
-            displayProviderPreferences(preferences, providerName); // Pass providerName
-            providerPreferencesSection.style.display = 'block';
-            // If preferences are pinned for a different provider, update the content
-            if (pinnedPreferences && pinnedPreferences.dataset.providerId !== providerId) {
-                const titleElement = pinnedPreferences.querySelector('h3');
-                if (titleElement) {
-                    titleElement.textContent = `${providerName} Preferences`;
-                }
-                const detailsContainer = pinnedPreferences.querySelector('.pinned-details');
-                if (detailsContainer) {
-                    detailsContainer.innerHTML = document.getElementById('preferenceDetailsContent').innerHTML;
-                }
-                pinnedPreferences.dataset.providerId = providerId;
-                setupUnpinButton();
-                makeDraggable(pinnedPreferences);
-            }
-        } else {
-            console.error(`Error fetching preferences for provider ${providerId}:`, response.status);
-            providerDetailsDiv.innerHTML = '<p class="error">Failed to load preferences.</p>';
-            providerPreferencesSection.style.display = 'block';
-        }
-    } catch (error) {
-        console.error(`Error fetching preferences for provider ${providerId}:`, error);
-        providerDetailsDiv.innerHTML = '<p class="error">Failed to load preferences.</p>';
-        providerPreferencesSection.style.display = 'block';
-    }
-}
-
-// Function to display the provider's preferences
-function displayProviderPreferences(preferences, providerName) { // Accept providerName
-    providerDetailsDiv.innerHTML = ''; // Clear previous preferences
-
-    // Create the pin button dynamically
-    const pinButton = document.createElement('button');
-    pinButton.id = 'pinPreferencesBtn';
-    pinButton.textContent = 'Pin Preferences';
-    pinButton.addEventListener('click', () => {
-        if (!pinnedPreferences) {
-            // Create the pinned preferences box
-            pinnedPreferences = document.createElement('div');
-            pinnedPreferences.id = 'pinnedPreferences';
-            pinnedPreferences.classList.add('pinned-box');
-            pinnedPreferences.dataset.providerId = currentProviderId; // Store the current provider ID
-
-            // Set the dynamic title
-            const titleElement = document.createElement('h3');
-            titleElement.textContent = `${providerName} Preferences`;
-            pinnedPreferences.appendChild(titleElement);
-
-            // Get only the preference details content
-            const preferenceDetailsContent = document.getElementById('preferenceDetailsContent').innerHTML;
-            const detailsContainer = document.createElement('div');
-            detailsContainer.classList.add('pinned-details');
-            detailsContainer.innerHTML = preferenceDetailsContent;
-            pinnedPreferences.appendChild(detailsContainer);
-
-            const unpinButton = document.createElement('button');
-            unpinButton.id = 'unpinPreferencesBtn';
-            unpinButton.textContent = 'Unpin';
-            pinnedPreferences.appendChild(unpinButton);
-
-            document.body.appendChild(pinnedPreferences);
-            makeDraggable(pinnedPreferences);
-            setupUnpinButton();
-        } else if (pinnedPreferences && pinnedPreferences.dataset.providerId !== currentProviderId) {
-            // Update the title if pinning a different provider
-            const titleElement = pinnedPreferences.querySelector('h3');
-            if (titleElement) {
-                titleElement.textContent = `${providerName} Preferences`;
-            }
-            pinnedPreferences.dataset.providerId = currentProviderId;
-            const preferenceDetailsContent = document.getElementById('preferenceDetailsContent').innerHTML;
-            const detailsContainer = pinnedPreferences.querySelector('.pinned-details');
-            if (detailsContainer) {
-                detailsContainer.innerHTML = preferenceDetailsContent;
-            }
-        }
-        providerPreferencesSection.style.display = 'none';
-        sidebar.classList.remove('open'); // Close the sidebar after pinning
-        pinnedPreferences.style.display = 'block';
-    });
-
-    providerDetailsDiv.appendChild(pinButton); // Add the pin button at the top
+function displayProviderPreferences(preferences, providerName) {
+    // We still use providerDetailsDiv to generate the content that will be moved to the panel
+    providerDetailsDiv.innerHTML = '';
 
     // Create a container for the actual preference details
     const preferenceDetailsContentDiv = document.createElement('div');
@@ -163,82 +79,78 @@ function displayProviderPreferences(preferences, providerName) { // Accept provi
     const displayOrder = ['note_pref', 'hpi_elements', 'physical_exam', 'mdm', 'other_pref', 'speed'];
     const displayedCategories = new Set();
 
-    // Display categories in the specified order within the new container
     displayOrder.forEach(categoryKey => {
         if (preferences.hasOwnProperty(categoryKey)) {
-            displayCategory(categoryKey, preferences[categoryKey], preferenceDetailsContentDiv); // Pass the new container
+            displayCategory(categoryKey, preferences[categoryKey], preferenceDetailsContentDiv);
             displayedCategories.add(categoryKey);
         }
     });
 
-    // Display any remaining categories within the new container
     for (const categoryKey in preferences) {
         if (preferences.hasOwnProperty(categoryKey) && !displayedCategories.has(categoryKey)) {
-            displayCategory(categoryKey, preferences[categoryKey], preferenceDetailsContentDiv); // Pass the new container
+            displayCategory(categoryKey, preferences[categoryKey], preferenceDetailsContentDiv);
         }
     }
 
-    function displayCategory(categoryKey, preferenceData, container) { // Accept the container
+    function displayCategory(categoryKey, preferenceData, container) {
         let formattedCategory = categoryKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-
-        if (categoryKey === 'hpi_elements') {
-            formattedCategory = 'HPI Elements';
-        } else if (categoryKey === 'mdm') {
-            formattedCategory = 'Medical Decision Making';
-        } else if (categoryKey === 'note_pref') {
-            formattedCategory = 'Note Preferences';
-        } else if (categoryKey === 'other_pref') {
-            formattedCategory = 'Other Preferences';
-        } else if (categoryKey === 'physical_exam') {
-            formattedCategory = 'Physical Exam';
-        } else if (categoryKey === 'speed') {
-            formattedCategory = 'Speed';
-        }
+        if (categoryKey === 'hpi_elements') formattedCategory = 'HPI Elements';
+        else if (categoryKey === 'mdm') formattedCategory = 'Medical Decision Making';
+        else if (categoryKey === 'note_pref') formattedCategory = 'Note Preferences';
+        else if (categoryKey === 'other_pref') formattedCategory = 'Other Preferences';
+        else if (categoryKey === 'physical_exam') formattedCategory = 'Physical Exam';
+        else if (categoryKey === 'speed') formattedCategory = 'Speed';
 
         const categoryTitle = document.createElement('h4');
         categoryTitle.textContent = formattedCategory;
-        container.appendChild(categoryTitle); // Append to the container
+        container.appendChild(categoryTitle);
 
         if (Array.isArray(preferenceData) && preferenceData.length > 0) {
             preferenceData.forEach(preference => {
                 const preferenceItem = document.createElement('p');
                 preferenceItem.classList.add('preference-item');
                 preferenceItem.textContent = preference;
-                container.appendChild(preferenceItem); // Append to the container
+                container.appendChild(preferenceItem);
             });
         } else if (typeof preferenceData === 'string') {
             const preferenceItem = document.createElement('p');
             preferenceItem.classList.add('preference-item');
             preferenceItem.textContent = preferenceData;
-            container.appendChild(preferenceItem); // Append to the container
+            container.appendChild(preferenceItem);
         } else {
             const noPreference = document.createElement('p');
             noPreference.classList.add('preference-item');
             noPreference.textContent = `No specific preferences.`;
-            container.appendChild(noPreference); // Append to the container
+            container.appendChild(noPreference);
         }
     }
 }
 
-// Event listener for the "Pin Preferences" button (This one is no longer needed here)
-// pinPreferencesBtn.addEventListener('click', () => {
-//     if (!pinnedPreferences) {
-//         // Create the pinned preferences box
-//         pinnedPreferences = document.createElement('div');
-//         pinnedPreferences.id = 'pinnedPreferences';
-//         pinnedPreferences.classList.add('pinned-box');
-//         pinnedPreferences.dataset.providerId = currentProviderId; // Store the current provider ID
-//         pinnedPreferences.innerHTML = `<h3>Pinned Preferences</h3><div class="pinned-details">${providerDetailsDiv.innerHTML}</div><button id="unpinPreferencesBtn">Unpin</button>`;
-//         document.body.appendChild(pinnedPreferences);
-//         makeDraggable(pinnedPreferences);
-//         setupUnpinButton();
-//     }
-//     providerPreferencesSection.style.display = 'none';
-//     sidebar.classList.remove('open'); // Close the sidebar after pinning
-//     pinnedPreferences.style.display = 'block';
-// });
+function pinCurrentPreferences(providerName) {
+    if (!pinnedPreferences) {
+        pinnedPreferences = document.createElement('div');
+        pinnedPreferences.id = 'pinnedPreferences';
+        pinnedPreferences.classList.add('pinned-box');
+        pinnedPreferences.dataset.providerId = currentProviderId;
+        pinnedPreferences.innerHTML = `<h3>${providerName} Preferences</h3><div class="pinned-details">${document.getElementById('preferenceDetailsContent').innerHTML}</div><button id="unpinPreferencesBtn">Unpin</button>`;
+        document.body.appendChild(pinnedPreferences);
+        makeDraggable(pinnedPreferences);
+        setupUnpinButton();
+    } else if (pinnedPreferences && pinnedPreferences.dataset.providerId !== currentProviderId) {
+        const titleElement = pinnedPreferences.querySelector('h3');
+        if (titleElement) {
+            titleElement.textContent = `${providerName} Preferences`;
+        }
+        const detailsContainer = pinnedPreferences.querySelector('.pinned-details');
+        if (detailsContainer) {
+            detailsContainer.innerHTML = document.getElementById('preferenceDetailsContent').innerHTML;
+        }
+        pinnedPreferences.dataset.providerId = currentProviderId;
+        setupUnpinButton();
+        makeDraggable(pinnedPreferences);
+    }
+}
 
-// Function to make an element draggable
 function makeDraggable(element) {
     let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
     element.onmousedown = dragMouseDown;
