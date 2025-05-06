@@ -135,6 +135,11 @@ function displayProviderPreferences(preferences, providerName) {
             const preferenceItem = document.createElement('p');
             preferenceItem.classList.add('preference-item');
             preferenceItem.textContent = data;
+        } else {
+            const noPreference = document.createElement('p');
+            noPreference.classList.add('preference-item');
+            noPreference.textContent = `No specific preferences.`;
+            container.appendChild(noPreference);
         }
     }
 }
@@ -158,7 +163,7 @@ async function fetchProviderPreferences(providerId, providerName) {
                     }
                 });
             }
-            preferencesPanel.innerHTML = `<h3>${providerName} Preferences</h3><button id="pinPreferencesBtn">Pin Preferences</button><div id="panelProviderDetails"></div>`;
+            preferencesPanel.innerHTML = `<h3>${providerName} Preferences</h3><button id="pinPreferencesBtn">Pin Provider</button><div id="panelProviderDetails"></div>`;
             const panelDetailsDiv = preferencesPanel.querySelector('#panelProviderDetails');
             panelDetailsDiv.innerHTML = document.getElementById('preferenceDetailsContent').innerHTML;
 
@@ -167,8 +172,11 @@ async function fetchProviderPreferences(providerId, providerName) {
             if (pinButton) {
                 pinButton.addEventListener('click', () => {
                     pinCurrentPreferences(providerName);
-                    preferencesPanel.classList.remove('open');
-                    panelOpen = false;
+                    // Immediately close the hover panel after pinning
+                    if (preferencesPanel) {
+                        preferencesPanel.classList.remove('open');
+                        panelOpen = false;
+                    }
                 });
             }
 
@@ -216,6 +224,8 @@ function pinCurrentPreferences(providerName) {
         pinnedPreferences.dataset.providerId = currentProviderId;
         pinnedPreferences.innerHTML = `<h3>${providerName} Preferences</h3><div class="pinned-details">${document.getElementById('preferenceDetailsContent').innerHTML}</div><button id="unpinPreferencesBtn">Unpin</button>`;
         document.body.appendChild(pinnedPreferences);
+        // Immediately show the pinned preferences
+        pinnedPreferences.style.display = 'block';
         makeDraggable(pinnedPreferences);
         setupUnpinButton();
     } else if (pinnedPreferences && pinnedPreferences.dataset.providerId !== currentProviderId) {
@@ -224,6 +234,8 @@ function pinCurrentPreferences(providerName) {
         const detailsContainer = pinnedPreferences.querySelector('.pinned-details');
         if (detailsContainer) detailsContainer.innerHTML = document.getElementById('preferenceDetailsContent').innerHTML;
         pinnedPreferences.dataset.providerId = currentProviderId;
+        // Ensure the pinned preferences are visible
+        pinnedPreferences.style.display = 'block';
         setupUnpinButton();
         makeDraggable(pinnedPreferences);
     }
