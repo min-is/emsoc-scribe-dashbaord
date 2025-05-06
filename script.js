@@ -4,11 +4,11 @@ const resultsDiv = document.getElementById('results');
 const toggleSidebarBtn = document.getElementById('toggleSidebarBtn');
 const sidebar = document.getElementById('sidebar');
 const providerListDiv = document.getElementById('providerList');
-// const providerPreferencesSection = document.getElementById('providerPreferencesSection'); // No longer directly used
 const providerDetailsDiv = document.getElementById('providerDetails'); // Still used for content generation
 let pinnedPreferences = null;
 let currentProviderId = null;
 let preferencesPanel = null; // New element for the sliding panel
+let panelOpen = false; // Track if the preferences panel is open
 
 // Function to toggle the sidebar
 toggleSidebarBtn.addEventListener('click', () => {
@@ -17,7 +17,8 @@ toggleSidebarBtn.addEventListener('click', () => {
         pinnedPreferences.style.display = sidebar.classList.contains('open') ? 'none' : 'block';
     }
     if (preferencesPanel) {
-        preferencesPanel.classList.remove('slide-in'); // Close the preferences panel if open
+        preferencesPanel.classList.remove('open');
+        panelOpen = false;
     }
 });
 
@@ -27,16 +28,11 @@ async function fetchAndDisplayProviders() {
         if (response.ok) {
             const providers = await response.json();
 
-            // Sort the providers array alphabetically by first name
             providers.sort((a, b) => {
-                const nameA = a.name.split(' ')[0].toLowerCase(); // Get first name and lowercase it
-                const nameB = b.name.split(' ')[0].toLowerCase(); // Get first name and lowercase it
-                if (nameA < nameB) {
-                    return -1;
-                }
-                if (nameA > nameB) {
-                    return 1;
-                }
+                const nameA = a.name.split(' ')[0].toLowerCase();
+                const nameB = b.name.split(' ')[0].toLowerCase();
+                if (nameA < nameB) return -1;
+                if (nameA > nameB) return 1;
                 return 0;
             });
 
@@ -46,14 +42,39 @@ async function fetchAndDisplayProviders() {
                 providerItem.classList.add('provider-item');
                 providerItem.textContent = provider.name;
                 providerItem.dataset.providerId = provider.id;
-                providerItem.addEventListener('click', function() {
+
+                providerItem.addEventListener('mouseenter', function() {
                     const providerId = this.dataset.providerId;
                     const providerName = this.textContent;
                     currentProviderId = providerId;
-                    fetchProviderPreferences(providerId, providerName); // pass
+                    fetchProviderPreferences(providerId, providerName);
+                    if (preferencesPanel) {
+                        preferencesPanel.classList.add('open');
+                        panelOpen = true;
+                    }
                 });
+
                 providerListDiv.appendChild(providerItem);
             });
+
+            // Add a mouseleave listener to the sidebar to close the panel if the mouse moves out
+            sidebar.addEventListener('mouseleave', (event) => {
+                if (preferencesPanel && panelOpen && !event.relatedTarget?.closest('#preferencesPanel')) {
+                    preferencesPanel.classList.remove('open');
+                    panelOpen = false;
+                }
+            });
+
+            // Add a mouseleave listener to the preferences panel to keep it open if the mouse is over it
+            if (preferencesPanel) {
+                preferencesPanel.addEventListener('mouseleave', (event) => {
+                    if (!event.relatedTarget?.closest('#sidebar')) {
+                        preferencesPanel.classList.remove('open');
+                        panelOpen = false;
+                    }
+                });
+            }
+
         } else {
             console.error('Error fetching providers:', response.status);
             providerListDiv.innerHTML = '<p class="error">Failed to load providers.</p>';
@@ -67,10 +88,7 @@ async function fetchAndDisplayProviders() {
 fetchAndDisplayProviders();
 
 function displayProviderPreferences(preferences, providerName) {
-    // We still use providerDetailsDiv to generate the content that will be moved to the panel
     providerDetailsDiv.innerHTML = '';
-
-    // Create a container for the actual preference details
     const preferenceDetailsContentDiv = document.createElement('div');
     preferenceDetailsContentDiv.id = 'preferenceDetailsContent';
     providerDetailsDiv.appendChild(preferenceDetailsContentDiv);
@@ -80,14 +98,14 @@ function displayProviderPreferences(preferences, providerName) {
 
     displayOrder.forEach(categoryKey => {
         if (preferences.hasOwnProperty(categoryKey)) {
-            displayCategory(categoryKey, preferences[categoryKey], preferenceDetailsContentDiv);
+            displayCategory(categoryKey, preferences, preferenceDetailsContentDiv);
             displayedCategories.add(categoryKey);
         }
     });
 
     for (const categoryKey in preferences) {
         if (preferences.hasOwnProperty(categoryKey) && !displayedCategories.has(categoryKey)) {
-            displayCategory(categoryKey, preferences[categoryKey], preferenceDetailsContentDiv);
+            displayCategory(categoryKey, preferences, preferenceDetailsContentDiv);
         }
     }
 
@@ -104,17 +122,19 @@ function displayProviderPreferences(preferences, providerName) {
         categoryTitle.textContent = formattedCategory;
         container.appendChild(categoryTitle);
 
-        if (Array.isArray(preferenceData) && preferenceData.length > 0) {
-            preferenceData.forEach(preference => {
+        const data = preferenceData.hasOwnProperty(categoryKey) ? preferenceData [categoryKey] : null;
+
+        if (Array.isArray(data) && data.length > 0) {
+            data.forEach(preference => {
                 const preferenceItem = document.createElement('p');
                 preferenceItem.classList.add('preference-item');
                 preferenceItem.textContent = preference;
                 container.appendChild(preferenceItem);
             });
-        } else if (typeof preferenceData === 'string') {
+        } else if (typeof data === 'string') {
             const preferenceItem = document.createElement('p');
             preferenceItem.classList.add('preference-item');
-            preferenceItem.textContent = preferenceData;
+            preferenceItem.textContent = data;
             container.appendChild(preferenceItem);
         } else {
             const noPreference = document.createElement('p');
@@ -132,46 +152,47 @@ async function fetchProviderPreferences(providerId, providerName) {
             const preferences = await response.json();
             displayProviderPreferences(preferences, providerName);
 
-            // Show the preferences panel with slide-in animation
             if (!preferencesPanel) {
                 preferencesPanel = document.createElement('div');
                 preferencesPanel.id = 'preferencesPanel';
                 document.body.appendChild(preferencesPanel);
+                // Add initial mouseleave listener to the panel
+                preferencesPanel.addEventListener('mouseleave', (event) => {
+                    if (panelOpen && !event.relatedTarget?.closest('#sidebar')) {
+                        preferencesPanel.classList.remove('open');
+                        panelOpen = false;
+                    }
+                });
             }
             preferencesPanel.innerHTML = `<h3>${providerName} Preferences</h3><div id="panelProviderDetails"></div><button id="pinPreferencesBtn">Pin Preferences</button><button id="closePreferencesBtn">Close</button>`;
             const panelDetailsDiv = preferencesPanel.querySelector('#panelProviderDetails');
-            panelDetailsDiv.innerHTML = document.getElementById('preferenceDetailsContent').innerHTML; // Transfer content
+            panelDetailsDiv.innerHTML = document.getElementById('preferenceDetailsContent').innerHTML;
 
-            preferencesPanel.classList.add('slide-in');
-
-            // Add event listeners for the buttons in the panel
+            // Re-attach event listeners to the new buttons
             const pinButton = preferencesPanel.querySelector('#pinPreferencesBtn');
             if (pinButton) {
                 pinButton.addEventListener('click', () => {
                     pinCurrentPreferences(providerName);
-                    preferencesPanel.classList.remove('slide-in');
+                    preferencesPanel.classList.remove('open');
+                    panelOpen = false;
                 });
             }
 
             const closeButton = preferencesPanel.querySelector('#closePreferencesBtn');
             if (closeButton) {
                 closeButton.addEventListener('click', () => {
-                    preferencesPanel.classList.remove('slide-in');
+                    preferencesPanel.classList.remove('open');
+                    panelOpen = false;
                 });
             }
 
             currentProviderId = providerId;
 
-            // If preferences are pinned for a different provider, update the content (adjust for panel)
             if (pinnedPreferences && pinnedPreferences.dataset.providerId !== providerId) {
                 const titleElement = pinnedPreferences.querySelector('h3');
-                if (titleElement) {
-                    titleElement.textContent = `${providerName} Preferences`;
-                }
+                if (titleElement) titleElement.textContent = `${providerName} Preferences`;
                 const detailsContainer = pinnedPreferences.querySelector('.pinned-details');
-                if (detailsContainer) {
-                    detailsContainer.innerHTML = document.getElementById('preferenceDetailsContent').innerHTML;
-                }
+                if (detailsContainer) detailsContainer.innerHTML = document.getElementById('preferenceDetailsContent').innerHTML;
                 pinnedPreferences.dataset.providerId = providerId;
                 setupUnpinButton();
                 makeDraggable(pinnedPreferences);
@@ -179,7 +200,6 @@ async function fetchProviderPreferences(providerId, providerName) {
 
         } else {
             console.error(`Error fetching preferences for provider ${providerId}:`, response.status);
-            // Optionally handle error display in the new panel
             if (!preferencesPanel) {
                 preferencesPanel = document.createElement('div');
                 preferencesPanel.id = 'preferencesPanel';
@@ -189,10 +209,12 @@ async function fetchProviderPreferences(providerId, providerName) {
             const closeButton = preferencesPanel.querySelector('#closePreferencesBtn');
             if (closeButton) {
                 closeButton.addEventListener('click', () => {
-                    preferencesPanel.classList.remove('slide-in');
+                    preferencesPanel.classList.remove('open');
+                    panelOpen = false;
                 });
             }
-            preferencesPanel.classList.add('slide-in');
+            if (panelOpen) preferencesPanel.classList.remove('open');
+            panelOpen = false;
         }
     } catch (error) {
         console.error(`Error fetching preferences for provider ${providerId}:`, error);
@@ -205,10 +227,12 @@ async function fetchProviderPreferences(providerId, providerName) {
         const closeButton = preferencesPanel.querySelector('#closePreferencesBtn');
         if (closeButton) {
             closeButton.addEventListener('click', () => {
-                preferencesPanel.classList.remove('slide-in');
+                preferencesPanel.classList.remove('open');
+                panelOpen = false;
             });
         }
-        preferencesPanel.classList.add('slide-in');
+        if (panelOpen) preferencesPanel.classList.remove('open');
+        panelOpen = false;
     }
 }
 
@@ -218,19 +242,15 @@ function pinCurrentPreferences(providerName) {
         pinnedPreferences.id = 'pinnedPreferences';
         pinnedPreferences.classList.add('pinned-box');
         pinnedPreferences.dataset.providerId = currentProviderId;
-        pinnedPreferences.innerHTML = `<h3>${providerName} Preferences</h3><div class="pinned-details">${document.getElementById('preferenceDetailsContent').innerHTML}</div><button id="unpinPreferencesBtn">Unpin</button>`;
+        pinnedPreferences.innerHTML = `<h3><span class="math-inline">\{providerName\} Preferences</h3\><div class\="pinned\-details"\></span>{document.getElementById('preferenceDetailsContent').innerHTML}</div><button id="unpinPreferencesBtn">Unpin</button>`;
         document.body.appendChild(pinnedPreferences);
         makeDraggable(pinnedPreferences);
         setupUnpinButton();
     } else if (pinnedPreferences && pinnedPreferences.dataset.providerId !== currentProviderId) {
         const titleElement = pinnedPreferences.querySelector('h3');
-        if (titleElement) {
-            titleElement.textContent = `${providerName} Preferences`;
-        }
+        if (titleElement) titleElement.textContent = `${providerName} Preferences`;
         const detailsContainer = pinnedPreferences.querySelector('.pinned-details');
-        if (detailsContainer) {
-            detailsContainer.innerHTML = document.getElementById('preferenceDetailsContent').innerHTML;
-        }
+        if (detailsContainer) detailsContainer.innerHTML = document.getElementById('preferenceDetailsContent').innerHTML;
         pinnedPreferences.dataset.providerId = currentProviderId;
         setupUnpinButton();
         makeDraggable(pinnedPreferences);
@@ -240,35 +260,21 @@ function pinCurrentPreferences(providerName) {
 function makeDraggable(element) {
     let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
     element.onmousedown = dragMouseDown;
-
     function dragMouseDown(e) {
-        e = e || window.event;
-        e.preventDefault();
-        // get the mouse cursor position at startup:
-        pos3 = e.clientX;
-        pos4 = e.clientY;
+        e = e || window.event; e.preventDefault();
+        pos3 = e.clientX; pos4 = e.clientY;
         document.onmouseup = closeDragElement;
-        // call a function whenever the cursor moves:
         document.onmousemove = elementDrag;
     }
-
     function elementDrag(e) {
-        e = e || window.event;
-        e.preventDefault();
-        // calculate the new cursor position:
-        pos1 = pos3 - e.clientX;
-        pos2 = pos4 - e.clientY;
-        pos3 = e.clientX;
-        pos4 = e.clientY;
-        // set the element's new position:
+        e = e || window.event; e.preventDefault();
+        pos1 = pos3 - e.clientX; pos2 = pos4 - e.clientY;
+        pos3 = e.clientX; pos4 = e.clientY;
         element.style.top = (element.offsetTop - pos2) + "px";
         element.style.left = (element.offsetLeft - pos1) + "px";
     }
-
     function closeDragElement() {
-        /* stop moving when mouse button is released:*/
-        document.onmouseup = null;
-        document.onmousemove = null;
+        document.onmouseup = null; document.onmousemove = null;
     }
 }
 
@@ -287,7 +293,6 @@ function setupUnpinButton() {
 searchInput.addEventListener('input', async () => {
     const query = searchInput.value.trim();
     suggestionsDiv.innerHTML = '';
-
     if (query) {
         try {
             const response = await fetch(`/suggestions?q=${query}`);
@@ -301,7 +306,7 @@ searchInput.addEventListener('input', async () => {
                         const matchIndex = matchedName.toLowerCase().indexOf(query.toLowerCase());
                         if (matchIndex > -1) {
                             const highlightedMatch = matchedName.substring(matchIndex, matchIndex + query.length);
-                            displayText = `${name} (<span class="highlight">${highlightedMatch}</span>)`;
+                            displayText = `<span class="math-inline">\{name\} \(<span class\="highlight"\></span>{highlightedMatch}</span>)`;
                         }
                     }
                     suggestionItem.innerHTML = displayText;
@@ -346,29 +351,23 @@ async function fetchMedicationDetails(name) {
 
 function displayMedicationDetails(medication) {
     resultsDiv.innerHTML = '';
-
     const title = document.createElement('h3');
     title.textContent = medication.name;
     resultsDiv.appendChild(title);
-
     const overviewHeadline = document.createElement('h4');
     overviewHeadline.textContent = 'Overview';
     resultsDiv.appendChild(overviewHeadline);
-
     const descriptionParagraph = document.createElement('p');
     descriptionParagraph.textContent = medication.description;
     resultsDiv.appendChild(descriptionParagraph);
-
     if (medication.alternate_names && medication.alternate_names.length > 0) {
         const alternateNamesParagraph = document.createElement('p');
         alternateNamesParagraph.innerHTML = `<strong>Also known as:</strong> <span class="detail-label">${medication.alternate_names.join(', ')}</span>`;
         resultsDiv.appendChild(alternateNamesParagraph);
     }
-
     const mechanismHeadline = document.createElement('h4');
     mechanismHeadline.textContent = 'Mechanism of Action';
     resultsDiv.appendChild(mechanismHeadline);
-
     if (medication.mechanism_of_action) {
         const mechanismParagraph = document.createElement('p');
         mechanismParagraph.innerHTML = `<span class="detail-label">${medication.mechanism_of_action}</span>`;

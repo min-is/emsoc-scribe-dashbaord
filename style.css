@@ -416,35 +416,28 @@ h1 {
 #preferencesPanel {
     position: fixed;
     top: 0;
-    left: 280px;
-    width: 300px;
+    left: 280px; /* Directly next to the sidebar */
+    width: 300px; /* Adjust width as needed */
     height: 100%;
     background-color: rgba(37, 37, 37, 0.8);
     backdrop-filter: blur(10px);
     color: #d4d4d4;
-    z-index: 21; 
-    transition: left 0.3s ease-in-out, opacity 0.3s ease-in-out;
-    padding-top: 70px; 
+    z-index: 21; /* Higher than the sidebar */
+    transition: opacity 0.2s ease-in-out; /* Faster transition for hover */
+    padding-top: 70px; /* Match sidebar padding */
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
     overflow-y: auto;
     opacity: 0;
-    pointer-events: none;
+    pointer-events: none; /* Initially not interactive */
 }
 
 #preferencesPanel.open {
-    left: 280px;
     opacity: 1;
-    pointer-events: auto;
-}
-
-#preferencesPanel.slide-in {
-    left: 580px;
-    opacity: 1;
-    pointer-events: auto;
+    pointer-events: auto; /* Make interactive when open */
 }
 
 #preferencesPanel h3 {
-    color: #ffab40;
+    color: #ffab40; /* Match sidebar header color */
     margin-top: 0;
     margin-bottom: 10px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -454,7 +447,7 @@ h1 {
     text-align: left;
 }
 
-#preferencesPanel #providerDetails {
+#preferencesPanel #panelProviderDetails { /* Ensure you are using the correct ID */
     padding: 15px;
     text-align: left;
 }
