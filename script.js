@@ -6,7 +6,6 @@ const sidebar = document.getElementById('sidebar');
 const providerListDiv = document.getElementById('providerList');
 // const providerPreferencesSection = document.getElementById('providerPreferencesSection'); // No longer directly used
 const providerDetailsDiv = document.getElementById('providerDetails'); // Still used for content generation
-const pinPreferencesBtn = document.getElementById('pinPreferencesBtn'); // Might need to re-target if moved
 let pinnedPreferences = null;
 let currentProviderId = null;
 let preferencesPanel = null; // New element for the sliding panel
@@ -41,15 +40,15 @@ async function fetchAndDisplayProviders() {
                 return 0;
             });
 
-            providerListDiv.innerHTML = ''; 
+            providerListDiv.innerHTML = '';
             providers.forEach(provider => {
                 const providerItem = document.createElement('div');
                 providerItem.classList.add('provider-item');
                 providerItem.textContent = provider.name;
                 providerItem.dataset.providerId = provider.id;
-                providerItem.addEventListener('click', function() { 
+                providerItem.addEventListener('click', function() {
                     const providerId = this.dataset.providerId;
-                    const providerName = this.textContent; 
+                    const providerName = this.textContent;
                     currentProviderId = providerId;
                     fetchProviderPreferences(providerId, providerName); // pass
                 });
@@ -123,6 +122,93 @@ function displayProviderPreferences(preferences, providerName) {
             noPreference.textContent = `No specific preferences.`;
             container.appendChild(noPreference);
         }
+    }
+}
+
+async function fetchProviderPreferences(providerId, providerName) {
+    try {
+        const response = await fetch(`/provider/${providerId}`);
+        if (response.ok) {
+            const preferences = await response.json();
+            displayProviderPreferences(preferences, providerName);
+
+            // Show the preferences panel with slide-in animation
+            if (!preferencesPanel) {
+                preferencesPanel = document.createElement('div');
+                preferencesPanel.id = 'preferencesPanel';
+                document.body.appendChild(preferencesPanel);
+            }
+            preferencesPanel.innerHTML = `<h3>${providerName} Preferences</h3><div id="panelProviderDetails"></div><button id="pinPreferencesBtn">Pin Preferences</button><button id="closePreferencesBtn">Close</button>`;
+            const panelDetailsDiv = preferencesPanel.querySelector('#panelProviderDetails');
+            panelDetailsDiv.innerHTML = document.getElementById('preferenceDetailsContent').innerHTML; // Transfer content
+
+            preferencesPanel.classList.add('slide-in');
+
+            // Add event listeners for the buttons in the panel
+            const pinButton = preferencesPanel.querySelector('#pinPreferencesBtn');
+            if (pinButton) {
+                pinButton.addEventListener('click', () => {
+                    pinCurrentPreferences(providerName);
+                    preferencesPanel.classList.remove('slide-in');
+                });
+            }
+
+            const closeButton = preferencesPanel.querySelector('#closePreferencesBtn');
+            if (closeButton) {
+                closeButton.addEventListener('click', () => {
+                    preferencesPanel.classList.remove('slide-in');
+                });
+            }
+
+            currentProviderId = providerId;
+
+            // If preferences are pinned for a different provider, update the content (adjust for panel)
+            if (pinnedPreferences && pinnedPreferences.dataset.providerId !== providerId) {
+                const titleElement = pinnedPreferences.querySelector('h3');
+                if (titleElement) {
+                    titleElement.textContent = `${providerName} Preferences`;
+                }
+                const detailsContainer = pinnedPreferences.querySelector('.pinned-details');
+                if (detailsContainer) {
+                    detailsContainer.innerHTML = document.getElementById('preferenceDetailsContent').innerHTML;
+                }
+                pinnedPreferences.dataset.providerId = providerId;
+                setupUnpinButton();
+                makeDraggable(pinnedPreferences);
+            }
+
+        } else {
+            console.error(`Error fetching preferences for provider ${providerId}:`, response.status);
+            // Optionally handle error display in the new panel
+            if (!preferencesPanel) {
+                preferencesPanel = document.createElement('div');
+                preferencesPanel.id = 'preferencesPanel';
+                document.body.appendChild(preferencesPanel);
+            }
+            preferencesPanel.innerHTML = `<p class="error">Failed to load preferences for ${providerName}.</p><button id="closePreferencesBtn">Close</button>`;
+            const closeButton = preferencesPanel.querySelector('#closePreferencesBtn');
+            if (closeButton) {
+                closeButton.addEventListener('click', () => {
+                    preferencesPanel.classList.remove('slide-in');
+                });
+            }
+            preferencesPanel.classList.add('slide-in');
+        }
+    } catch (error) {
+        console.error(`Error fetching preferences for provider ${providerId}:`, error);
+        if (!preferencesPanel) {
+            preferencesPanel = document.createElement('div');
+            preferencesPanel.id = 'preferencesPanel';
+            document.body.appendChild(preferencesPanel);
+        }
+        preferencesPanel.innerHTML = `<p class="error">Failed to load preferences for ${providerName}.</p><button id="closePreferencesBtn">Close</button>`;
+        const closeButton = preferencesPanel.querySelector('#closePreferencesBtn');
+        if (closeButton) {
+            closeButton.addEventListener('click', () => {
+                preferencesPanel.classList.remove('slide-in');
+            });
+        }
+        preferencesPanel.classList.add('slide-in');
     }
 }
 
