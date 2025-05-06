@@ -190,6 +190,15 @@ async function fetchProviderPreferences(providerId, providerName) {
                 pinnedPreferences.dataset.providerId = providerId;
                 setupUnpinButton();
                 makeDraggable(pinnedPreferences);
+            } else if (pinnedPreferences && pinnedPreferences.dataset.providerId === null) {
+                // If a provider was pinned before the list loaded
+                const titleElement = pinnedPreferences.querySelector('h3');
+                if (titleElement) titleElement.textContent = `${providerName} Preferences`;
+                const detailsContainer = pinnedPreferences.querySelector('.pinned-details');
+                if (detailsContainer) detailsContainer.innerHTML = document.getElementById('preferenceDetailsContent').innerHTML;
+                pinnedPreferences.dataset.providerId = providerId;
+                setupUnpinButton();
+                makeDraggable(pinnedPreferences);
             }
 
         } else {
@@ -217,6 +226,7 @@ async function fetchProviderPreferences(providerId, providerName) {
 }
 
 function pinCurrentPreferences(providerName) {
+    // If no provider is currently pinned, create a new pinned box
     if (!pinnedPreferences) {
         pinnedPreferences = document.createElement('div');
         pinnedPreferences.id = 'pinnedPreferences';
@@ -224,17 +234,17 @@ function pinCurrentPreferences(providerName) {
         pinnedPreferences.dataset.providerId = currentProviderId;
         pinnedPreferences.innerHTML = `<h3>${providerName} Preferences</h3><div class="pinned-details">${document.getElementById('preferenceDetailsContent').innerHTML}</div><button id="unpinPreferencesBtn">Unpin</button>`;
         document.body.appendChild(pinnedPreferences);
-        // Immediately show the pinned preferences
         pinnedPreferences.style.display = 'block';
         makeDraggable(pinnedPreferences);
         setupUnpinButton();
-    } else if (pinnedPreferences && pinnedPreferences.dataset.providerId !== currentProviderId) {
+    }
+    // If a provider is already pinned, replace its content with the newly pinned provider
+    else if (pinnedPreferences && pinnedPreferences.dataset.providerId !== currentProviderId) {
         const titleElement = pinnedPreferences.querySelector('h3');
         if (titleElement) titleElement.textContent = `${providerName} Preferences`;
         const detailsContainer = pinnedPreferences.querySelector('.pinned-details');
         if (detailsContainer) detailsContainer.innerHTML = document.getElementById('preferenceDetailsContent').innerHTML;
         pinnedPreferences.dataset.providerId = currentProviderId;
-        // Ensure the pinned preferences are visible
         pinnedPreferences.style.display = 'block';
         setupUnpinButton();
         makeDraggable(pinnedPreferences);
