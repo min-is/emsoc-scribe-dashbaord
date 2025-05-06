@@ -419,7 +419,7 @@ h1 {
     left: 280px; /* Directly next to the sidebar */
     width: 300px; /* Adjust width as needed */
     max-height: calc(100vh - 90px); /* Limit height with some top/bottom margin */
-    background-color: rgba(37, 37, 37, 0.9); /* Slightly less transparent for better readability */
+    background-color: rgba(37, 37, 37, 0.9); /* Slightly less transparent */
     backdrop-filter: blur(10px);
     color: #d4d4d4;
     z-index: 21; /* Higher than the sidebar */
@@ -430,6 +430,8 @@ h1 {
     opacity: 0;
     pointer-events: none; /* Initially not interactive */
     border-radius: 8px; /* Add rounded corners */
+    display: flex; /* Use flexbox to position the button */
+    flex-direction: column; /* Stack items vertically */
 }
 
 #preferencesPanel.open {
@@ -437,9 +439,29 @@ h1 {
     pointer-events: auto; /* Make interactive when open */
 }
 
+#preferencesPanel button#pinPreferencesBtn {
+    background: rgba(50, 50, 50, 0.5);
+    color: #d4d4d4;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Calibre', 'Arial', sans-serif;
+    font-size: 14px; /* Smaller button text */
+    margin-top: 0; /* Align to the top */
+    margin-bottom: 10px; /* Add some space below */
+    margin-right: 10px; /* Keep some right margin */
+    align-self: flex-end; /* Push to the right */
+    transition: background-color 0.2s ease-in-out;
+}
+
+#preferencesPanel button#pinPreferencesBtn:hover {
+    background-color: rgba(70, 70, 70, 0.7);
+}
+
 #preferencesPanel h3 {
     color: #ffab40; /* Match sidebar header color */
-    margin-top: 0;
+    margin-top: 10px; /* Add some space below the pin button */
     margin-bottom: 10px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     padding-bottom: 10px;
@@ -467,25 +489,7 @@ h1 {
     line-height: 1.3;
 }
 
-#preferencesPanel button#pinPreferencesBtn,
-#preferencesPanel button#closePreferencesBtn {
-    background: rgba(50, 50, 50, 0.5);
-    color: #d4d4d4;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-family: 'Calibre', 'Arial', sans-serif;
-    font-size: 14px; /* Smaller button text */
-    margin-top: 10px;
-    margin-right: 10px;
-    transition: background-color 0.2s ease-in-out;
-}
-
-#preferencesPanel button#pinPreferencesBtn:hover,
-#preferencesPanel button#closePreferencesBtn:hover {
-    background-color: rgba(70, 70, 70, 0.7);
-}
+/* The close button styles are no longer needed */
 
 /* Hide the original providerPreferencesSection */
 #providerPreferencesSection {
