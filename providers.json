@@ -307,7 +307,7 @@
             "hpi_elements": ["tbd"],
             "physical_exam": ["tbd"],
             "mdm": ["tbd"],
-            "speed": ["Very fast - He's in and out of rooms in under a minute. But you have a lot of down time to catch up."],
+            "speed": ["Fast - He's in and out of rooms in under a minute. But you have a lot of down time to catch up."],
             "other_pref": ["tbd"]
         }
     },
@@ -316,7 +316,7 @@
         "name": "Brian Lee, MD",
         "preferences": {
             "note_pref": ["tbd"],
-            "hpi_elements": ["Shorter is better."],
+            "hpi_elements": ["Shorter is better. Avoid writing long essays but don't use bullet points."],
             "physical_exam": ["tbd"],
             "mdm": ["tbd"],
             "speed": ["Slightly fast - tends to be more conservative with workup and dispos patients quickly."],
