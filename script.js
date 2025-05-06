@@ -20,24 +20,36 @@ toggleSidebarBtn.addEventListener('click', () => {
     providerPreferencesSection.style.display = 'none'; // Hide preferences when toggling provider list
 });
 
-// Function to fetch and display the list of providers
-// Function to fetch and display the list of providers
 async function fetchAndDisplayProviders() {
     try {
         const response = await fetch('/providers');
         if (response.ok) {
             const providers = await response.json();
-            providerListDiv.innerHTML = ''; // Clear any existing list
+
+            // Sort the providers array alphabetically by first name
+            providers.sort((a, b) => {
+                const nameA = a.name.split(' ')[0].toLowerCase(); // Get first name and lowercase it
+                const nameB = b.name.split(' ')[0].toLowerCase(); // Get first name and lowercase it
+                if (nameA < nameB) {
+                    return -1;
+                }
+                if (nameA > nameB) {
+                    return 1;
+                }
+                return 0;
+            });
+
+            providerListDiv.innerHTML = ''; 
             providers.forEach(provider => {
                 const providerItem = document.createElement('div');
                 providerItem.classList.add('provider-item');
                 providerItem.textContent = provider.name;
-                providerItem.dataset.providerId = provider.id; // Store provider ID
-                providerItem.addEventListener('click', function() { // Use a regular function to access 'this'
+                providerItem.dataset.providerId = provider.id;
+                providerItem.addEventListener('click', function() { 
                     const providerId = this.dataset.providerId;
-                    const providerName = this.textContent; // Get the provider's name
+                    const providerName = this.textContent; 
                     currentProviderId = providerId;
-                    fetchProviderPreferences(providerId, providerName); // Pass the name
+                    fetchProviderPreferences(providerId, providerName); // pass
                 });
                 providerListDiv.appendChild(providerItem);
             });
@@ -50,7 +62,6 @@ async function fetchAndDisplayProviders() {
         providerListDiv.innerHTML = '<p class="error">Failed to load providers.</p>';
     }
 }
-
 // Fetch provider list when the script loads
 fetchAndDisplayProviders();
 
