@@ -1,0 +1,423 @@
+/* style.css */
+@font-face {
+    font-family: 'Calibre'; /* The name you'll use in your CSS rules */
+    src: url('fonts/Calibre-Light.ttf') format('woff2'),
+         url('fonts/Calibre-Light.ttf') format('woff'),
+         url('fonts/Calibre-Light.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap; /* Optional: Controls how the font is displayed while loading */
+}
+
+@font-face {
+    font-family: 'Calibre';
+    src: url('fonts/Calibre-Semibold.woff2') format('woff2'),
+         url('fonts/Calibre-Semibold.woff') format('woff'),
+         url('fonts/Calibre-Semibold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+body {
+    font-family: 'Calibre', 'Arial', sans-serif;
+    margin: 0;
+    overflow: hidden;
+    background-color: #1e1e1e;
+    color: #d4d4d4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    background-color: rgba(37, 37, 37, 0.3); /* Even more transparent */
+    backdrop-filter: blur(15px); /* Slightly stronger blur */
+    padding: 20px; /* Reduced padding since no title */
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4); /* More pronounced shadow */
+    text-align: center;
+    width: 60%; /* Make the container a bit narrower */
+    max-width: 500px; /* Adjust maximum width */
+    position: relative; /* Make the container a positioning context for absolute children */
+    z-index: 1; /* Ensure it's above the canvas */
+}
+
+h1 {
+    display: none; /* Remove the title visually */
+}
+
+#searchInput {
+    font-family: 'Calibre', 'Arial', sans-serif;
+    width: 100%; /* Make the search bar take full width of the container */
+    padding: 15px; /* Slightly more vertical padding */
+    margin-bottom: 0; /* Remove margin to prevent extra space */
+    border: none; /* Remove the border */
+    border-radius: 8px; /* Slightly more rounded corners */
+    box-sizing: border-box;
+    font-size: 20px; /* Make the font size a bit larger */
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.1); /* Light transparent background */
+    color: #f0f0f0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); /* Subtle inner shadow effect */
+    transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+#searchInput:focus {
+    background-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    border-color: transparent; /* Ensure no border on focus */
+}
+
+#suggestions {
+    position: absolute; /* Position the suggestions absolutely */
+    top: calc(100% + 5px); /* Position below the search bar with a small gap */
+    left: 0;
+    right: 0;
+    border: none; /* Remove the border */
+    border-radius: 8px; /* Match search bar */
+    background-color: rgba(255, 255, 255, 0.05); /* Very light transparent background */
+    margin-bottom: 0; /* Remove margin */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* More noticeable shadow */
+    text-align: left;
+    z-index: 10; /* Ensure suggestions appear above other content */
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    max-height: 200px; /* Limit the height of suggestions */
+    overflow-y: auto; /* Enable vertical scrolling for suggestions */
+}
+
+#suggestions.show {
+    opacity: 1;
+}
+
+.suggestion-item {
+    padding: 12px 18px;
+    cursor: pointer;
+    font-size: 18px; /* Slightly larger font */
+    color: rgba(255, 255, 255, 0.7);
+    transition: background-color 0.2s ease-in-out;
+}
+
+.suggestion-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #a7d1fa;
+}
+
+/* Updated Styles for Results Section with Scrolling */
+#results {
+    margin-top: 20px;
+    padding: 20px;
+    border: none;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(8px);
+    text-align: left;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    font-size: 18px;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    transform: translateY(20px);
+    display: none; /* Initially hidden */
+    max-height: 400px; /* Set a maximum height for the results area */
+    overflow-y: auto; /* Enable vertical scrolling for results */
+    z-index: 1; /* Ensure it's above the canvas */
+}
+
+#results.show {
+    opacity: 1;
+    transform: translateY(0);
+    display: block;
+}
+
+#results h3 {
+    color: #a7d1fa;
+    margin-top: 0;
+    margin-bottom: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 10px;
+}
+
+#results h4 {
+    color: #eee;
+    margin-top: 15px;
+    margin-bottom: 8px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+#results p {
+    font-size: 18px;
+    line-height: 1.6;
+    color: #ccc;
+    margin-bottom: 10px;
+}
+
+#results strong {
+    color: #eee;
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.error {
+    color: #e57373;
+    font-weight: bold;
+}
+
+/* Specific styling for "Also known as" and Mechanism of Action" */
+#results p.detail-label {
+    font-size: 16px;
+    color: #ccc;
+}
+
+/* Sidebar Styles */
+#sidebar {
+    position: fixed;
+    top: 0;
+    left: -280px; /* Slightly wider for better readability */
+    width: 280px;
+    height: 100%;
+    background-color: rgba(37, 37, 37, 0.8);
+    backdrop-filter: blur(10px);
+    color: #d4d4d4;
+    z-index: 20;
+    transition: left 0.3s ease-in-out;
+    padding-top: 70px; /* Adjust for the toggle button height + some spacing */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+    overflow-y: auto;
+    text-align: left; /* Align text within the sidebar to the left */
+}
+
+#sidebar.open {
+    left: 0;
+}
+
+#toggleSidebarBtn {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    background: rgba(50, 50, 50, 0.5);
+    color: #d4d4d4;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 30;
+    font-family: 'Calibre', 'Arial', sans-serif;
+    font-size: 16px;
+    transition: background-color 0.2s ease-in-out;
+}
+
+#toggleSidebarBtn:hover {
+    background-color: rgba(70, 70, 70, 0.7);
+}
+
+#providerListSection {
+    padding: 15px;
+}
+
+#providerListSection h2 {
+    color: #ffab40; /* Peach-orange color for "Providers" */
+    margin-top: 0;
+    margin-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 5px;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+#providerPreferencesSection h3 {
+    color: #ffab40; /* Peach-orange color for "Provider Preferences" */
+    margin-top: 0;
+    margin-bottom: 5px; /* Reduced margin-bottom */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 10px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+#providerList {
+    margin-top: 10px;
+}
+
+.provider-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.7);
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+.provider-item:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #a7d1fa;
+}
+
+#providerPreferencesSection {
+    padding: 15px;
+    display: none; /* Initially hidden */
+}
+
+#providerPreferencesSection button {
+    background: rgba(50, 50, 50, 0.5);
+    color: #d4d4d4;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Calibre', 'Arial', sans-serif;
+    font-size: 16px;
+    margin-top: 15px;
+    transition: background-color 0.2s ease-in-out;
+}
+
+#providerPreferencesSection button:hover {
+    background-color: rgba(70, 70, 70, 0.7);
+}
+
+#providerDetails h4 {
+    color: #eee;
+    margin-top: 15px; /* Adjust top margin for separation between sections */
+    margin-bottom: 2px; /* Very small bottom margin to be close to content */
+    font-size: 16px;
+    font-weight: bold;
+}
+
+#providerDetails h4 + p.preference-item,
+#providerDetails h4 + p:not(.preference-item) { /* Target p immediately after h4 */
+    margin-top: 2px; /* Reduce the top margin of the content following the subheading */
+    margin-bottom: 8px; /* Keep a reasonable bottom margin for separation after the content */
+}
+
+.preference-item {
+    margin-bottom: 4px; /* Adjust spacing between individual preference items within a section */
+    font-size: 16px;
+    color: #ccc;
+    line-height: 1.4;
+}
+
+.preference-item strong {
+    color: #eee;
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+/* style.css */
+/* ... (your existing CSS) ... */
+
+/* Pinned Box Styles */
+.pinned-box {
+    position: fixed;
+    top: 50px;
+    left: 50px;
+    background-color: rgba(37, 37, 37, 0.8); /* Keep the box background transparent/dark */
+    backdrop-filter: blur(10px);
+    color: #d4d4d4;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    padding: 15px;
+    z-index: 40; /* Ensure it's above the sidebar and other content */
+    cursor: grab;
+    width: 300px; /* Adjust as needed */
+    max-height: 80vh; /* Limit height with scrolling */
+    overflow-y: auto;
+    display: none; /* Initially hidden until pinned */
+}
+
+.pinned-box.pinned {
+    display: block; /* Show when pinned */
+}
+
+.pinned-box h3 {
+    color: #f0f0f0;
+    margin: 0;
+    margin-bottom: 10px;
+    padding: 10px 15px;
+    font-size: 1.1em;
+    font-weight: bold;
+    background-color: rgba(91, 95, 165, 0.3); /* Translucent purple */
+    border-radius: 8px 8px 0 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.pinned-box .pinned-details h4:first-child {
+    margin-top: 0; /* Remove top margin for the first subheading */
+}
+
+.pinned-box .pinned-details h4 {
+    color: #eee;
+    margin-top: 10px; /* Adjust top margin for separation between sections */
+    margin-bottom: 2px; /* Very small bottom margin to be close to content */
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.pinned-box .pinned-details h4 + p.preference-item,
+.pinned-box .pinned-details h4 + p:not(.preference-item) { /* Target p immediately after h4 */
+    margin-top: 2px; /* Reduce the top margin of the content following the subheading */
+    margin-bottom: 8px; /* Keep a reasonable bottom margin for separation after the content */
+}
+
+.pinned-box .pinned-details p.preference-item {
+    margin-bottom: 4px; /* Adjust spacing between individual preference items within a section */
+    font-size: 16px;
+    color: #ccc;
+    line-height: 1.4;
+}
+
+.pinned-box .pinned-details p.preference-item strong {
+    color: #eee;
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.pinned-box #unpinPreferencesBtn {
+    background: rgba(50, 50, 50, 0.5);
+    color: #d4d4d4;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Calibre', 'Arial', sans-serif;
+    font-size: 0.9em;
+    margin-top: 10px;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.pinned-box #unpinPreferencesBtn:hover {
+    background-color: rgba(70, 70, 70, 0.7);
+}
+
+#providerDetails #pinPreferencesBtn {
+    background: rgba(70, 70, 70, 0.5); /* Lighter background */
+    color: #d4d4d4;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Calibre', 'Arial', sans-serif;
+    font-size: 16px;
+    margin-top: 0; /* Align with the top of the details */
+    margin-bottom: 10px; /* Add some space below the button */
+    transition: background-color 0.2s ease-in-out;
+    align-self: flex-end; /* Push to the right within #providerDetails (if flex) */
+    width: auto; /* Adjust width to content */
+    display: block; /* Ensure it takes its own line */
+    text-align: right; /* Align text to the right within the button */
+}
+
+#providerDetails #pinPreferencesBtn:hover {
+    background-color: rgba(90, 90, 90, 0.7); /* Slightly darker on hover */
+}
+
+/* Canvas styles remain the same */
+canvas {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}

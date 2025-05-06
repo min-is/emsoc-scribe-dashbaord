@@ -1,0 +1,15 @@
+{
+    "name": "medication-lookup",
+    "version": "1.0.0",
+    "description": "Medication lookup application",
+    "main": "server.js",
+    "scripts": {
+        "start": "node server.js"
+    },
+    "dependencies": {
+        "express": "^4.17.1"
+    },
+    "engines": {
+        "node": "14.x"
+    }
+}

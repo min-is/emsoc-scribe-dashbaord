@@ -1,0 +1,386 @@
+[
+    {
+        "id": "provider1",
+        "name": "Melissa Rudolph, MD",
+        "preferences": {
+            "note_pref": ["You will be opening the note. If using DAX, open .EMSOCDAX. Avoid using personal templates for the note/imaging/ekg section. She prefers the default EMSOC versions. Dr. Rudolph reads through her charts thoroughly."],
+            "hpi_elements": ["No specific HPI preferences."],
+            "physical_exam": ["Delete the back exam unlesss provided"],
+            "mdm": ["Keep the top three and delete other yellow drop downs"],
+            "speed": ["Slightly slower paced than other providers as she is very thorough. Very easy to understand and write down what she's saying."],
+            "other_pref": ["She will occasionally provide differentials."]
+        }
+    },
+    {
+        "id": "provider2",
+        "name": "Ashraf Abdel-Kerim, MD",
+        "preferences": {
+            "note_pref": ["You will be opening the note. If using DAX, open .EMSOCDAX, otherwise open his normal template .ASHEMSOC2. Make sure to remove all wildcards (***) in the template."],
+            "hpi_elements": ["No specific HPI preferences."],
+            "physical_exam": ["There are three exam options in his template: .ASHFULL, .ASHLIMITED, .EMSOCNORMALEXAM. He will specify which one to use."],
+            "mdm": ["For Medi-Cal or Cal-Optima patients, select limited access to healthcare on the social determinants of health section. Additionally, if the patient's BMI > 40 (left sidebar), select morbid obesity. Select languge barriers for all non-English speaking patients."],
+            "speed": ["Normal - Dr. Ash generally sees patients at a steady pace."],
+            "other_pref": ["Dr. Ash has his own EKG template but note that you will still need to add the time and rate."]
+        }
+    },
+    {
+        "id": "provider3",
+        "name": "Gregory Powell, MD",
+        "preferences": {
+            "note_pref": ["You will open the note (.EMSOC2024). Complete the note to the best of your ability and ask for the wildcard (***) data as he signs his charts fast."],
+            "hpi_elements": ["No specific HPI preferences."],
+            "physical_exam": ["Dr. Powell will give the exam after seeing the patient. However, he speaks fast and working with him will require a higher wpm. He also sometimes uses niche words which you may need to look up or ask for."],
+            "mdm": ["You can fill out the social determinants of health and co-morbidities yourself for the most part. As a general rule of thumb, Cal-Optima and Medi-cal patients recieve the 'limited access to healthcare due to insurance' checkbox."],
+            "speed": ["Fast - He tends to move and dispo patients pretty fast."],
+            "other_pref": ["He will always bring a Rick and Morty Funko Pop to his workspace and you can expcet to listen to EDM during the shift."]
+        }
+    },
+    {
+        "id": "provider4",
+        "name": "Daniel Starr, MD",
+        "preferences": {
+            "note_pref": ["You will open the note (.EMSOC2024). Remove all wildcards and other hard stops in the note. Dr. Starr is very quick with his notes. Once he goes into a note when discharging a patient, he's signing it. A tip is to mark all patients as dishcarged in 'stable' condition in the note unless admission is warranted. (Then change this to admit and add critical care time)."],
+            "hpi_elements": ["No specific HPI preferences."],
+            "physical_exam": ["Dr. Starr will give you the exam after seeing each patient."],
+            "mdm": ["He will do his own MDM. However you can fill out the social determinants of health and co-morbidities yourself for the most part. As a general rule of thumb, Cal-Optima and Medi-cal patients recieve the 'limited access to healthcare due to insurance' checkbox."],
+            "speed": ["Slightly fast - Dr. Starr generally is in and out of patient rooms fast. Straight to point type of provider."],
+            "other_pref": ["He generally avoids small talk with scribes and the shift will mostly be silent between you two. However, he remembers to break and stops seeing patient about 1 hour before the shift ends (you always go home on time)."]
+        }
+    },
+    {
+        "id": "provider5",
+        "name": "Gregory LaSala, MD",
+        "preferences": {
+            "note_pref": ["You will open the note (.EMSOC2024). Remove all wildcards in the note."],
+            "hpi_elements": ["No specific HPI preferences."],
+            "physical_exam": ["Dr. LaSala likes to give you exam while he's examining the patient - so really focus on what he's saying during his exam. Feel free to ask him for clarification if you missed something."],
+            "mdm": ["He will do his own MDM. However you can fill out the social determinants of health and co-morbidities yourself for the most part. As a general rule of thumb, Cal-Optima and Medi-cal patients recieve the 'limited access to healthcare due to insurance' checkbox."],
+            "speed": ["Slightly fast"],
+            "other_pref": ["You can go to the Disposition tab yourself and try to guess the impressions/diagnoses based on the patient's presentation. It's a fun exercise to test your learning. Don't worry if you get it wrong, he'll always review it. Make sure the note is always up to date as he signs his charts quickly."]
+        }
+    },
+    {
+        "id": "provider6",
+        "name": "Daniel Kim, MD",
+        "preferences": {
+            "note_pref": ["You will open the note (.EMSOC2024). However, replace the physical exam section with his own."],
+            "hpi_elements": ["No specific HPI preferences."],
+            "physical_exam": ["Delete the physical exam and use .DKEXAM instead."],
+            "mdm": ["He will do his own MDM. However you can fill out the social determinants of health and co-morbidities yourself for the most part. As a general rule of thumb, Cal-Optima and Medi-cal patients recieve the 'limited access to healthcare due to insurance' checkbox."],
+            "speed": ["Fast"],
+            "other_pref": ["Chill to work with. Enjoys small talk about shows, food, etc."]
+        }
+    },
+    {
+        "id": "provider7",
+        "name": "Elise Molnar, MD",
+        "preferences": {
+            "note_pref": ["You will open the note (.EMSOC2024)."],
+            "hpi_elements": ["No specific HPI preferences."],
+            "physical_exam": ["Generally, you can use the default physical exam. However, sometimes she will prefer her own neuro exam and will let you know to use .MOLNARNEURO"],
+            "mdm": ["She will do her own MDM. However you can fill out the social determinants of health and co-morbidities yourself for the most part. As a general rule of thumb, Cal-Optima and Medi-cal patients recieve the 'limited access to healthcare due to insurance' checkbox."],
+            "speed": ["tbd"],
+            "other_pref": ["Very chill to work with."]
+        }
+    },
+    {
+        "id": "provider8",
+        "name": "Michael Merjanian, MD MMM",
+        "preferences": {
+            "note_pref": ["You will open the note using his template (.MERJANIAN2024). If he chooese to use DAX, use the .EMSOCDAX. He also uses his own template for pass ons (.MERJANIANPASS). His preferred title is: Michael Merjanian, MD MMM."],
+            "hpi_elements": ["No specific HPI preferences."],
+            "physical_exam": ["Dr. Merjanian has different exams in his template and will let you which one to use. If not, you can ask him."],
+            "mdm": ["He will do his own MDMs and progress notes."],
+            "speed": ["Normal"],
+            "other_pref": ["Pretty chill to work with."]
+        }
+    },
+    {
+        "id": "provider9",
+        "name": "Daniel Gromis, MD RDMS",
+        "preferences": {
+            "note_pref": ["Dr. Gromis has many different templates and HE will be opening the notes before seeing each patient. If not, remind him to open one for you. If he asks YOU to open the note, you can use (.MYHPIGENERICNEW)."],
+            "hpi_elements": ["No specific HPI preferences. He however does read your HPIs thorougly and will provide feedback/modify them if needed. He will give you the chart review if applicable."],
+            "physical_exam": ["He has drop down tabs in his physical exam section and these may vary depending on the type of template he uses."],
+            "mdm": ["His template has separate sections for differentials, co-morbidities, and social determinants of health. However you can fill out the social determinants of health and co-morbidities yourself for the most part. As a general rule of thumb, Cal-Optima and Medi-cal patients recieve the 'limited access to healthcare due to insurance' checkbox. IMPORTANT: There are sections with red text in his note. You can delete them entirely if the patient's insurance is PMH."],
+            "speed": ["Very fast - NOT beginner friendly. Many scribes have a hard time working with him for a reason. You must be able to multitask and type fast. He will not wait for you to finish charting. He also sometimes will just get up and leave to see a patient - look out."],
+            "other_pref": ["He will sometimes go out to the front in triage/MT rooms to see patients and will place an IV line. If this is the case, add .DGPROCEDUREIV into the procedure section. He is also a big fan of the portable ultrasound machines. Prepare to see that machine everywhere and document the results (.BSUS)."]
+        }
+    },
+    {
+        "id": "provider10",
+        "name": "Erin Ruiz, MD",
+        "preferences": {
+            "note_pref": ["You will open the note (.EMSOC2024)."],
+            "hpi_elements": ["No specific HPI preferences."],
+            "physical_exam": ["No specific physical exam preferences."],
+            "mdm": ["She will do her own MDM. However you can fill out the social determinants of health and co-morbidities yourself for the most part. As a general rule of thumb, Cal-Optima and Medi-cal patients recieve the 'limited access to healthcare due to insurance' checkbox."],
+            "speed": ["Slighty slower - she will give you time to chart everything before moving on."],
+            "other_pref": ["None"]
+        }
+    },
+    {
+        "id": "provider11",
+        "name": "David Merin, MD",
+        "preferences": {
+            "note_pref": ["Dr. Merin will be opening his notes."],
+            "hpi_elements": ["No specific HPI preferences."],
+            "physical_exam": ["No specific physical exam preferences."],
+            "mdm": ["He will do his own MDM. However you can fill out the social determinants of health and co-morbidities yourself for the most part. As a general rule of thumb, Cal-Optima and Medi-cal patients recieve the 'limited access to healthcare due to insurance' checkbox."],
+            "speed": ["Normal - Easygoing and articulates his words very clearly."],
+            "other_pref": ["Encounters with Dr. Merin will be sparse as he is transitioning into retirement."]
+        }
+    },
+    {
+        "id": "provider12",
+        "name": "Tyler Ayalin, MD",
+        "preferences": {
+            "note_pref": ["You will open the note (.EMSOC2024)."],
+            "hpi_elements": ["No specific HPI preferences."],
+            "physical_exam": ["No specific physical exam preferences. He will frequently forget to give this to you."],
+            "mdm": ["He will do his own MDM. However you can fill out the social determinants of health and co-morbidities yourself for the most part. As a general rule of thumb, Cal-Optima and Medi-cal patients recieve the 'limited access to healthcare due to insurance' checkbox."],
+            "speed": ["Slightly slow - He will rely on you to stay on track. This includes keeping track of which patients to see and what is missing from the note. It's up to you to make sure everything is there."],
+            "other_pref": ["Overall very pleasant to work with. He will frequently discuss results with a patient and rely on you to pull it up on your commputer."]
+        }
+    },
+    {
+        "id": "provider13",
+        "name": "Roman Navarro, MD",
+        "preferences": {
+            "note_pref": ["He will be opening his own notes unless he tells you otherwise (.EMSOC2024)."],
+            "hpi_elements": ["No specific HPI preferences."],
+            "physical_exam": ["No specific physical exam preferences. He will generally give this to you right after seeing a patient."],
+            "mdm": ["He will do his own MDM but will ask you to add progress notes. However you can fill out the social determinants of health and co-morbidities yourself for the most part. As a general rule of thumb, Cal-Optima and Medi-cal patients recieve the 'limited access to healthcare due to insurance' checkbox."],
+            "speed": ["Normal"],
+            "other_pref": ["Just make sure nothing's missing from the note. Very chill to work with."]
+        }
+    },
+    {
+        "id": "provider14",
+        "name": "Ayah Arafa, MD",
+        "preferences": {
+            "note_pref": ["You will be opening the note (EMSOC2024.)."],
+            "hpi_elements": ["She will apprecaite you doing your own records review and adding it to the chart. If you are new, you can ask her for this section (you will get better at this with experience). If there are no records (new patient), you can write 'Medical records reviewed. No EMR.'"],
+            "physical_exam": ["No specific physical exam preferences. If she forgets to give this to you, you can ask her."],
+            "mdm": ["When discharging a patient, make sure the very last progress update is .ARAFADC. Under scoring tools add .DCCONSIDER. On the 'Admission considered' hard stop (red color), check the first three options (normally put in 'patient/family' and 'PCP' or specialist). For psychiatric patients in ED Course, add the following WITHOUT .nownorefresh and .arafadc -> .PSYCHCDU and .PSYCHDC."],
+            "speed": ["Varies - She likes to load up on patients and see a bunch, then sit on them for a while. She will also frequently go to the back."],
+            "other_pref": ["When you receive a psych patient as a pass on, remove the physical exam section and to the ED Course add: 'Patient is stable. Patient is in the psych CDU, pending psychiatric evaluation. No reported issues today morning/afternoon."]
+        }
+    },
+    {
+        "id": "provider15",
+        "name": "Colleen Rivers, MD",
+        "preferences": {
+            "note_pref": ["She will open her own note. If there is no note when you go to see a patient, you can ask her if you can start your own (.EMSOC2024)."],
+            "hpi_elements": ["No specific HPI preferences."],
+            "physical_exam": ["No specific physical exam preferences."],
+            "mdm": ["Dr. Rivers has a section near the MDM for differentials, plan of care, and order history. There is also a small section where you will write down her own MDM (basically a small regurgitation of the HPI)."],
+            "speed": ["Slightly fast - Can be a lot sometimes but she will give you time to catch up."],
+            "other_pref": ["Please be prepared to leave at least an hour later than your normally scheduled shift end time as she like to follow her patients until they are fully dispo'd."]
+        }
+    },
+    {
+        "id": "provider16",
+        "name": "Rajesh Mittal, MD",
+        "preferences": {
+            "note_pref": ["You will be opening the note (.EMSOC2024)."],
+            "hpi_elements": ["No specific HPI preferences."],
+            "physical_exam": ["No specific physical exam preferences."],
+            "mdm": ["Remove everthing under the MDM section (up until the 'Scoring Tools' section). Please remind him to give you his chest XR and EKG interpretations if applicable."],
+            "speed": ["Normal - Very chill to work with."],
+            "other_pref": ["You can choose any ODD number between 35 and 55 for critical care time (if there is indication for criticl care). If patient goes to Med-Tele, change condition to 'Fair'."]
+        }
+    },
+    {
+        "id": "provider17",
+        "name": "Claudia Gold, MD",
+        "preferences": {
+            "note_pref": ["You will be opening the note (.EMSOC2024)."],
+            "hpi_elements": ["No specific HPI preferences. However, she does read your HPIs in full and WILL critique them if necessary. She likes to ask many questions and it is normal for HPIs to resemble essays."],
+            "physical_exam": ["No specific physical exam preferences. She will generally give this to you outside the room."],
+            "mdm": ["Delete all of the MDM dropdown contents except scoring tools. If she's discharging patients from the waiting room (quick discharge), you can delete everything under 'ED Course.' Keep track of the doctor's involved in the patient's case and add them to the referrals section of the Dispo tab."],
+            "speed": ["Normal"],
+            "other_pref": ["No monkey business."]
+        }
+    },
+    {
+        "id": "provider18",
+        "name": "Breelan Kear, MD",
+        "preferences": {
+            "note_pref": ["You will be opening the note using her template (.KEARNOTE)."],
+            "hpi_elements": ["No specific HPI preferences."],
+            "physical_exam": ["No specific physical exam preferences. However she has her own neuro exam and will tell you when to use this. Her default neuro exam is 'Cranial nerves II-XII grossly intact. 5/5 strength to the bilateral upper and lower extremities. Negative finger to nose bilaterally. Normal sensation.' If she doesn't actually do the finger to nose test, you can remove it."],
+            "mdm": ["Remember to add who Dr. Kear spoke to on the phone (consult/family/etc.) and timestamp it. If she doesn't tell you who it is, ask her. You can just add a wildcard (***) to remind her to add what was discussed. It should look like '1254: Case discussed with Dr. Preston (ICU) ***.' However, she will sometimes tell you what was discussed."],
+            "speed": ["Normal"],
+            "other_pref": ["Ask about EKG and XR interpretations if they are missing from the note."]
+        }
+    },
+    {
+        "id": "provider19",
+        "name": "Maria LaPlant, DO",
+        "preferences": {
+            "note_pref": ["She will open her own note. If there is note when seeing a patient, just write your stuff on the side and ask her to open the note."],
+            "hpi_elements": ["No specific HPI preferences."],
+            "physical_exam": ["No specific physical exam preferences."],
+            "mdm": ["She has her own section near the MDM for differentials, course, and orders."],
+            "speed": ["Slightly fast - May go fast sometimes but will give you time to catch up. Very nice to work with."],
+            "other_pref": ["None."]
+        }
+    },
+    {
+        "id": "provider20",
+        "name": "William Murphy, MD",
+        "preferences": {
+            "note_pref": ["You will open the note (.EMSOC2024). Remove all wildcards in the note."],
+            "hpi_elements": ["No specific HPI preferences."],
+            "physical_exam": ["No specific physical exam preferences."],
+            "mdm": ["You can fill out the social determinants of health and co-morbidities yourself for the most part. As a general rule of thumb, Cal-Optima and Medi-cal patients recieve the 'limited access to healthcare due to insurance' checkbox."],
+            "speed": ["Slower - Very nice and chill"],
+            "other_pref": ["It is not uncommon for Dr. Murphy to show up 10 minutes late in a Tommy Bahama t-shirt and flip flops."]
+        }
+    },
+    {
+        "id": "provider21",
+        "name": "Megan Dickson, MD",
+        "preferences": {
+            "note_pref": ["tbd"],
+            "hpi_elements": ["tbd"],
+            "physical_exam": ["tbd"],
+            "mdm": ["tbd"],
+            "speed": ["Slightly fast"],
+            "other_pref": ["Very chill to work with. Super funny stories."]
+        }
+    },
+    {
+        "id": "provider22",
+        "name": "Andrew Mikhail, MD",
+        "preferences": {
+            "note_pref": ["tbd"],
+            "hpi_elements": ["tbd"],
+            "physical_exam": ["tbd"],
+            "mdm": ["tbd"],
+            "speed": ["Normal"],
+            "other_pref": ["Also goes by 'Drew'."]
+        }
+    },
+    {
+        "id": "provider23",
+        "name": "Kyle Fierro, MD",
+        "preferences": {
+            "note_pref": ["tbd"],
+            "hpi_elements": ["tbd"],
+            "physical_exam": ["tbd"],
+            "mdm": ["tbd"],
+            "speed": ["Slightly fast"],
+            "other_pref": ["tbd"]
+        }
+    },
+    {
+        "id": "provider24",
+        "name": "Katie Doering, MD",
+        "preferences": {
+            "note_pref": ["tbd"],
+            "hpi_elements": ["tbd"],
+            "physical_exam": ["tbd"],
+            "mdm": ["tbd"],
+            "speed": ["Fast"],
+            "other_pref": ["She will sometimes get up without warning and walk away to see a patient. Please follow her - one of her pet peeves is when scribes are clueless."]
+        }
+    },
+    {
+        "id": "provider25",
+        "name": "Justin Anderson, MD",
+        "preferences": {
+            "note_pref": ["tbd"],
+            "hpi_elements": ["tbd"],
+            "physical_exam": ["tbd"],
+            "mdm": ["tbd"],
+            "speed": ["Normal"],
+            "other_pref": ["tbd"]
+        }
+    },
+    {
+        "id": "provider26",
+        "name": "Jeffrey Hughes, MD",
+        "preferences": {
+            "note_pref": ["tbd"],
+            "hpi_elements": ["tbd"],
+            "physical_exam": ["tbd"],
+            "mdm": ["tbd"],
+            "speed": ["Very fast - He's in and out of rooms in under a minute. But you have a lot of down time to catch up."],
+            "other_pref": ["tbd"]
+        }
+    },
+    {
+        "id": "provider27",
+        "name": "Brian Lee, MD",
+        "preferences": {
+            "note_pref": ["tbd"],
+            "hpi_elements": ["Shorter is better."],
+            "physical_exam": ["tbd"],
+            "mdm": ["tbd"],
+            "speed": ["Slightly fast - tends to be more conservative with workup and dispos patients quickly."],
+            "other_pref": ["tbd"]
+        }
+    },
+    {
+        "id": "provider28",
+        "name": "Inna Shniter, MD",
+        "preferences": {
+            "note_pref": ["You will be opening the note using her template (.ISMYEMOSCNOTE). If using DAX, open .EMSOCDAX."],
+            "hpi_elements": ["tbd"],
+            "physical_exam": ["tbd"],
+            "mdm": ["tbd"],
+            "speed": ["Normal"],
+            "other_pref": ["tbd"]
+        }
+    },
+    {
+        "id": "provider29",
+        "name": "Matthew Mullarky, MD",
+        "preferences": {
+            "note_pref": ["tbd"],
+            "hpi_elements": ["tbd"],
+            "physical_exam": ["tbd"],
+            "mdm": ["tbd"],
+            "speed": ["Normal"],
+            "other_pref": ["Likes the normal template. Don't use your own templates/versions for EKG/imaging section. He prefers the default look."]
+        }
+    },
+    {
+        "id": "provider30",
+        "name": "Christepher Yao, MD",
+        "preferences": {
+            "note_pref": ["tbd"],
+            "hpi_elements": ["tbd"],
+            "physical_exam": ["tbd"],
+            "mdm": ["tbd"],
+            "speed": ["Slightly fast"],
+            "other_pref": ["tbd"]
+        }
+    },
+    {
+        "id": "provider31",
+        "name": "Ronald Luu, MD",
+        "preferences": {
+            "note_pref": ["tbd"],
+            "hpi_elements": ["tbd"],
+            "physical_exam": ["tbd"],
+            "mdm": ["tbd"],
+            "speed": ["Normal"],
+            "other_pref": ["tbd"]
+        }
+    },
+    {
+        "id": "provider32",
+        "name": "Daniel Rogan, MD",
+        "preferences": {
+            "note_pref": ["tbd"],
+            "hpi_elements": ["tbd"],
+            "physical_exam": ["tbd"],
+            "mdm": ["tbd"],
+            "speed": ["Normal"],
+            "other_pref": ["tbd"]
+        }
+    }
+]
