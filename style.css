@@ -271,36 +271,31 @@ h1 {
     left: 0;
     right: 0;
     bottom: 0;
-    display: flex; /* Use flexbox for precise alignment */
-    align-items: center; /* Vertically center the text */
-    padding-left: 15px; /* Match the left padding of the parent */
+    display: flex;
+    align-items: center;
+    padding-left: 15px;
     background: linear-gradient(
         90deg,
-        #a1c4fd,
-        #c2e9fb,
-        #d4fc79,
-        #96e6a1,
-        #fbc2eb,
-        #a1c4fd
+        #007aff, /* Apple Blue */
+        #4cd964, /* Apple Green */
+        #ffcc00, /* Apple Yellow */
+        #ff9500, /* Apple Orange */
+        #ff2d55, /* Apple Red/Pink */
+        #007aff  /* Loop back to Blue */
     );
-    background-size: 500% 100%;
+    background-size: 300% 100%; /* Keep for a good animation speed */
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
     opacity: 0; /* Hidden by default */
     z-index: 2; /* Above the text */
     transition: opacity 0.3s ease;
-    animation: shimmer 8s linear infinite paused;
-    font-size: inherit; /* Inherit font size */
+    animation: shimmer 5s linear infinite paused; /* Keep the animation speed */
+    font-size: inherit;
     font-weight: inherit;
     font-style: inherit;
     text-align: inherit;
     text-transform: inherit;
-}
-
-#providerList .provider-item:hover {
-    background-color: rgba(255, 255, 255, 0.05);
-    color: transparent; /* Hide the original text on hover */
 }
 
 #providerList .provider-item:hover::before {
@@ -317,7 +312,6 @@ h1 {
     0% { background-position: 0 0; }
     100% { background-position: 100% 0; }
 }
-
 #providerPreferencesSection {
     padding: 15px;
     display: none; /* Initially hidden */
