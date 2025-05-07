@@ -113,11 +113,11 @@ function displayProviderPreferences(preferences, providerName) {
     function displayCategory(categoryKey, preferenceData, container) {
         let formattedCategory = categoryKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
         if (categoryKey === 'hpi_elements') formattedCategory = 'HPI Elements';
-        else if (categoryKey === 'mdm') formattedCategory = 'Medical Decision Making';
-        else if (categoryKey === 'note_pref') formattedCategory = 'Note Preferences';
+        else if (categoryKey === 'mdm') formattedCategory = 'MDM/ED Course';
+        else if (categoryKey === 'note_pref') formattedCategory = 'General Preferences';
         else if (categoryKey === 'other_pref') formattedCategory = 'Other Preferences';
         else if (categoryKey === 'physical_exam') formattedCategory = 'Physical Exam';
-        else if (categoryKey === 'speed') formattedCategory = 'Speed';
+        else if (categoryKey === 'speed') formattedCategory = 'Speed/Difficulty';
 
         const categoryTitle = document.createElement('h4');
         categoryTitle.textContent = formattedCategory;
