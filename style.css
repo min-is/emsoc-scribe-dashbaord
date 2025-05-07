@@ -299,7 +299,7 @@ h1 {
     position: relative; /* Needed for pseudo-element positioning */
     overflow: hidden;
     z-index: 1;
-    transition: color 0.3s ease; /* Optional transition for the base color */
+    transition: color 0.3s ease, background-color 0.2s ease-in-out; /* Added background-color transition */
 }
 
 #providerList .provider-item::before {
@@ -321,17 +321,16 @@ h1 {
     background-size: 500% 100%;
     background-clip: text;
     -webkit-background-clip: text;
-    color: transparent; /* Hide the pseudo-element's text (if any) */
+    color: transparent; /* Hide the pseudo-element's text */
     opacity: 0; /* Hidden by default */
     z-index: 2; /* Above the text */
     transition: opacity 0.3s ease; /* Transition for fade */
-    animation: shimmer 8s linear infinite; /* Animation runs continuously, but is hidden */
-    animation-play-state: paused; /* Initially paused */
+    animation: shimmer 8s linear infinite paused; /* Animation runs continuously, but is paused */
 }
 
 #providerList .provider-item:hover {
     background-color: rgba(255, 255, 255, 0.05); /* Keep the subtle background highlight */
-    /* color: #d4d4d4; You likely don't need to change the base color on hover */
+    color: #d4d4d4; /* Keep the base text color the same on hover */
 }
 
 #providerList .provider-item:hover::before {
