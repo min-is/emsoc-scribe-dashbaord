@@ -255,7 +255,7 @@ h1 {
     margin-bottom: 0.05em;
     font-size: 1.05em;
     cursor: pointer;
-    color: transparent; /* **Make the base text color transparent** */
+    color: #d4d4d4; /* **Make the base text color transparent** */
     border-radius: 3px;
     position: relative;
     overflow: hidden;
