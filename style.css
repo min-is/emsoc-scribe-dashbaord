@@ -289,6 +289,46 @@ h1 {
     animation: none 8s linear infinite paused; /* Initialize with no animation */
 }
 
+#providerList .provider-item {
+    padding: 0.3em 15px;
+    margin-bottom: 0.05em;
+    font-size: 1.05em;
+    cursor: pointer;
+    color: #d4d4d4; /* Opaque white by default */
+    border-radius: 3px;
+    position: relative; /* Needed for pseudo-element positioning */
+    overflow: hidden;
+    z-index: 1;
+    transition: color 0.3s ease; /* Optional transition for the base color */
+}
+
+#providerList .provider-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        90deg,
+        #a1c4fd,
+        #c2e9fb,
+        #d4fc79,
+        #96e6a1,
+        #fbc2eb,
+        #a1c4fd
+    );
+    background-size: 500% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent; /* Hide the pseudo-element's text (if any) */
+    opacity: 0; /* Hidden by default */
+    z-index: 2; /* Above the text */
+    transition: opacity 0.3s ease; /* Transition for fade */
+    animation: shimmer 8s linear infinite; /* Animation runs continuously, but is hidden */
+    animation-play-state: paused; /* Initially paused */
+}
+
 #providerList .provider-item:hover {
     background-color: rgba(255, 255, 255, 0.05); /* Keep the subtle background highlight */
     /* color: #d4d4d4; You likely don't need to change the base color on hover */
@@ -296,17 +336,17 @@ h1 {
 
 #providerList .provider-item:hover::before {
     opacity: 1; /* Fade in the gradient on hover */
-    animation-name: shimmer; /* Start the animation by setting its name */
+    animation-play-state: running; /* Start the animation */
 }
 
 #providerList .provider-item:not(:hover)::before {
     opacity: 0; /* Ensure it's hidden when not hovering */
-    animation-name: none; /* Stop the animation by setting its name to none */
+    animation-play-state: paused; /* Pause the animation */
 }
 
 @keyframes shimmer {
-    0% { background-position: 0 0; } /* Corrected starting position */
-    100% { background-position: 100% 0; } /* Corrected ending position for continuous flow */
+    0% { background-position: 0 0; }
+    100% { background-position: 100% 0; }
 }
 
 #providerList .provider-item:hover {
