@@ -486,11 +486,41 @@ h1 {
     font-weight: bold;
 }
 
+
+
 #preferencesPanel p.preference-item {
     margin-bottom: 8px;
     font-size: 14px; /* Slightly smaller font for better fit */
     color: #ccc;
     line-height: 1.3;
+}
+
+/* Styles for the hover preview panel */
+#preferencesPanel .preference-subcategory {
+    margin-bottom: 0.5em; /* Adjust as needed */
+    margin-top: 1em; /* Adjust as needed */
+}
+
+#preferencesPanel .preference-item-detail {
+    margin-bottom: 0.2em; /* Adjust as needed */
+}
+
+#preferencesPanel .preference-item-detail.no-preference {
+    font-style: italic;
+}
+
+/* Styles for the pinned preferences box */
+#pinnedPreferences .preference-subcategory {
+    margin-bottom: 0.5em; /* Adjust as needed */
+    margin-top: 1em; /* Adjust as needed */
+}
+
+#pinnedPreferences .preference-item-detail {
+    margin-bottom: 0.2em; /* Adjust as needed */
+}
+
+#pinnedPreferences .preference-item-detail.no-preference {
+    font-style: italic;
 }
 
 /* Hide the original providerPreferencesSection */

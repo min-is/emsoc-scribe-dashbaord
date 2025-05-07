@@ -121,6 +121,7 @@ function displayProviderPreferences(preferences, providerName) {
 
         const categoryTitle = document.createElement('h4');
         categoryTitle.textContent = formattedCategory;
+        categoryTitle.classList.add('preference-subcategory'); // Add a class for styling
         container.appendChild(categoryTitle);
 
         const data = preferenceData.hasOwnProperty(categoryKey) ? preferenceData [categoryKey] : null;
@@ -128,17 +129,17 @@ function displayProviderPreferences(preferences, providerName) {
         if (Array.isArray(data) && data.length > 0) {
             data.forEach(preference => {
                 const preferenceItem = document.createElement('p');
-                preferenceItem.classList.add('preference-item');
+                preferenceItem.classList.add('preference-item-detail'); // Add a class for styling
                 preferenceItem.textContent = preference;
                 container.appendChild(preferenceItem);
             });
         } else if (typeof data === 'string') {
             const preferenceItem = document.createElement('p');
-            preferenceItem.classList.add('preference-item');
+            preferenceItem.classList.add('preference-item-detail'); // Add a class for styling
             preferenceItem.textContent = data;
         } else {
             const noPreference = document.createElement('p');
-            noPreference.classList.add('preference-item');
+            noPreference.classList.add('preference-item-detail', 'no-preference'); // Add classes for styling
             noPreference.textContent = `No specific preferences.`;
             container.appendChild(noPreference);
         }
