@@ -72,19 +72,6 @@ async function fetchAndDisplayProviders() {
                     providerListDiv.appendChild(providerItem);
                 });
             };
-            
-                    providerItem.addEventListener('click', function() {
-                        const providerId = this.dataset.providerId;
-                        const providerName = this.textContent;
-                        currentProviderId = providerId;
-                        fetchProviderPreferencesAndPin(providerId, providerName);
-                        this.classList.add('pinned');
-                        sidebar.classList.remove('open');
-                    });
-            
-                    providerListDiv.appendChild(providerItem);
-                });
-            };
 
             renderProviderList(currentProviders); // Initial rendering
 
