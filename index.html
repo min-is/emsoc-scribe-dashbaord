@@ -33,8 +33,23 @@
     <script>
         const canvas = document.getElementById('backgroundCanvas');
         const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+
+        // Get the device pixel ratio
+        const dpr = window.devicePixelRatio || 1;
+
+        // Set the 'real' size of the canvas
+        const desiredWidth = window.innerWidth;
+        const desiredHeight = window.innerHeight;
+        canvas.width = desiredWidth * dpr;
+        canvas.height = desiredHeight * dpr;
+
+        // Scale the context
+        ctx.scale(dpr, dpr);
+
+        // Set the displayed size using CSS properties
+        canvas.style.width = `${desiredWidth}px`;
+        canvas.style.height = `${desiredHeight}px`;
+
         const particlesArray = [];
         const numberOfParticles = 110;
         const connectDistance = 120;
@@ -45,8 +60,13 @@
         };
 
         window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            const desiredWidth = window.innerWidth;
+            const desiredHeight = window.innerHeight;
+            canvas.width = desiredWidth * dpr;
+            canvas.height = desiredHeight * dpr;
+            canvas.style.width = `${desiredWidth}px`;
+            canvas.style.height = `${desiredHeight}px`;
+            ctx.scale(dpr, dpr);
             init();
         });
 
@@ -158,8 +178,8 @@
             particlesArray.length = 0;
             for (let i = 0; i < numberOfParticles; i++) {
                 const size = (Math.random() * 3) + 1;
-                const x = Math.random() * (canvas.width - size * 2) + size;
-                const y = Math.random() * (canvas.height - size * 2) + size;
+                const x = Math.random() * (canvas.width / dpr - size * 2) + size; // Divide by dpr here
+                const y = Math.random() * (canvas.height / dpr - size * 2) + size; // Divide by dpr here
                 const vx = (Math.random() - 0.5) * 0.5;
                 const vy = (Math.random() - 0.5) * 0.5;
                 particlesArray.push(new Particle(x, y, size, 'rgba(255, 255, 255, 0.8)', vx, vy)); // white + transparent
@@ -167,7 +187,7 @@
         }
 
         function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr); // Divide by dpr here
             for (let i = 0; i < particlesArray.length; i++) {
                 particlesArray[i].update();
             }
