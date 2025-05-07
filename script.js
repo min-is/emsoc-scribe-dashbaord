@@ -205,8 +205,14 @@ async function fetchProviderPreferencesAndPin(providerId, providerName) {
     }
 }
 
+function displayProviderPreferencesInPanel(preferences, providerName) {
+    const panelDetailsDiv = document.querySelector('#preferencesPanel #panelProviderDetails');
+    if (panelDetailsDiv) {
+        panelDetailsDiv.innerHTML = generatePreferenceDetailsHTML(preferences);
+    }
+}
+
 function pinCurrentPreferences(providerName, preferences) {
-    console.log('pinCurrentPreferences called with:', providerName, preferences);
     if (!pinnedPreferences) {
         pinnedPreferences = document.createElement('div');
         pinnedPreferences.id = 'pinnedPreferences';
