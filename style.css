@@ -255,59 +255,51 @@ h1 {
     margin-bottom: 0.05em;
     font-size: 1.05em;
     cursor: pointer;
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba(255, 255, 255, 0.3); /* Faintly visible white text by default */
     border-radius: 3px;
-    position: relative; /* Needed for absolute positioning of the gradient overlay */
-    overflow: hidden; /* Clip the gradient within the item bounds */
-    z-index: 1; /* Ensure text is above the gradient by default */
-    transition: color 0.3s ease; /* Smooth color transition for the default hover */
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    transition: color 0.3s ease;
 }
 
-#providerList .provider-item::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(90deg, #29ABE2, #F781F3, #00C698, #FFD700, #29ABE2); /* Your iridescent gradient */
-    background-size: 400% 100%; /* Make the gradient wider than the element */
-    -webkit-mask: var(--mask); /* Apply the mask */
-    mask: var(--mask);
-    z-index: -1; /* Place the gradient behind the text */
+#providerList .provider-item span {
+    display: block;
+    -webkit-mask-image: paint(text);
+    mask-image: paint(text);
+    color: transparent;
+    background: linear-gradient(
+        90deg,
+        #a1c4fd, /* pastel blue */
+        #c2e9fb, /* baby blue */
+        #d4fc79, /* soft greenish-yellow */
+        #96e6a1, /* mint green */
+        #fbc2eb, /* soft pink */
+        #a1c4fd  /* loop back to pastel blue */
+    );
+    background-size: 500% 100%; /* smoother long wave */
+    background-clip: text;
+    -webkit-background-clip: text;
+    animation: shimmer 8s linear infinite;
     opacity: 0; /* Initially hidden */
-    transition: opacity 0.3s ease, background-position 1s linear; /* Transition for fade and animation */
+    transition: opacity 0.6s ease;
+    z-index: 2; /* Ensure the shimmer is on top of the faint text */
+    text-shadow: 0 0 6px rgba(255, 255, 255, 0.3); /* subtle glow effect */
 }
 
 #providerList .provider-item:hover {
-    color: #fff; /* Change text color on hover for better contrast */
-    --mask: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="0" y="80" style="font-size: 80px; font-family: \'Calibre\', \'Arial\', sans-serif;">{TEXT}</text></svg>');
-    --mask: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="0" y="80" style="font-size: 1.05em; font-family: \'Calibre\', \'Arial\', sans-serif;">{TEXT}</text></svg>');
-}
-
-/* Dynamically set the mask based on the text content */
-#providerList .provider-item span {
-    display: block; /* Create a block-level element to apply the mask */
-    -webkit-mask-image: paint(text);
-    mask-image: paint(text);
-    color: transparent; /* Hide the actual text, the gradient will show through the mask */
-    background: linear-gradient(90deg, #29ABE2, #F781F3, #00C698, #FFD700, #29ABE2);
-    background-size: 400% 100%;
-    background-clip: text;
-    -webkit-background-clip: text;
-    animation: shimmer 5s linear infinite; /* Apply the shimmer animation */
-    opacity: 0; /* Initially hidden */
-    transition: opacity 0.3s ease;
+    color: rgba(255, 255, 255, 0.7); /* Slightly more visible text on hover */
 }
 
 #providerList .provider-item:hover span {
-    opacity: 1; /* Fade in the gradient text on hover */
+    opacity: 1; /* Fade in the shimmer on hover */
 }
 
 @keyframes shimmer {
     0% { background-position: 100% 0; }
     100% { background-position: 0 0; }
 }
+
 
 #providerList .provider-item:hover {
     background-color: rgba(255, 255, 255, 0.05); /* Keep the subtle background highlight */
