@@ -283,14 +283,14 @@ h1 {
         #ff2d55, /* Apple Red/Pink */
         #007aff  /* Loop back to Blue */
     );
-    background-size: 300% 100%; /* Keep for a good animation speed */
+    background-size: 600% 100%; /* Increased size to accommodate smoother transition */
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
     opacity: 0; /* Hidden by default */
     z-index: 2; /* Above the text */
     transition: opacity 0.3s ease;
-    animation: shimmer 5s linear infinite paused; /* Keep the animation speed */
+    animation: shimmer 8s linear infinite paused; /* Adjust animation duration as needed */
     font-size: inherit;
     font-weight: inherit;
     font-style: inherit;
@@ -310,8 +310,9 @@ h1 {
 
 @keyframes shimmer {
     0% { background-position: 0 0; }
-    100% { background-position: 100% 0; }
+    100% { background-position: 200% 0; } /* Move the gradient twice its width */
 }
+
 #providerPreferencesSection {
     padding: 15px;
     display: none; /* Initially hidden */
