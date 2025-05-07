@@ -45,7 +45,8 @@ async function fetchAndDisplayProviders() {
                 providersToRender.forEach(provider => {
                     const providerItem = document.createElement('div');
                     providerItem.classList.add('provider-item');
-                    providerItem.textContent = provider.name; // Directly set the text content
+                    providerItem.textContent = provider.name; // We still set this for event listeners
+                    providerItem.dataset.label = provider.name; // Set the data-label attribute
                     providerItem.dataset.providerId = provider.id;
             
                     providerItem.addEventListener('mouseenter', function() {
@@ -58,6 +59,19 @@ async function fetchAndDisplayProviders() {
                             panelOpen = true;
                         }
                     });
+            
+                    providerItem.addEventListener('click', function() {
+                        const providerId = this.dataset.providerId;
+                        const providerName = this.textContent;
+                        currentProviderId = providerId;
+                        fetchProviderPreferencesAndPin(providerId, providerName);
+                        this.classList.add('pinned');
+                        sidebar.classList.remove('open');
+                    });
+            
+                    providerListDiv.appendChild(providerItem);
+                });
+            };
             
                     providerItem.addEventListener('click', function() {
                         const providerId = this.dataset.providerId;

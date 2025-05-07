@@ -255,16 +255,16 @@ h1 {
     margin-bottom: 0.05em;
     font-size: 1.05em;
     cursor: pointer;
-    color: #d4d4d4; /* Opaque white by default */
+    color: transparent; /* **Make the base text color transparent** */
     border-radius: 3px;
-    position: relative; /* Needed for pseudo-element positioning */
+    position: relative;
     overflow: hidden;
     z-index: 1;
-    transition: color 0.3s ease, background-color 0.2s ease-in-out; /* Keep both transitions */
+    transition: color 0.3s ease, background-color 0.2s ease-in-out; /* Keep the transition */
 }
 
 #providerList .provider-item::before {
-    content: '';
+    content: attr(data-label); /* You'll need to set a data-label attribute in JS */
     position: absolute;
     top: 0;
     left: 0;
@@ -282,16 +282,11 @@ h1 {
     background-size: 500% 100%;
     background-clip: text;
     -webkit-background-clip: text;
-    color: transparent; /* Hide the pseudo-element's text */
+    color: transparent; /* Keep the pseudo-element's text transparent */
     opacity: 0; /* Hidden by default */
     z-index: 2; /* Above the text */
     transition: opacity 0.3s ease; /* Transition for fade */
-    animation: shimmer 8s linear infinite paused; /* Animation runs continuously, but is paused */
-}
-
-#providerList .provider-item:hover {
-    background-color: rgba(255, 255, 255, 0.05); /* Keep the subtle background highlight */
-    color: #d4d4d4; /* **Crucially, keep the base text color on hover** */
+    animation: shimmer 8s linear infinite paused; /* Animation is paused */
 }
 
 #providerList .provider-item:hover::before {
