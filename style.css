@@ -348,29 +348,31 @@ h1 {
 }
 
 #providerSearch {
-    padding: 8px; /* Adjust padding as needed */
-    margin-bottom: 8px; /* Add some space below the search bar */
+    padding: 6px 8px; /* Reduced top/bottom padding for thinner look */
+    margin-bottom: 8px;
 }
 
 #providerSearchInput {
     width: 100%;
-    padding: 8px;
-    border: none; /* Remove the default border */
-    border-radius: 4px; /* Keep the rounded corners */
-    font-size: 14px;
+    padding: 6px 8px; /* Reduced padding to make it thinner */
+    border: none; /* No border to match medication search */
+    border-radius: 8px; /* Same rounded corners */
+    font-size: 0.9em; /* Smaller font size, adjust if needed to match provider names */
     box-sizing: border-box;
-    background-color: #f0f0f0; /* Very light gray background */
-    color: #333; /* Darker text color for readability */
+    background-color: rgba(255, 255, 255, 0.1); /* Light transparent background - same as medication search */
+    color: #f0f0f0; /* White text color - same as medication search */
+    outline: none; /* Remove default focus outline */
+    box-shadow: none; /* Remove any default box shadow */
 }
 
 #providerSearchInput::placeholder {
-    color: #a0a0a0; /* Lighter gray placeholder text */
+    color: rgba(160, 160, 160, 0.8); /* Lighter gray for placeholder, adjust alpha for transparency */
+    font-size: 0.9em; /* Match the text size */
 }
 
-/* Optional: Add a subtle border on focus for better accessibility */
+/* Optional: Add a subtle border on focus, adjust color/opacity as desired */
 #providerSearchInput:focus {
-    outline: none; /* Remove the default focus outline */
-    border: 1px solid #ccc; /* Add a subtle border on focus */
+    border: 1px solid rgba(255, 255, 255, 0.3); /* Subtle white/transparent border on focus */
 }
 
 .preference-item {
