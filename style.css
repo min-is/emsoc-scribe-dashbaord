@@ -562,8 +562,9 @@ h1 {
     margin-bottom: 5px; /* Reduced bottom margin */
     border-bottom: none; /* Remove the border below the name */
     padding-bottom: 0; /* Remove padding below the name */
+    font-family: 'Calibre', 'Arial', sans-serif;
     font-size: 18px;
-    font-weight: bold;
+    font-weight: normal;
     text-align: left;
     width: 100%; /* Ensure full width for alignment context */
 }
