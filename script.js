@@ -44,37 +44,18 @@ async function fetchAndDisplayProviders() {
                 providerItem.textContent = provider.name;
                 providerItem.dataset.providerId = provider.id;
 
-                providerItem.addEventListener('mouseenter', function() {
+                providerItem.addEventListener('click', function() {
                     const providerId = this.dataset.providerId;
                     const providerName = this.textContent;
                     currentProviderId = providerId;
-                    fetchProviderPreferences(providerId, providerName);
-                    if (preferencesPanel) {
-                        preferencesPanel.classList.add('open');
-                        panelOpen = true;
-                    }
+                    fetchProviderPreferencesAndPin(providerId, providerName);
+                    // Optionally, visually indicate the pinned provider
+                    this.classList.add('pinned'); // You'll need to add CSS for the 'pinned' class
+                    sidebar.classList.remove('open'); // Optionally close the sidebar after pinning
                 });
 
                 providerListDiv.appendChild(providerItem);
             });
-
-            // Add a mouseleave listener to the sidebar to close the panel if the mouse moves out
-            sidebar.addEventListener('mouseleave', (event) => {
-                if (preferencesPanel && panelOpen && !event.relatedTarget?.closest('#preferencesPanel')) {
-                    preferencesPanel.classList.remove('open');
-                    panelOpen = false;
-                }
-            });
-
-            // Add a mouseleave listener to the preferences panel to keep it open if the mouse is over it
-            if (preferencesPanel) {
-                preferencesPanel.addEventListener('mouseleave', (event) => {
-                    if (!event.relatedTarget?.closest('#sidebar')) {
-                        preferencesPanel.classList.remove('open');
-                        panelOpen = false;
-                    }
-                });
-            }
 
         } else {
             console.error('Error fetching providers:', response.status);
@@ -85,6 +66,116 @@ async function fetchAndDisplayProviders() {
         providerListDiv.innerHTML = '<p class="error">Failed to load providers.</p>';
     }
 }
+
+async function fetchProviderPreferencesAndPin(providerId, providerName) {
+    try {
+        const response = await fetch(`/provider/${providerId}`);
+        if (response.ok) {
+            const preferences = await response.json();
+            pinCurrentPreferences(providerName, preferences); // Modify pin function to accept preferences
+        } else {
+            console.error(`Error fetching preferences for provider ${providerId}:`, response.status);
+            // Optionally handle error display
+        }
+    } catch (error) {
+        console.error(`Error fetching preferences for provider ${providerId}:`, error);
+        // Optionally handle error display
+    }
+}
+
+function pinCurrentPreferences(providerName, preferences) {
+    if (!pinnedPreferences) {
+        pinnedPreferences = document.createElement('div');
+        pinnedPreferences.id = 'pinnedPreferences';
+        pinnedPreferences.classList.add('pinned-box');
+        pinnedPreferences.dataset.providerId = currentProviderId;
+        pinnedPreferences.innerHTML = `<h3>${providerName} Preferences</h3><div class="pinned-details"></div><button id="unpinPreferencesBtn">Unpin</button>`;
+        document.body.appendChild(pinnedPreferences);
+        pinnedPreferences.style.display = 'block';
+        makeDraggable(pinnedPreferences);
+        setupUnpinButton();
+        currentlyPinnedProviderName = providerName;
+        const detailsContainer = pinnedPreferences.querySelector('.pinned-details');
+        if (detailsContainer) {
+            // Generate and append the preference details directly
+            const preferenceDetailsContentDiv = document.createElement('div');
+            preferenceDetailsContentDiv.id = 'preferenceDetailsContent';
+            detailsContainer.appendChild(preferenceDetailsContentDiv);
+            displayProviderPreferences(preferences, preferenceDetailsContentDiv); // Use the provided preferences
+        }
+    } else if (pinnedPreferences && pinnedPreferences.dataset.providerId !== currentProviderId) {
+        const titleElement = pinnedPreferences.querySelector('h3');
+        if (titleElement) titleElement.textContent = `${providerName} Preferences`;
+        const detailsContainer = pinnedPreferences.querySelector('.pinned-details');
+        if (detailsContainer) {
+            detailsContainer.innerHTML = ''; // Clear existing details
+            const preferenceDetailsContentDiv = document.createElement('div');
+            preferenceDetailsContentDiv.id = 'preferenceDetailsContent';
+            detailsContainer.appendChild(preferenceDetailsContentDiv);
+            displayProviderPreferences(preferences, preferenceDetailsContentDiv); // Use the provided preferences
+        }
+        pinnedPreferences.dataset.providerId = currentProviderId;
+        pinnedPreferences.style.display = 'block';
+        setupUnpinButton();
+        makeDraggable(pinnedPreferences);
+        currentlyPinnedProviderName = providerName;
+    }
+}
+
+function displayProviderPreferences(preferences, container) {
+    container.innerHTML = ''; // Clear the container before adding new preferences
+    const displayOrder = ['note_pref', 'hpi_elements', 'physical_exam', 'mdm', 'other_pref', 'speed'];
+    const displayedCategories = new Set();
+
+    displayOrder.forEach(categoryKey => {
+        if (preferences.hasOwnProperty(categoryKey)) {
+            displayCategory(categoryKey, preferences, container);
+            displayedCategories.add(categoryKey);
+        }
+    });
+
+    for (const categoryKey in preferences) {
+        if (preferences.hasOwnProperty(categoryKey) && !displayedCategories.has(categoryKey)) {
+            displayCategory(categoryKey, preferences, container);
+        }
+    }
+
+    function displayCategory(categoryKey, preferenceData, container) {
+        let formattedCategory = categoryKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        if (categoryKey === 'hpi_elements') formattedCategory = 'HPI Elements';
+        else if (categoryKey === 'mdm') formattedCategory = 'MDM/ED Course';
+        else if (categoryKey === 'note_pref') formattedCategory = 'General Preferences';
+        else if (categoryKey === 'other_pref') formattedCategory = 'Other Preferences';
+        else if (categoryKey === 'physical_exam') formattedCategory = 'Physical Exam';
+        else if (categoryKey === 'speed') formattedCategory = 'Speed/Difficulty';
+
+        const categoryTitle = document.createElement('h4');
+        categoryTitle.textContent = formattedCategory;
+        categoryTitle.classList.add('preference-subcategory');
+        container.appendChild(categoryTitle);
+
+        const data = preferenceData.hasOwnProperty(categoryKey) ? preferenceData[categoryKey] : null;
+
+        if (Array.isArray(data) && data.length > 0) {
+            data.forEach(preference => {
+                const preferenceItem = document.createElement('p');
+                preferenceItem.classList.add('preference-item-detail');
+                preferenceItem.textContent = preference;
+                container.appendChild(preferenceItem);
+            });
+        } else if (typeof data === 'string') {
+            const preferenceItem = document.createElement('p');
+            preferenceItem.classList.add('preference-item-detail');
+            preferenceItem.textContent = data;
+        } else {
+            const noPreference = document.createElement('p');
+            noPreference.classList.add('preference-item-detail', 'no-preference');
+            noPreference.textContent = `No specific preferences.`;
+            container.appendChild(noPreference);
+        }
+    }
+}
+
 // Fetch provider list when the script loads
 fetchAndDisplayProviders();
 
