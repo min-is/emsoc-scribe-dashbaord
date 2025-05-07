@@ -174,7 +174,7 @@ h1 {
 #sidebar {
     position: fixed;
     top: 60px;
-    left: -250px; /* Initially hide it off-screen (adjust value based on width) */
+    left: -250px;
     width: 220px;
     max-height: calc(100vh - 75px);
     background-color: rgba(37, 37, 37, 0.8);
@@ -186,9 +186,15 @@ h1 {
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
     overflow-y: auto;
     text-align: left;
-    border-radius: 8px;
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
+    border-radius: 8px; /* Keep this for all corners */
+    /* Remove these two lines to have rounded corners on the left as well */
+    /* border-top-left-radius: 0; */
+    /* border-bottom-left-radius: 0; */
+}
+
+#sidebar.open {
+    left: 15px;
+    /* max-height: calc(100vh - 75px); */
 }
 
 #sidebar.open {
