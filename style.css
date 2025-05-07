@@ -252,10 +252,13 @@ h1 {
 
 /* INSERT THE NEW RULES HERE */
 #providerList .provider-item {
-    padding: 0.3em 0;
-    margin-bottom: 0.1em; 
-    font-size: 0.9em; 
-    cursor: pointer; 
+    padding: 0.4em 15px; /* Slightly increased vertical padding (0.4em) and added left/right padding (15px) */
+    margin-bottom: 0.1em;
+    font-size: 1.1em; /* Increased font size by roughly 2-3 pixels (assuming base font size is around 14-16px) */
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+    color: rgba(255, 255, 255, 0.7);
+    border-radius: 3px;
 }
 
 #providerList .provider-item:hover {
