@@ -9,13 +9,10 @@ let pinnedPreferences = null;
 let currentProviderId = null;
 let preferencesPanel = null; // New element for the sliding panel
 let panelOpen = false; // Track if the preferences panel is open
-let currentlyPinnedProviderId = null; // To track the ID of the pinned provider
-let currentlyPinnedProviderName = null; // To track the name of the pinned provider
 
 // Function to toggle the sidebar
 toggleSidebarBtn.addEventListener('click', () => {
     sidebar.classList.toggle('open');
-    // Control the visibility of the pinned area based on sidebar state
     if (pinnedPreferences) {
         pinnedPreferences.style.display = sidebar.classList.contains('open') ? 'none' : 'block';
     }
@@ -166,17 +163,15 @@ async function fetchProviderPreferences(providerId, providerName) {
                     }
                 });
             }
-            preferencesPanel.innerHTML = `<h3>${providerName} Preferences</h3><button id="pinPreferencesBtn" data-provider-id="${providerId}" data-provider-name="${providerName}">Pin Provider</button><div id="panelProviderDetails"></div>`;
+            preferencesPanel.innerHTML = `<h3>${providerName} Preferences</h3><button id="pinPreferencesBtn">Pin Provider</button><div id="panelProviderDetails"></div>`;
             const panelDetailsDiv = preferencesPanel.querySelector('#panelProviderDetails');
             panelDetailsDiv.innerHTML = document.getElementById('preferenceDetailsContent').innerHTML;
 
             // Re-attach event listeners to the pin button
             const pinButton = preferencesPanel.querySelector('#pinPreferencesBtn');
             if (pinButton) {
-                pinButton.addEventListener('click', function() {
-                    const pinnedId = this.dataset.providerId;
-                    const pinnedName = this.dataset.providerName;
-                    pinProvider(pinnedId, pinnedName);
+                pinButton.addEventListener('click', () => {
+                    pinCurrentPreferences(providerName);
                     // Immediately close the hover panel after pinning
                     if (preferencesPanel) {
                         preferencesPanel.classList.remove('open');
@@ -186,6 +181,20 @@ async function fetchProviderPreferences(providerId, providerName) {
             }
 
             currentProviderId = providerId;
+
+            if (pinnedPreferences && pinnedPreferences.dataset.providerId !== providerId) {
+                const titleElement = pinnedPreferences.querySelector('h3');
+                if (titleElement) titleElement.textContent = `${providerName} Preferences`;
+                const detailsContainer = pinnedPreferences.querySelector('.pinned-details');
+                if (detailsContainer) detailsContainer.innerHTML = document.getElementById('preferenceDetailsContent').innerHTML;
+                pinnedPreferences.dataset.providerId = providerId;
+                pinnedPreferences.style.display = 'block'; // Ensure it's visible immediately
+                setupUnpinButton();
+                makeDraggable(pinnedPreferences);
+            } else if (!pinnedPreferences) {
+                // If no provider is pinned yet
+                // (The pinning logic will handle creation and immediate display)
+            }
 
         } else {
             console.error(`Error fetching preferences for provider ${providerId}:`, response.status);
@@ -211,49 +220,28 @@ async function fetchProviderPreferences(providerId, providerName) {
     }
 }
 
-function pinProvider(providerId, providerName) {
-    currentlyPinnedProviderId = providerId;
-    currentlyPinnedProviderName = providerName;
-    displayPinnedProvider();
-}
-
-function displayPinnedProvider() {
-    if (currentlyPinnedProviderId && currentlyPinnedProviderName) {
-        const pinnedDetails = document.getElementById('preferenceDetailsContent').innerHTML; // Assuming this holds the last fetched preferences
-        if (!pinnedPreferences) {
-            pinnedPreferences = document.createElement('div');
-            pinnedPreferences.id = 'pinnedPreferences';
-            pinnedPreferences.classList.add('pinned-box');
-            document.body.appendChild(pinnedPreferences);
-            makeDraggable(pinnedPreferences);
-        }
-        pinnedPreferences.innerHTML = `<h3>${currentlyPinnedProviderName} Preferences</h3><div class="pinned-details">${pinnedDetails}</div><button id="unpinPreferencesBtn">Unpin</button>`;
-        pinnedPreferences.style.display = sidebar.classList.contains('open') ? 'none' : 'block';
+function pinCurrentPreferences(providerName) {
+    if (!pinnedPreferences) {
+        pinnedPreferences = document.createElement('div');
+        pinnedPreferences.id = 'pinnedPreferences';
+        pinnedPreferences.classList.add('pinned-box');
+        pinnedPreferences.dataset.providerId = currentProviderId;
+        pinnedPreferences.innerHTML = `<h3>${providerName} Preferences</h3><div class="pinned-details">${document.getElementById('preferenceDetailsContent').innerHTML}</div><button id="unpinPreferencesBtn">Unpin</button>`;
+        document.body.appendChild(pinnedPreferences);
+        pinnedPreferences.style.display = 'block'; // Make it visible immediately
+        makeDraggable(pinnedPreferences);
         setupUnpinButton();
-    } else if (pinnedPreferences) {
-        pinnedPreferences.remove();
-        pinnedPreferences = null;
+    } else if (pinnedPreferences && pinnedPreferences.dataset.providerId !== currentProviderId) {
+        const titleElement = pinnedPreferences.querySelector('h3');
+        if (titleElement) titleElement.textContent = `${providerName} Preferences`;
+        const detailsContainer = pinnedPreferences.querySelector('.pinned-details');
+        if (detailsContainer) detailsContainer.innerHTML = document.getElementById('preferenceDetailsContent').innerHTML;
+        pinnedPreferences.dataset.providerId = currentProviderId;
+        pinnedPreferences.style.display = 'block'; // Ensure it's visible immediately
+        setupUnpinButton();
+        makeDraggable(pinnedPreferences);
     }
 }
-
-function setupUnpinButton() {
-    const unpinButton = document.getElementById('unpinPreferencesBtn');
-    if (unpinButton) {
-        unpinButton.addEventListener('click', () => {
-            currentlyPinnedProviderId = null;
-            currentlyPinnedProviderName = null;
-            if (pinnedPreferences) {
-                pinnedPreferences.remove();
-                pinnedPreferences = null;
-            }
-        });
-    }
-}
-
-// Check if a provider was pinned on a previous session (you'd need to implement local storage for this)
-// For now, we just load the provider list
-// Optionally, if you had a previously pinned provider ID in storage, you could call
-// fetchProviderPreferences(storedProviderId, storedProviderName) here to initialize the pinned state.
 
 function makeDraggable(element) {
     let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
@@ -273,6 +261,18 @@ function makeDraggable(element) {
     }
     function closeDragElement() {
         document.onmouseup = null; document.onmousemove = null;
+    }
+}
+
+function setupUnpinButton() {
+    const unpinButton = document.getElementById('unpinPreferencesBtn');
+    if (unpinButton) {
+        unpinButton.addEventListener('click', () => {
+            if (pinnedPreferences) {
+                pinnedPreferences.remove();
+                pinnedPreferences = null;
+            }
+        });
     }
 }
 
@@ -359,10 +359,4 @@ function displayMedicationDetails(medication) {
         mechanismParagraph.innerHTML = `<span class="detail-label">${medication.mechanism_of_action}</span>`;
         resultsDiv.appendChild(mechanismParagraph);
     }
-}
-
-// Initialize pinned provider on load if one was previously pinned (requires local storage)
-// For now, we just ensure pinnedPreferences is initially hidden if it exists
-if (pinnedPreferences) {
-    pinnedPreferences.style.display = 'none';
 }
