@@ -261,6 +261,13 @@ h1 {
     overflow: hidden;
     z-index: 1;
     transition: color 0.3s ease, background-color 0.2s ease-in-out;
+    /* Ensure consistent font properties */
+    line-height: inherit;
+    letter-spacing: inherit;
+    font-weight: inherit;
+    font-style: inherit;
+    text-align: inherit;
+    text-transform: inherit;
 }
 
 #providerList .provider-item::before {
@@ -287,11 +294,18 @@ h1 {
     z-index: 2; /* Above the text */
     transition: opacity 0.3s ease;
     animation: shimmer 8s linear infinite paused;
+    /* Ensure consistent font properties */
+    line-height: inherit;
+    letter-spacing: inherit;
+    font-weight: inherit;
+    font-style: inherit;
+    text-align: inherit;
+    text-transform: inherit;
 }
 
 #providerList .provider-item:hover {
-    background-color: rgba(255, 255, 255, 0.05); /* Keep the subtle background highlight */
-    color: transparent; /* **Hide the original text on hover** */
+    background-color: rgba(255, 255, 255, 0.05);
+    color: transparent; /* Hide the original text on hover */
 }
 
 #providerList .provider-item:hover::before {
