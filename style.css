@@ -261,13 +261,7 @@ h1 {
     overflow: hidden;
     z-index: 1;
     transition: color 0.3s ease, background-color 0.2s ease-in-out;
-    /* Ensure consistent font properties */
-    line-height: inherit;
-    letter-spacing: inherit;
-    font-weight: inherit;
-    font-style: inherit;
-    text-align: inherit;
-    text-transform: inherit;
+    line-height: 1.0; /* Reset line-height to a basic value */
 }
 
 #providerList .provider-item::before {
@@ -277,6 +271,9 @@ h1 {
     left: 0;
     right: 0;
     bottom: 0;
+    display: flex; /* Use flexbox for precise alignment */
+    align-items: center; /* Vertically center the text */
+    padding-left: 15px; /* Match the left padding of the parent */
     background: linear-gradient(
         90deg,
         #a1c4fd,
@@ -294,9 +291,7 @@ h1 {
     z-index: 2; /* Above the text */
     transition: opacity 0.3s ease;
     animation: shimmer 8s linear infinite paused;
-    /* Ensure consistent font properties */
-    line-height: inherit;
-    letter-spacing: inherit;
+    font-size: inherit; /* Inherit font size */
     font-weight: inherit;
     font-style: inherit;
     text-align: inherit;
