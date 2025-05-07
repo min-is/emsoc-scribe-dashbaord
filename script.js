@@ -420,32 +420,6 @@ async function fetchProviderPreferences(providerId, providerName) {
     }
 }
 
-function pinCurrentPreferences(providerName) {
-    if (!pinnedPreferences) {
-        pinnedPreferences = document.createElement('div');
-        pinnedPreferences.id = 'pinnedPreferences';
-        pinnedPreferences.classList.add('pinned-box');
-        pinnedPreferences.dataset.providerId = currentProviderId;
-        pinnedPreferences.innerHTML = `<h3>${providerName} Preferences</h3><div class="pinned-details">${document.getElementById('preferenceDetailsContent').innerHTML}</div><button id="unpinPreferencesBtn">Unpin</button>`;
-        document.body.appendChild(pinnedPreferences);
-        pinnedPreferences.style.display = 'block'; // Make it visible immediately
-        makeDraggable(pinnedPreferences);
-        setupUnpinButton();
-        currentlyPinnedProviderName = providerName; // Store the name of the pinned provider
-        sidebar.classList.remove('open'); // Close the sidebar
-    } else if (pinnedPreferences && pinnedPreferences.dataset.providerId !== currentProviderId) {
-        const titleElement = pinnedPreferences.querySelector('h3');
-        if (titleElement) titleElement.textContent = `${providerName} Preferences`;
-        const detailsContainer = pinnedPreferences.querySelector('.pinned-details');
-        if (detailsContainer) detailsContainer.innerHTML = document.getElementById('preferenceDetailsContent').innerHTML;
-        pinnedPreferences.dataset.providerId = currentProviderId;
-        pinnedPreferences.style.display = 'block'; // Ensure it's visible immediately
-        setupUnpinButton();
-        makeDraggable(pinnedPreferences);
-        currentlyPinnedProviderName = providerName; // Update the name of the pinned provider
-        sidebar.classList.remove('open'); // Close the sidebar
-    }
-}
 
 function makeDraggable(element) {
     let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
