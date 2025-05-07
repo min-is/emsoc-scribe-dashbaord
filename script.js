@@ -45,9 +45,9 @@ async function fetchAndDisplayProviders() {
                 providersToRender.forEach(provider => {
                     const providerItem = document.createElement('div');
                     providerItem.classList.add('provider-item');
-                    providerItem.innerHTML = `<span>${provider.name}</span>`; // wrap name
+                    providerItem.textContent = provider.name; // Directly set the text content
                     providerItem.dataset.providerId = provider.id;
-
+            
                     providerItem.addEventListener('mouseenter', function() {
                         const providerId = this.dataset.providerId;
                         const providerName = this.textContent;
@@ -58,7 +58,7 @@ async function fetchAndDisplayProviders() {
                             panelOpen = true;
                         }
                     });
-
+            
                     providerItem.addEventListener('click', function() {
                         const providerId = this.dataset.providerId;
                         const providerName = this.textContent;
@@ -67,7 +67,7 @@ async function fetchAndDisplayProviders() {
                         this.classList.add('pinned');
                         sidebar.classList.remove('open');
                     });
-
+            
                     providerListDiv.appendChild(providerItem);
                 });
             };
