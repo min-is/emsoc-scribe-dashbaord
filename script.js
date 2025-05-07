@@ -45,7 +45,7 @@ async function fetchAndDisplayProviders() {
                 providersToRender.forEach(provider => {
                     const providerItem = document.createElement('div');
                     providerItem.classList.add('provider-item');
-                    providerItem.textContent = provider.name;
+                    providerItem.innerHTML = `<span>${provider.name}</span>`; // wrap name
                     providerItem.dataset.providerId = provider.id;
 
                     providerItem.addEventListener('mouseenter', function() {
