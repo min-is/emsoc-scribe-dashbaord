@@ -96,10 +96,13 @@ async function fetchAndDisplayProviders() {
 }
 
 async function fetchProviderPreferencesForPreview(providerId, providerName) {
+    console.log(`Fetching preview preferences for provider ID: ${providerId}`);
     try {
         const response = await fetch(`/provider/${providerId}`);
+        console.log(`Preview preferences response status: ${response.status}`);
         if (response.ok) {
             const preferences = await response.json();
+            console.log('Preview preferences data:', preferences);
             displayProviderPreferencesInPanel(preferences, providerName);
 
             if (!preferencesPanel) {
@@ -117,7 +120,7 @@ async function fetchProviderPreferencesForPreview(providerId, providerName) {
             const panelDetailsDiv = preferencesPanel.querySelector('#panelProviderDetails');
             panelDetailsDiv.innerHTML = generatePreferenceDetailsHTML(preferences); // Helper function for HTML
         } else {
-            console.error(`Error fetching preferences for provider ${providerId}:`, response.status);
+            console.error(`Error fetching preview preferences for provider ${providerId}:`, response.status);
             if (!preferencesPanel) {
                 preferencesPanel = document.createElement('div');
                 preferencesPanel.id = 'preferencesPanel';
@@ -128,7 +131,7 @@ async function fetchProviderPreferencesForPreview(providerId, providerName) {
             panelOpen = false;
         }
     } catch (error) {
-        console.error(`Error fetching preferences for provider ${providerId}:`, error);
+        console.error(`Error fetching preview preferences for provider ${providerId}:`, error);
         if (!preferencesPanel) {
             preferencesPanel = document.createElement('div');
             preferencesPanel.id = 'preferencesPanel';
@@ -184,22 +187,26 @@ function generatePreferenceDetailsHTML(preferences) {
 }
 
 async function fetchProviderPreferencesAndPin(providerId, providerName) {
+    console.log(`Fetching pin preferences for provider ID: ${providerId}`);
     try {
         const response = await fetch(`/provider/${providerId}`);
+        console.log(`Pin preferences response status: ${response.status}`);
         if (response.ok) {
             const preferences = await response.json();
+            console.log('Pin preferences data:', preferences);
             pinCurrentPreferences(providerName, preferences); // Modify pin function to accept preferences
         } else {
-            console.error(`Error fetching preferences for provider ${providerId}:`, response.status);
+            console.error(`Error fetching pin preferences for provider ${providerId}:`, response.status);
             // Optionally handle error display
         }
     } catch (error) {
-        console.error(`Error fetching preferences for provider ${providerId}:`, error);
+        console.error(`Error fetching pin preferences for provider ${providerId}:`, error);
         // Optionally handle error display
     }
 }
 
 function pinCurrentPreferences(providerName, preferences) {
+    console.log('pinCurrentPreferences called with:', providerName, preferences);
     if (!pinnedPreferences) {
         pinnedPreferences = document.createElement('div');
         pinnedPreferences.id = 'pinnedPreferences';
