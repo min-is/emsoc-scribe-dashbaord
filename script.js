@@ -13,10 +13,10 @@ let panelOpen = false; // Track if the preferences panel is open
 // Function to toggle the sidebar
 toggleSidebarBtn.addEventListener('click', () => {
     sidebar.classList.toggle('open');
-    // REMOVE the direct manipulation of pinnedPreferences display here
-    // if (pinnedPreferences) {
-    //     pinnedPreferences.style.display = sidebar.classList.contains('open') ? 'none' : 'block';
-    // }
+    // Re-introduce the logic to hide/show pinned preferences based on sidebar state
+    if (pinnedPreferences) {
+        pinnedPreferences.style.display = sidebar.classList.contains('open') ? 'none' : 'block';
+    }
     if (preferencesPanel) {
         preferencesPanel.classList.remove('open');
         panelOpen = false;
@@ -77,7 +77,7 @@ async function fetchAndDisplayProviders() {
             }
 
             // Potentially re-show the pinned provider after the list is refreshed
-            if (pinnedPreferences) {
+            if (pinnedPreferences && !sidebar.classList.contains('open')) {
                 pinnedPreferences.style.display = 'block';
             }
 
@@ -243,7 +243,7 @@ function pinCurrentPreferences(providerName) {
         pinnedPreferences.id = 'pinnedPreferences';
         pinnedPreferences.classList.add('pinned-box');
         pinnedPreferences.dataset.providerId = currentProviderId;
-        pinnedPreferences.innerHTML = `<h3><span class="math-inline">\{providerName\} Preferences</h3\><div class\="pinned\-details"\></span>{document.getElementById('preferenceDetailsContent').innerHTML}</div><button id="unpinPreferencesBtn">Unpin</button>`;
+        pinnedPreferences.innerHTML = `<h3>${providerName} Preferences</h3><div class="pinned-details">${document.getElementById('preferenceDetailsContent').innerHTML}</div><button id="unpinPreferencesBtn">Unpin</button>`;
         document.body.appendChild(pinnedPreferences);
         pinnedPreferences.style.display = 'block';
         makeDraggable(pinnedPreferences);
@@ -311,7 +311,7 @@ searchInput.addEventListener('input', async () => {
                         const matchIndex = matchedName.toLowerCase().indexOf(query.toLowerCase());
                         if (matchIndex > -1) {
                             const highlightedMatch = matchedName.substring(matchIndex, matchIndex + query.length);
-                            displayText = `<span class="math-inline">\{name\} \(<span class\="highlight"\></span>{highlightedMatch}</span>)`;
+                            displayText = `${name} (<span class="highlight">${highlightedMatch}</span>)`;
                         }
                     }
                     suggestionItem.innerHTML = displayText;
@@ -343,3 +343,39 @@ async function fetchMedicationDetails(name) {
             displayMedicationDetails(medication);
             resultsDiv.classList.add('show');
         } else {
+            const errorData = await response.json();
+            resultsDiv.innerHTML = `<p class="error">${errorData.error || 'Medication not found'}</p>`;
+            resultsDiv.classList.add('show');
+        }
+    } catch (error) {
+        console.error('Error fetching medication details:', error);
+        resultsDiv.innerHTML = '<p class="error">Failed to fetch medication details.</p>';
+        resultsDiv.classList.add('show');
+    }
+}
+
+function displayMedicationDetails(medication) {
+    resultsDiv.innerHTML = '';
+    const title = document.createElement('h3');
+    title.textContent = medication.name;
+    resultsDiv.appendChild(title);
+    const overviewHeadline = document.createElement('h4');
+    overviewHeadline.textContent = 'Overview';
+    resultsDiv.appendChild(overviewHeadline);
+    const descriptionParagraph = document.createElement('p');
+    descriptionParagraph.textContent = medication.description;
+    resultsDiv.appendChild(descriptionParagraph);
+    if (medication.alternate_names && medication.alternate_names.length > 0) {
+        const alternateNamesParagraph = document.createElement('p');
+        alternateNamesParagraph.innerHTML = `<strong>Also known as:</strong> <span class="detail-label">${medication.alternate_names.join(', ')}</span>`;
+        resultsDiv.appendChild(alternateNamesParagraph);
+    }
+    const mechanismHeadline = document.createElement('h4');
+    mechanismHeadline.textContent = 'Mechanism of Action';
+    resultsDiv.appendChild(mechanismHeadline);
+    if (medication.mechanism_of_action) {
+        const mechanismParagraph = document.createElement('p');
+        mechanismParagraph.innerHTML = `<span class="detail-label">${medication.mechanism_of_action}</span>`;
+        resultsDiv.appendChild(mechanismParagraph);
+    }
+}
