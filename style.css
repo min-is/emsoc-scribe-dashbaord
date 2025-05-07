@@ -255,9 +255,9 @@ h1 {
     margin-bottom: 0.05em;
     font-size: 1.05em;
     cursor: pointer;
-    color: #d4d4d4
+    color: #d4d4d4; /* Set a fully visible default text color */
     border-radius: 3px;
-    position: relative;
+    position: relative; /* Needed for layering the span */
     overflow: hidden;
     z-index: 1;
     transition: color 0.3s ease;
@@ -275,29 +275,36 @@ h1 {
         #d4fc79, /* soft greenish-yellow */
         #96e6a1, /* mint green */
         #fbc2eb, /* soft pink */
-        #a1c4fd  /* loop back to pastel blue */
+        #a1c4fd   /* loop back to pastel blue */
     );
     background-size: 500% 100%; /* smoother long wave */
     background-clip: text;
     -webkit-background-clip: text;
     animation: shimmer 8s linear infinite paused;
-    opacity: 0; /* Initially hidden */
-    transition: opacity 0.6s ease;
-    z-index: 2; /* Ensure the shimmer is on top of the faint text */
+    opacity: 0.6; /* Make the gradient subtly visible initially (adjust as needed) */
+    transition: opacity 0.3s ease; /* Smoother opacity transition */
+    z-index: 2; /* Ensure the shimmer is on top */
     text-shadow: 0 0 6px rgba(255, 255, 255, 0.3); /* subtle glow effect */
+    position: absolute; /* To layer it */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* Ensure clicks go through to the item */
 }
 
 #providerList .provider-item:hover {
-    color: rgba(255, 255, 255, 0.7); /* Slightly more visible text on hover */
+    background-color: rgba(255, 255, 255, 0.05); /* Keep the subtle background highlight */
+    /* color: rgba(255, 255, 255, 0.7); */ /* You might not need to change the base color on hover now */
 }
 
 #providerList .provider-item:hover span {
-    opacity: 1; /* Fade in the shimmer on hover */
+    opacity: 1; /* Make the shimmer fully visible on hover */
     animation-play-state: running;
 }
 
 #providerList .provider-item:not(:hover) span {
-    opacity: 0;
+    opacity: 0.6; /* Maintain the subtle shimmer when not hovering */
     animation-play-state: paused;
 }
 
