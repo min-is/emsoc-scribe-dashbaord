@@ -220,6 +220,7 @@ function pinCurrentPreferences(providerName) {
         makeDraggable(pinnedPreferences);
         setupUnpinButton();
         currentlyPinnedProviderName = providerName; // Store the name of the pinned provider
+        sidebar.classList.remove('open'); // Close the sidebar
     } else if (pinnedPreferences && pinnedPreferences.dataset.providerId !== currentProviderId) {
         const titleElement = pinnedPreferences.querySelector('h3');
         if (titleElement) titleElement.textContent = `${providerName} Preferences`;
@@ -230,6 +231,7 @@ function pinCurrentPreferences(providerName) {
         setupUnpinButton();
         makeDraggable(pinnedPreferences);
         currentlyPinnedProviderName = providerName; // Update the name of the pinned provider
+        sidebar.classList.remove('open'); // Close the sidebar
     }
 }
 
