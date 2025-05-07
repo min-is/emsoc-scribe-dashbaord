@@ -559,9 +559,9 @@ h1 {
 #preferencesPanel h3 {
     color: #d4d4d4; /* Match sidebar header color */
     margin-top: 5px; /* Reduced top margin */
-    margin-bottom: 5px; /* Reduced bottom margin */
+    margin-bottom: 1px; /* Reduced bottom margin */
     border-bottom: 1px solid #d4d4d4; /* Remove the border below the name */
-    padding-bottom: 0; /* Remove padding below the name */
+    padding-bottom: 10px; /* Remove padding below the name */
     font-family: 'Calibre', 'Arial', sans-serif;
     font-size: 18px;
     font-weight: normal;
@@ -571,8 +571,8 @@ h1 {
 
 #preferencesPanel h4 {
     color: #eee;
-    margin-top: 8px; /* Reduced top margin for subheadings */
-    margin-bottom: 3px; /* Reduced bottom margin for subheadings */
+    margin-top: 5px; /* Reduced top margin for subheadings */
+    margin-bottom: 1px; /* Reduced bottom margin for subheadings */
     font-size: 16px;
     font-weight: bold;
 }
