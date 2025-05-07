@@ -255,16 +255,16 @@ h1 {
     margin-bottom: 0.05em;
     font-size: 1.05em;
     cursor: pointer;
-    color: #d4d4d4; /* **Make the base text color transparent** */
+    color: #d4d4d4; /* Visible by default */
     border-radius: 3px;
     position: relative;
     overflow: hidden;
     z-index: 1;
-    transition: color 0.3s ease, background-color 0.2s ease-in-out; /* Keep the transition */
+    transition: color 0.3s ease, background-color 0.2s ease-in-out;
 }
 
 #providerList .provider-item::before {
-    content: attr(data-label); /* You'll need to set a data-label attribute in JS */
+    content: attr(data-label);
     position: absolute;
     top: 0;
     left: 0;
@@ -282,21 +282,26 @@ h1 {
     background-size: 500% 100%;
     background-clip: text;
     -webkit-background-clip: text;
-    color: transparent; /* Keep the pseudo-element's text transparent */
+    color: transparent;
     opacity: 0; /* Hidden by default */
     z-index: 2; /* Above the text */
-    transition: opacity 0.3s ease; /* Transition for fade */
-    animation: shimmer 8s linear infinite paused; /* Animation is paused */
+    transition: opacity 0.3s ease;
+    animation: shimmer 8s linear infinite paused;
+}
+
+#providerList .provider-item:hover {
+    background-color: rgba(255, 255, 255, 0.05); /* Keep the subtle background highlight */
+    color: transparent; /* **Hide the original text on hover** */
 }
 
 #providerList .provider-item:hover::before {
-    opacity: 1; /* Fade in the gradient on hover */
-    animation-play-state: running; /* Start the animation */
+    opacity: 1; /* Show the iridescent text */
+    animation-play-state: running;
 }
 
 #providerList .provider-item:not(:hover)::before {
-    opacity: 0; /* Ensure it's hidden when not hovering */
-    animation-play-state: paused; /* Pause the animation */
+    opacity: 0;
+    animation-play-state: paused;
 }
 
 @keyframes shimmer {
