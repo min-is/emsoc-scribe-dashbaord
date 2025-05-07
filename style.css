@@ -255,64 +255,59 @@ h1 {
     margin-bottom: 0.05em;
     font-size: 1.05em;
     cursor: pointer;
-    color: #d4d4d4; /* Set a fully visible default text color */
+    color: #d4d4d4; /* Opaque white by default */
     border-radius: 3px;
-    position: relative; /* Needed for layering the span */
+    position: relative; /* Needed for pseudo-element positioning */
     overflow: hidden;
     z-index: 1;
-    transition: color 0.3s ease;
+    transition: color 0.3s ease; /* Optional transition for the base color */
 }
 
-#providerList .provider-item span {
-    display: block;
-    -webkit-mask-image: paint(text);
-    mask-image: paint(text);
-    color: transparent;
-    background: linear-gradient(
-        90deg,
-        #a1c4fd, /* pastel blue */
-        #c2e9fb, /* baby blue */
-        #d4fc79, /* soft greenish-yellow */
-        #96e6a1, /* mint green */
-        #fbc2eb, /* soft pink */
-        #a1c4fd   /* loop back to pastel blue */
-    );
-    background-size: 500% 100%; /* smoother long wave */
-    background-clip: text;
-    -webkit-background-clip: text;
-    animation: shimmer 8s linear infinite paused;
-    opacity: 0.6; /* Make the gradient subtly visible initially (adjust as needed) */
-    transition: opacity 0.3s ease; /* Smoother opacity transition */
-    z-index: 2; /* Ensure the shimmer is on top */
-    text-shadow: 0 0 6px rgba(255, 255, 255, 0.3); /* subtle glow effect */
-    position: absolute; /* To layer it */
+#providerList .provider-item::before {
+    content: '';
+    position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none; /* Ensure clicks go through to the item */
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        90deg,
+        #a1c4fd,
+        #c2e9fb,
+        #d4fc79,
+        #96e6a1,
+        #fbc2eb,
+        #a1c4fd
+    );
+    background-size: 500% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent; /* Hide the pseudo-element's text (if any) */
+    opacity: 0; /* Hidden by default */
+    z-index: 2; /* Above the text */
+    transition: opacity 0.3s ease; /* Transition for fade */
+    animation: none 8s linear infinite paused; /* Initialize with no animation */
 }
 
 #providerList .provider-item:hover {
     background-color: rgba(255, 255, 255, 0.05); /* Keep the subtle background highlight */
-    /* color: rgba(255, 255, 255, 0.7); */ /* You might not need to change the base color on hover now */
+    /* color: #d4d4d4; You likely don't need to change the base color on hover */
 }
 
-#providerList .provider-item:hover span {
-    opacity: 1; /* Make the shimmer fully visible on hover */
-    animation-play-state: running;
+#providerList .provider-item:hover::before {
+    opacity: 1; /* Fade in the gradient on hover */
+    animation-name: shimmer; /* Start the animation by setting its name */
 }
 
-#providerList .provider-item:not(:hover) span {
-    opacity: 0.6; /* Maintain the subtle shimmer when not hovering */
-    animation-play-state: paused;
+#providerList .provider-item:not(:hover)::before {
+    opacity: 0; /* Ensure it's hidden when not hovering */
+    animation-name: none; /* Stop the animation by setting its name to none */
 }
 
 @keyframes shimmer {
-    0% { background-position: 100% 0; }
-    100% { background-position: 0 0; }
+    0% { background-position: 0 0; } /* Corrected starting position */
+    100% { background-position: 100% 0; } /* Corrected ending position for continuous flow */
 }
-
 
 #providerList .provider-item:hover {
     background-color: rgba(255, 255, 255, 0.05); /* Keep the subtle background highlight */
