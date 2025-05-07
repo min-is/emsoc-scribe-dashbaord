@@ -174,23 +174,28 @@ h1 {
 /* Sidebar Styles */
 #sidebar {
     position: fixed;
-    top: 0;
-    left: -280px; /* Slightly wider for better readability */
-    width: 280px;
-    height: 100%;
+    top: 50px; /* Adjust to be below the toggle button (button height + some spacing) */
+    left: 15px; /* Align with the left of the toggle button */
+    width: 220px; /* Decrease the width */
+    /* height: 100%; Remove fixed height */
+    max-height: calc(100vh - 65px); /* Adjust max height based on button position */
     background-color: rgba(37, 37, 37, 0.8);
     backdrop-filter: blur(10px);
     color: #d4d4d4;
     z-index: 20;
-    transition: left 0.3s ease-in-out;
-    padding-top: 70px; /* Adjust for the toggle button height + some spacing */
+    transition: left 0.3s ease-in-out, max-height 0.3s ease-in-out; /* Add transition for max-height */
+    padding-top: 10px; /* Reduce top padding */
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
     overflow-y: auto;
-    text-align: left; /* Align text within the sidebar to the left */
+    text-align: left;
+    border-radius: 8px; /* Add rounded corners */
+    border-top-left-radius: 0; /* Remove top-left rounding to align with button */
+    border-bottom-left-radius: 0; /* Remove bottom-left rounding */
 }
 
 #sidebar.open {
-    left: 0;
+    left: 15px; /* Keep it aligned with the button */
+    /* max-height: calc(100vh - 65px); The max-height adjusts dynamically */
 }
 
 #toggleSidebarBtn {
@@ -255,13 +260,13 @@ h1 {
 }
 
 .provider-item {
-    padding: 10px 15px;
+    padding: 0.3em 15px; /* Adjust vertical padding, keep horizontal */
+    margin-bottom: 0.1em;
+    font-size: 0.9em;
     cursor: pointer;
     transition: background-color 0.2s ease-in-out;
-    font-size: 18px;
     color: rgba(255, 255, 255, 0.7);
-    border-radius: 5px;
-    margin-bottom: 5px;
+    border-radius: 3px; /* Slightly round individual items */
 }
 
 .provider-item:hover {
@@ -287,29 +292,64 @@ h1 {
     transition: background-color 0.2s ease-in-out;
 }
 
+#providerPreferencesSection h3 {
+    color: #ffab40; /* Peach-orange color for "Provider Preferences" */
+    margin-top: 15px; /* Add some top margin to separate from the list */
+    margin-bottom: 5px; /* Reduced margin-bottom */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 10px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+#providerPreferencesSection button {
+    background: rgba(50, 50, 50, 0.5);
+    color: #d4d4d4;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Calibre', 'Arial', sans-serif;
+    font-size: 16px;
+    margin-top: 15px;
+    transition: background-color 0.2s ease-in-out;
+}
+
 #providerPreferencesSection button:hover {
     background-color: rgba(70, 70, 70, 0.7);
 }
 
+/* Adjust padding for providerDetails to align with the list */
+#providerDetails {
+    padding-left: 0;
+    padding-right: 0;
+}
+
 #providerDetails h4 {
     color: #eee;
-    margin-top: 15px; /* Adjust top margin for separation between sections */
-    margin-bottom: 2px; /* Very small bottom margin to be close to content */
+    margin-top: 15px;
+    margin-bottom: 2px;
     font-size: 16px;
     font-weight: bold;
+    padding-left: 15px; /* Align with list items */
+    padding-right: 15px; /* Align with list items */
 }
 
 #providerDetails h4 + p.preference-item,
-#providerDetails h4 + p:not(.preference-item) { /* Target p immediately after h4 */
-    margin-top: 2px; /* Reduce the top margin of the content following the subheading */
-    margin-bottom: 8px; /* Keep a reasonable bottom margin for separation after the content */
+#providerDetails h4 + p:not(.preference-item) {
+    margin-top: 2px;
+    margin-bottom: 8px;
+    padding-left: 15px; /* Align with list items */
+    padding-right: 15px; /* Align with list items */
 }
 
 .preference-item {
-    margin-bottom: 4px; /* Adjust spacing between individual preference items within a section */
+    margin-bottom: 4px;
     font-size: 16px;
     color: #ccc;
     line-height: 1.4;
+    padding-left: 15px; /* Align with list items */
+    padding-right: 15px; /* Align with list items */
 }
 
 .preference-item strong {
@@ -318,10 +358,6 @@ h1 {
     margin-right: 5px;
 }
 
-/* style.css */
-/* ... (your existing CSS) ... */
-
-/* Pinned Box Styles */
 .pinned-box {
     position: fixed;
     top: 50px;
