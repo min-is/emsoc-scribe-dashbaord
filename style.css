@@ -171,13 +171,12 @@ h1 {
     color: #ccc;
 }
 
-/* Sidebar Styles */
 #sidebar {
     position: fixed;
-    top: 55px; /* Increased from 50px */
-    left: 15px;
+    top: 60px;
+    left: -250px; /* Initially hide it off-screen (adjust value based on width) */
     width: 220px;
-    max-height: calc(100vh - 70px); /* Adjust max-height accordingly */
+    max-height: calc(100vh - 75px);
     background-color: rgba(37, 37, 37, 0.8);
     backdrop-filter: blur(10px);
     color: #d4d4d4;
@@ -193,8 +192,8 @@ h1 {
 }
 
 #sidebar.open {
-    left: 15px; /* Keep it aligned with the button */
-    /* max-height: calc(100vh - 65px); The max-height adjusts dynamically */
+    left: 15px; /* Slide it into view */
+    /* max-height: calc(100vh - 75px); */
 }
 
 #toggleSidebarBtn {
