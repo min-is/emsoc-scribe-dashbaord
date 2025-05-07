@@ -611,16 +611,20 @@ h1 {
 
 #preferencesPanel h4 {
     color: #eee;
-    margin-top: 10px;
-    margin-bottom: 5px;
+    margin-top: 8px; /* Keep reduced top margin for subheadings */
+    margin-bottom: 3px; /* Further reduced bottom margin for subheadings */
     font-size: 16px;
     font-weight: bold;
 }
 
-
+#preferencesPanel h4 + p.preference-item,
+#preferencesPanel h4 + p:not(.preference-item) { /* Target p immediately after h4 */
+    margin-top: 2px; /* Reduced top margin for the content following the subheading */
+    margin-bottom: 6px; /* Keep the bottom margin for separation after the content */
+}
 
 #preferencesPanel p.preference-item {
-    margin-bottom: 8px;
+    margin-bottom: 6px; /* Keep the bottom margin for individual preference items */
     font-size: 14px; /* Slightly smaller font for better fit */
     color: #ccc;
     line-height: 1.3;
