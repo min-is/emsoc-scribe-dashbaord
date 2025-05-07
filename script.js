@@ -5,6 +5,7 @@ const toggleSidebarBtn = document.getElementById('toggleSidebarBtn');
 const sidebar = document.getElementById('sidebar');
 const providerListDiv = document.getElementById('providerList');
 const providerDetailsDiv = document.getElementById('providerDetails'); // Still used for content generation
+const providerSearchInput = document.getElementById('providerSearchInput');
 let pinnedPreferences = null;
 let currentProviderId = null;
 let preferencesPanel = null; // New element for the sliding panel
@@ -27,9 +28,9 @@ async function fetchAndDisplayProviders() {
     try {
         const response = await fetch('/providers');
         if (response.ok) {
-            const providers = await response.json();
+            const allProviders = await response.json(); // Store the original list
 
-            providers.sort((a, b) => {
+            allProviders.sort((a, b) => {
                 const nameA = a.name.split(' ')[0].toLowerCase();
                 const nameB = b.name.split(' ')[0].toLowerCase();
                 if (nameA < nameB) return -1;
@@ -37,37 +38,57 @@ async function fetchAndDisplayProviders() {
                 return 0;
             });
 
-            providerListDiv.innerHTML = '';
-            providers.forEach(provider => {
-                const providerItem = document.createElement('div');
-                providerItem.classList.add('provider-item');
-                providerItem.textContent = provider.name;
-                providerItem.dataset.providerId = provider.id;
+            let currentProviders = [...allProviders]; // Start with all providers
 
-                providerItem.addEventListener('mouseenter', function() {
-                    const providerId = this.dataset.providerId;
-                    const providerName = this.textContent;
-                    currentProviderId = providerId;
-                    fetchProviderPreferencesForPreview(providerId, providerName);
-                    if (preferencesPanel) {
-                        preferencesPanel.classList.add('open');
-                        panelOpen = true;
-                    }
+            const renderProviderList = (providersToRender) => {
+                providerListDiv.innerHTML = '';
+                providersToRender.forEach(provider => {
+                    const providerItem = document.createElement('div');
+                    providerItem.classList.add('provider-item');
+                    providerItem.textContent = provider.name;
+                    providerItem.dataset.providerId = provider.id;
+
+                    providerItem.addEventListener('mouseenter', function() {
+                        const providerId = this.dataset.providerId;
+                        const providerName = this.textContent;
+                        currentProviderId = providerId;
+                        fetchProviderPreferencesForPreview(providerId, providerName);
+                        if (preferencesPanel) {
+                            preferencesPanel.classList.add('open');
+                            panelOpen = true;
+                        }
+                    });
+
+                    providerItem.addEventListener('click', function() {
+                        const providerId = this.dataset.providerId;
+                        const providerName = this.textContent;
+                        currentProviderId = providerId;
+                        fetchProviderPreferencesAndPin(providerId, providerName);
+                        this.classList.add('pinned');
+                        sidebar.classList.remove('open');
+                    });
+
+                    providerListDiv.appendChild(providerItem);
                 });
+            };
 
-                providerItem.addEventListener('click', function() {
-                    const providerId = this.dataset.providerId;
-                    const providerName = this.textContent;
-                    currentProviderId = providerId;
-                    fetchProviderPreferencesAndPin(providerId, providerName);
-                    this.classList.add('pinned'); // You'll need to add CSS for the 'pinned' class
-                    sidebar.classList.remove('open'); // Optionally close the sidebar after pinning
-                });
+            renderProviderList(currentProviders); // Initial rendering
 
-                providerListDiv.appendChild(providerItem);
+            providerSearchInput.addEventListener('input', () => {
+                const query = providerSearchInput.value.trim().toLowerCase();
+                if (query) {
+                    const filteredProviders = currentProviders.filter(provider => {
+                        // Simple fuzzy matching: check if the query is a substring of the name
+                        return provider.name.toLowerCase().includes(query);
+                        // For more advanced fuzzy matching, you could use a library like Fuse.js
+                    });
+                    renderProviderList(filteredProviders);
+                } else {
+                    renderProviderList(currentProviders); // Show all providers if the query is empty
+                }
             });
 
-            // Add a mouseleave listener to the sidebar to close the panel if the mouse moves out
+            // Add mouseleave listener to the sidebar (remains the same)
             sidebar.addEventListener('mouseleave', (event) => {
                 if (preferencesPanel && panelOpen && !event.relatedTarget?.closest('#preferencesPanel')) {
                     preferencesPanel.classList.remove('open');
@@ -75,7 +96,7 @@ async function fetchAndDisplayProviders() {
                 }
             });
 
-            // Add a mouseleave listener to the preferences panel to keep it open if the mouse is over it
+            // Add mouseleave listener to the preferences panel (remains the same)
             if (preferencesPanel) {
                 preferencesPanel.addEventListener('mouseleave', (event) => {
                     if (!event.relatedTarget?.closest('#sidebar')) {
