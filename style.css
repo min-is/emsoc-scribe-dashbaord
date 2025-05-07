@@ -241,6 +241,19 @@ h1 {
     margin-top: 10px;
 }
 
+/* INSERT THE NEW RULES HERE */
+#providerList .provider-item {
+    padding: 0.3em 0;
+    margin-bottom: 0.1em; 
+    font-size: 0.9em; 
+    cursor: pointer; 
+}
+
+#providerList .provider-item:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #a7d1fa;
+}
+
 .provider-item {
     padding: 10px 15px;
     cursor: pointer;
