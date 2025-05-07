@@ -381,11 +381,11 @@ async function fetchProviderPreferences(providerId, providerName) {
             const panelDetailsDiv = preferencesPanel.querySelector('#panelProviderDetails');
             panelDetailsDiv.innerHTML = document.getElementById('preferenceDetailsContent').innerHTML;
 
-            // Re-attach event listeners to the pin button
+            // Re-attach event listeners to the pin button AND pass the preferences
             const pinButton = preferencesPanel.querySelector('#pinPreferencesBtn');
             if (pinButton) {
                 pinButton.addEventListener('click', () => {
-                    pinCurrentPreferences(providerName);
+                    pinCurrentPreferences(providerName, preferences); // Pass the preferences here
                     // Immediately close the hover panel after pinning
                     if (preferencesPanel) {
                         preferencesPanel.classList.remove('open');
