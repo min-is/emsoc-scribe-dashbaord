@@ -174,23 +174,22 @@ h1 {
 /* Sidebar Styles */
 #sidebar {
     position: fixed;
-    top: 50px; /* Adjust to be below the toggle button (button height + some spacing) */
-    left: 15px; /* Align with the left of the toggle button */
-    width: 220px; /* Decrease the width */
-    /* height: 100%; Remove fixed height */
-    max-height: calc(100vh - 65px); /* Adjust max height based on button position */
+    top: 55px; /* Increased from 50px */
+    left: 15px;
+    width: 220px;
+    max-height: calc(100vh - 70px); /* Adjust max-height accordingly */
     background-color: rgba(37, 37, 37, 0.8);
     backdrop-filter: blur(10px);
     color: #d4d4d4;
     z-index: 20;
-    transition: left 0.3s ease-in-out, max-height 0.3s ease-in-out; /* Add transition for max-height */
-    padding-top: 10px; /* Reduce top padding */
+    transition: left 0.3s ease-in-out, max-height 0.3s ease-in-out;
+    padding-top: 10px;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
     overflow-y: auto;
     text-align: left;
-    border-radius: 8px; /* Add rounded corners */
-    border-top-left-radius: 0; /* Remove top-left rounding to align with button */
-    border-bottom-left-radius: 0; /* Remove bottom-left rounding */
+    border-radius: 8px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
 }
 
 #sidebar.open {
