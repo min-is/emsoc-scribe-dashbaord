@@ -290,7 +290,8 @@ h1 {
 }
 
 #providerList .provider-item:hover {
-    background-color: red !important; /* Use !important to ensure it overrides */
+    background-color: rgba(255, 255, 255, 0.05); /* Keep the subtle background highlight */
+    color: #d4d4d4; /* **Crucially, keep the base text color on hover** */
 }
 
 #providerList .provider-item:hover::before {
