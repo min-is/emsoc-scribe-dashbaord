@@ -9,6 +9,7 @@ let pinnedPreferences = null;
 let currentProviderId = null;
 let preferencesPanel = null; // New element for the sliding panel
 let panelOpen = false; // Track if the preferences panel is open
+let isCurrentlyPinned = false; // Flag to track if a provider is pinned
 
 // Function to toggle the sidebar
 toggleSidebarBtn.addEventListener('click', () => {
@@ -48,9 +49,12 @@ async function fetchAndDisplayProviders() {
                     const providerName = this.textContent;
                     currentProviderId = providerId;
                     fetchProviderPreferences(providerId, providerName);
-                    if (preferencesPanel) {
+                    if (preferencesPanel && !isCurrentlyPinned) { // Only open if not pinned
                         preferencesPanel.classList.add('open');
                         panelOpen = true;
+                    } else if (preferencesPanel && isCurrentlyPinned) {
+                        preferencesPanel.classList.remove('open');
+                        panelOpen = false;
                     }
                 });
 
@@ -163,26 +167,31 @@ async function fetchProviderPreferences(providerId, providerName) {
                     }
                 });
             }
-            preferencesPanel.innerHTML = `<h3>${providerName} Preferences</h3><button id="pinPreferencesBtn">Pin Provider</button><div id="panelProviderDetails"></div>`;
-            const panelDetailsDiv = preferencesPanel.querySelector('#panelProviderDetails');
-            panelDetailsDiv.innerHTML = document.getElementById('preferenceDetailsContent').innerHTML;
-
-            // Re-attach event listeners to the pin button
-            const pinButton = preferencesPanel.querySelector('#pinPreferencesBtn');
-            if (pinButton) {
-                pinButton.addEventListener('click', () => {
-                    pinCurrentPreferences(providerName);
-                    // Immediately close the hover panel after pinning
-                    if (preferencesPanel) {
-                        preferencesPanel.classList.remove('open');
-                        panelOpen = false;
-                    }
-                });
+            const pinButtonExists = preferencesPanel.querySelector('#pinPreferencesBtn');
+            if (!pinButtonExists) {
+                preferencesPanel.innerHTML = `<h3>${providerName} Preferences</h3><button id="pinPreferencesBtn">Pin Provider</button><div id="panelProviderDetails"></div>`;
+                // Re-attach event listeners to the pin button
+                const pinButton = preferencesPanel.querySelector('#pinPreferencesBtn');
+                if (pinButton) {
+                    pinButton.addEventListener('click', () => {
+                        pinCurrentPreferences(providerName);
+                        // Immediately close the hover panel after pinning
+                        if (preferencesPanel) {
+                            preferencesPanel.classList.remove('open');
+                            panelOpen = false;
+                        }
+                    });
+                }
             }
+            const panelDetailsDiv = preferencesPanel.querySelector('#panelProviderDetails');
+            if (panelDetailsDiv) {
+                panelDetailsDiv.innerHTML = document.getElementById('preferenceDetailsContent').innerHTML;
+            }
+
 
             currentProviderId = providerId;
 
-            if (pinnedPreferences && pinnedPreferences.dataset.providerId !== providerId) {
+            if (pinnedPreferences && pinnedPreferences.dataset.providerId !== providerId && isCurrentlyPinned) {
                 const titleElement = pinnedPreferences.querySelector('h3');
                 if (titleElement) titleElement.textContent = `${providerName} Preferences`;
                 const detailsContainer = pinnedPreferences.querySelector('.pinned-details');
@@ -191,7 +200,7 @@ async function fetchProviderPreferences(providerId, providerName) {
                 pinnedPreferences.style.display = 'block'; // Ensure it's visible immediately
                 setupUnpinButton();
                 makeDraggable(pinnedPreferences);
-            } else if (!pinnedPreferences) {
+            } else if (!pinnedPreferences && isCurrentlyPinned) {
                 // If no provider is pinned yet
                 // (The pinning logic will handle creation and immediate display)
             }
@@ -221,6 +230,7 @@ async function fetchProviderPreferences(providerId, providerName) {
 }
 
 function pinCurrentPreferences(providerName) {
+    isCurrentlyPinned = true;
     if (!pinnedPreferences) {
         pinnedPreferences = document.createElement('div');
         pinnedPreferences.id = 'pinnedPreferences';
@@ -271,6 +281,7 @@ function setupUnpinButton() {
             if (pinnedPreferences) {
                 pinnedPreferences.remove();
                 pinnedPreferences = null;
+                isCurrentlyPinned = false;
             }
         });
     }
