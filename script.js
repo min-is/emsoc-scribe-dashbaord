@@ -44,18 +44,46 @@ async function fetchAndDisplayProviders() {
                 providerItem.textContent = provider.name;
                 providerItem.dataset.providerId = provider.id;
 
+                providerItem.addEventListener('mouseenter', function() {
+                    const providerId = this.dataset.providerId;
+                    const providerName = this.textContent;
+                    currentProviderId = providerId;
+                    fetchProviderPreferencesForPreview(providerId, providerName);
+                    if (preferencesPanel) {
+                        preferencesPanel.classList.add('open');
+                        panelOpen = true;
+                    }
+                });
+
                 providerItem.addEventListener('click', function() {
                     const providerId = this.dataset.providerId;
                     const providerName = this.textContent;
                     currentProviderId = providerId;
                     fetchProviderPreferencesAndPin(providerId, providerName);
-                    // Optionally, visually indicate the pinned provider
                     this.classList.add('pinned'); // You'll need to add CSS for the 'pinned' class
                     sidebar.classList.remove('open'); // Optionally close the sidebar after pinning
                 });
 
                 providerListDiv.appendChild(providerItem);
             });
+
+            // Add a mouseleave listener to the sidebar to close the panel if the mouse moves out
+            sidebar.addEventListener('mouseleave', (event) => {
+                if (preferencesPanel && panelOpen && !event.relatedTarget?.closest('#preferencesPanel')) {
+                    preferencesPanel.classList.remove('open');
+                    panelOpen = false;
+                }
+            });
+
+            // Add a mouseleave listener to the preferences panel to keep it open if the mouse is over it
+            if (preferencesPanel) {
+                preferencesPanel.addEventListener('mouseleave', (event) => {
+                    if (!event.relatedTarget?.closest('#sidebar')) {
+                        preferencesPanel.classList.remove('open');
+                        panelOpen = false;
+                    }
+                });
+            }
 
         } else {
             console.error('Error fetching providers:', response.status);
@@ -65,6 +93,94 @@ async function fetchAndDisplayProviders() {
         console.error('Error fetching providers:', error);
         providerListDiv.innerHTML = '<p class="error">Failed to load providers.</p>';
     }
+}
+
+async function fetchProviderPreferencesForPreview(providerId, providerName) {
+    try {
+        const response = await fetch(`/provider/${providerId}`);
+        if (response.ok) {
+            const preferences = await response.json();
+            displayProviderPreferencesInPanel(preferences, providerName);
+
+            if (!preferencesPanel) {
+                preferencesPanel = document.createElement('div');
+                preferencesPanel.id = 'preferencesPanel';
+                document.body.appendChild(preferencesPanel);
+                preferencesPanel.addEventListener('mouseleave', (event) => {
+                    if (panelOpen && !event.relatedTarget?.closest('#sidebar')) {
+                        preferencesPanel.classList.remove('open');
+                        panelOpen = false;
+                    }
+                });
+            }
+            preferencesPanel.innerHTML = `<h3>${providerName} Preferences</h3><div id="panelProviderDetails"></div>`; // Removed the pin button here
+            const panelDetailsDiv = preferencesPanel.querySelector('#panelProviderDetails');
+            panelDetailsDiv.innerHTML = generatePreferenceDetailsHTML(preferences); // Helper function for HTML
+        } else {
+            console.error(`Error fetching preferences for provider ${providerId}:`, response.status);
+            if (!preferencesPanel) {
+                preferencesPanel = document.createElement('div');
+                preferencesPanel.id = 'preferencesPanel';
+                document.body.appendChild(preferencesPanel);
+            }
+            preferencesPanel.innerHTML = `<p class="error">Failed to load preferences for ${providerName}.</p>`;
+            if (panelOpen) preferencesPanel.classList.remove('open');
+            panelOpen = false;
+        }
+    } catch (error) {
+        console.error(`Error fetching preferences for provider ${providerId}:`, error);
+        if (!preferencesPanel) {
+            preferencesPanel = document.createElement('div');
+            preferencesPanel.id = 'preferencesPanel';
+            document.body.appendChild(preferencesPanel);
+        }
+        preferencesPanel.innerHTML = `<p class="error">Failed to load preferences for ${providerName}.</p>`;
+        if (panelOpen) preferencesPanel.classList.remove('open');
+        panelOpen = false;
+    }
+}
+
+function generatePreferenceDetailsHTML(preferences) {
+    let html = '';
+    const displayOrder = ['note_pref', 'hpi_elements', 'physical_exam', 'mdm', 'other_pref', 'speed'];
+    const displayedCategories = new Set();
+
+    const displayCategory = (categoryKey, preferenceData) => {
+        let formattedCategory = categoryKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        if (categoryKey === 'hpi_elements') formattedCategory = 'HPI Elements';
+        else if (categoryKey === 'mdm') formattedCategory = 'MDM/ED Course';
+        else if (categoryKey === 'note_pref') formattedCategory = 'General Preferences';
+        else if (categoryKey === 'other_pref') formattedCategory = 'Other Preferences';
+        else if (categoryKey === 'physical_exam') formattedCategory = 'Physical Exam';
+        else if (categoryKey === 'speed') formattedCategory = 'Speed/Difficulty';
+
+        html += `<h4 class="preference-subcategory">${formattedCategory}</h4>`;
+        const data = preferenceData.hasOwnProperty(categoryKey) ? preferenceData[categoryKey] : null;
+
+        if (Array.isArray(data) && data.length > 0) {
+            data.forEach(preference => {
+                html += `<p class="preference-item-detail">${preference}</p>`;
+            });
+        } else if (typeof data === 'string') {
+            html += `<p class="preference-item-detail">${data}</p>`;
+        } else {
+            html += `<p class="preference-item-detail no-preference">No specific preferences.</p>`;
+        }
+    };
+
+    displayOrder.forEach(categoryKey => {
+        if (preferences.hasOwnProperty(categoryKey)) {
+            displayCategory(categoryKey, preferences);
+            displayedCategories.add(categoryKey);
+        }
+    });
+
+    for (const categoryKey in preferences) {
+        if (preferences.hasOwnProperty(categoryKey) && !displayedCategories.has(categoryKey)) {
+            displayCategory(categoryKey, preferences);
+        }
+    }
+    return html;
 }
 
 async function fetchProviderPreferencesAndPin(providerId, providerName) {
@@ -97,22 +213,14 @@ function pinCurrentPreferences(providerName, preferences) {
         currentlyPinnedProviderName = providerName;
         const detailsContainer = pinnedPreferences.querySelector('.pinned-details');
         if (detailsContainer) {
-            // Generate and append the preference details directly
-            const preferenceDetailsContentDiv = document.createElement('div');
-            preferenceDetailsContentDiv.id = 'preferenceDetailsContent';
-            detailsContainer.appendChild(preferenceDetailsContentDiv);
-            displayProviderPreferences(preferences, preferenceDetailsContentDiv); // Use the provided preferences
+            detailsContainer.innerHTML = generatePreferenceDetailsHTML(preferences);
         }
     } else if (pinnedPreferences && pinnedPreferences.dataset.providerId !== currentProviderId) {
         const titleElement = pinnedPreferences.querySelector('h3');
         if (titleElement) titleElement.textContent = `${providerName} Preferences`;
         const detailsContainer = pinnedPreferences.querySelector('.pinned-details');
         if (detailsContainer) {
-            detailsContainer.innerHTML = ''; // Clear existing details
-            const preferenceDetailsContentDiv = document.createElement('div');
-            preferenceDetailsContentDiv.id = 'preferenceDetailsContent';
-            detailsContainer.appendChild(preferenceDetailsContentDiv);
-            displayProviderPreferences(preferences, preferenceDetailsContentDiv); // Use the provided preferences
+            detailsContainer.innerHTML = generatePreferenceDetailsHTML(preferences);
         }
         pinnedPreferences.dataset.providerId = currentProviderId;
         pinnedPreferences.style.display = 'block';
