@@ -85,7 +85,7 @@
     },
     {
         "id": "provider8",
-        "name": "Michael Merjanian, MD MMM",
+        "name": "Michael Merjanian, MD",
         "preferences": {
             "note_pref": ["You will open the note using his template (.MERJANIAN2024). If he chooese to use DAX, use the .EMSOCDAX. He also uses his own template for pass ons (.MERJANIANPASS). His preferred title is: Michael Merjanian, MD MMM."],
             "hpi_elements": ["No specific HPI preferences."],
