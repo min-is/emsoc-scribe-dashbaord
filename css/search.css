@@ -1,7 +1,7 @@
 #searchInput {
     font-family: 'Calibre', 'Arial', sans-serif;
     width: 100%;
-    position: absolute;
+    position: fixed;
     bottom: 315px;
     left: 290px;
     padding: 10px;
@@ -62,7 +62,7 @@
 }
 
 #suggestions {
-    position: absolute;
+    position: fixed;
     top: -260px; /* Align top with searchInput's bottom + spacing */
     left: 335px;          /* Align left with searchInput's left */
     right: auto;           /* Remove the right: 0; */
