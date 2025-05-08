@@ -63,7 +63,7 @@
 
 #suggestions {
     position: fixed;
-    top: calc(20px + 10px + 20px); /* Incorrect calculation */
+    top: 60px; /* Incorrect calculation */
     right: 20px;
     left: auto;
     width: 300px;
