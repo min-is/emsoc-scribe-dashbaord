@@ -63,11 +63,10 @@
 
 #suggestions {
     position: fixed;
-    top: -260px; /* Align top with searchInput's bottom + spacing */
-    left: 335px;          /* Align left with searchInput's left */
-    right: auto;           /* Remove the right: 0; */
-    width: 100%;          /* Make it the same width as the search input (if it's 100%) */
-    /* If searchInput has a fixed width, use that here instead, e.g., width: 300px; */
+    top: calc(20px + 10px + 20px); /* Incorrect calculation */
+    right: 20px;
+    left: auto;
+    width: 300px;
     border: none;
     border-radius: 8px;
     background-color: rgba(37, 37, 37, 0.95);
@@ -80,6 +79,10 @@
     transition: opacity 0.3s ease-in-out;
     max-height: 200px;
     overflow-y: auto;
+}
+
+#suggestions.show {
+    opacity: 1;
 }
 
 #suggestions.show {
