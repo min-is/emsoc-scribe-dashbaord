@@ -72,6 +72,7 @@ def suggestions():
         if best_alt_ratio > 0 and starts_with_query(best_alt_match, query):
             best_alt_ratio += 20
 
+        # Store both name and best alt match and their ratios
         if best_alt_ratio > name_ratio:
             if best_alt_ratio > 50:
                 for alt in alt_names:
@@ -81,6 +82,7 @@ def suggestions():
         elif name_ratio > 50:
             suggestions_with_matches.append((name, name, name_ratio))
 
+    # Sort by ratio putting highest first
     suggestions_with_matches.sort(key=lambda item: item[2], reverse=True)
     top_suggestions = [(item[0], item[1]) for item in suggestions_with_matches[:5]]
     return jsonify(top_suggestions)
@@ -101,11 +103,13 @@ def get_medication_details(name):
     else:
         return jsonify({"error": "Medication not found"}), 404
 
+# New API endpoint to get the list of providers
 @app.route('/providers')
 def get_providers():
     providers = [{"id": p['id'], "name": p['name']} for p in provider_list]
     return jsonify(providers)
 
+# New API endpoint to get the preferences for a specific provider
 @app.route('/provider/<provider_id>')
 def get_provider_details(provider_id):
     if provider_id in provider_data:

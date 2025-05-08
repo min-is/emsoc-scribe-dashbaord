@@ -4,64 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scribe Dashboard</title>
-    <link rel="stylesheet" href="css/base.css">
-    <link rel="stylesheet" href="css/search.css">
-    <link rel="stylesheet" href="css/sidebar.css">
-    <link rel="stylesheet" href="css/pinned-preferences.css">
-    <link rel="stylesheet" href="css/preferences-panel.css">
-    <link rel="stylesheet" href="css/canvas-bg.css">
-    <script src="js/utils.js"></script>
-    <script src="js/api-service.js"></script>
-    <script src="js/dom-manipulation.js"></script>
-    <script src="js/event-listeners.js"></script>
-    <script src="js/main.js"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <canvas id="backgroundCanvas"></canvas>
     <button id="toggleSidebarBtn">Providers</button>
     <div id="sidebar">
-        <div id="providerListSection">
-            <div id="providerSearch">
-                <input type="text" id="providerSearchInput" placeholder="Search Providers...">
+        <div id="providerSearch">
+            <input type="text" id="providerSearchInput" placeholder="Search Providers...">
+        </div>
+        <div id="providerList">
             </div>
-            <div id="providerList">
-                </div>
+    </div>
+        <div id="providerPreferencesSection">
+            <h3>Provider Preferences</h3>
+            <div id="providerDetails">
+            </div>
+            <button id="pinPreferencesBtn">Pin Provider</button>
+            <button onclick="document.getElementById('providerPreferencesSection').style.display='none';">Close Preferences</button>
         </div>
     </div>
-
     <div class="container">
-        <h1>Scribe Dashboard</h1>
-        <div id="searchContainer">
-            <input type="text" id="searchInput" placeholder="Search Medications...">
-            <div id="suggestions" class="suggestions"></div>
-        </div>
-        <div id="results" class="results">
-            </div>
-        <div id="providerDetails">
-            </div>
+        <h1>Medication Lookup</h1>
+        <input type="text" id="searchInput" placeholder="Enter medication name to the best of your ability...">
+        <div id="suggestions"></div>
+        <div id="results"></div>
     </div>
-
-    <div id="pinnedPreferencesContainer">
-        </div>
-
-    <canvas id="bgCanvas"></canvas>
-
+    <script src="script.js"></script>
     <script>
         const canvas = document.getElementById('backgroundCanvas');
         const ctx = canvas.getContext('2d');
 
-        // obtain device pixel ratio
+        // Get the device pixel ratio
         const dpr = window.devicePixelRatio || 1;
 
-        // adjust canvas
+        // Set the 'real' size of the canvas
         const desiredWidth = window.innerWidth;
         const desiredHeight = window.innerHeight;
         canvas.width = desiredWidth * dpr;
         canvas.height = desiredHeight * dpr;
 
-        // scaling
+        // Scale the context
         ctx.scale(dpr, dpr);
 
+        // Set the displayed size using CSS properties
         canvas.style.width = `${desiredWidth}px`;
         canvas.style.height = `${desiredHeight}px`;
 
@@ -71,7 +57,7 @@
         const mouse = {
             x: null,
             y: null,
-            radius: 150
+            radius: 150 // mouse radius
         };
 
         window.addEventListener('resize', () => {
@@ -193,16 +179,16 @@
             particlesArray.length = 0;
             for (let i = 0; i < numberOfParticles; i++) {
                 const size = (Math.random() * 3) + 1;
-                const x = Math.random() * (canvas.width / dpr - size * 2) + size;
-                const y = Math.random() * (canvas.height / dpr - size * 2) + size;
+                const x = Math.random() * (canvas.width / dpr - size * 2) + size; // Divide by dpr here
+                const y = Math.random() * (canvas.height / dpr - size * 2) + size; // Divide by dpr here
                 const vx = (Math.random() - 0.5) * 0.5;
                 const vy = (Math.random() - 0.5) * 0.5;
-                particlesArray.push(new Particle(x, y, size, 'rgba(255, 255, 255, 0.8)', vx, vy));
+                particlesArray.push(new Particle(x, y, size, 'rgba(255, 255, 255, 0.8)', vx, vy)); // white + transparent
             }
         }
 
         function animate() {
-            ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
+            ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr); // Divide by dpr here
             for (let i = 0; i < particlesArray.length; i++) {
                 particlesArray[i].update();
             }
