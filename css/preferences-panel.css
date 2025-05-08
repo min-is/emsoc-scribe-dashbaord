@@ -1,0 +1,206 @@
+#providerPreferencesSection h3 {
+    color: #ffab40; /* Peach-orange color for "Provider Preferences" */
+    margin-top: 0;
+    margin-bottom: 5px; /* Reduced margin-bottom */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 10px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+#providerPreferencesSection button {
+    background: rgba(50, 50, 50, 0.5);
+    color: #d4d4d4;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Calibre', 'Arial', sans-serif;
+    font-size: 16px;
+    margin-top: 15px;
+    transition: background-color 0.2s ease-in-out;
+}
+
+#providerPreferencesSection button:hover {
+    background-color: rgba(70, 70, 70, 0.7);
+}
+
+/* Adjust padding for providerDetails to align with the list */
+#providerDetails {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+#providerDetails h4 {
+    color: #eee;
+    margin-top: 15px;
+    margin-bottom: 2px;
+    font-size: 16px;
+    font-weight: bold;
+    padding-left: 15px; /* Align with list items */
+    padding-right: 15px; /* Align with list items */
+}
+
+#providerDetails h4 + p.preference-item,
+#providerDetails h4 + p:not(.preference-item) {
+    margin-top: 2px;
+    margin-bottom: 8px;
+    padding-left: 15px; /* Align with list items */
+    padding-right: 15px; /* Align with list items */
+}
+
+.preference-item {
+    margin-bottom: 4px;
+    font-size: 16px;
+    color: #ccc;
+    line-height: 1.4;
+    padding-left: 15px; /* Align with list items */
+    padding-right: 15px; /* Align with list items */
+}
+
+.preference-item strong {
+    color: #eee;
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+#preferencesPanel {
+    position: fixed;
+    top: 70px;
+    left: 280px;
+    width: 300px;
+    max-height: calc(100vh - 90px);
+    background-color: rgba(37, 37, 37, 0.2);
+    backdrop-filter: blur(10px);
+    color: #d4d4d4;
+    z-index: 21;
+    transition: opacity 0.2s ease-in-out;
+    padding: 10px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+    overflow-y: auto;
+    opacity: 0;
+    pointer-events: none;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+
+#preferencesPanel.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#preferencesPanel h3 {
+    color: #d4d4d4;
+    margin-top: 5px;
+    margin-bottom: 1px;
+    border-bottom: 1px solid #d4d4d4;
+    padding-bottom: 10px;
+    font-family: 'Calibre', 'Arial', sans-serif;
+    font-size: 18px;
+    font-weight: normal;
+    text-align: left;
+    width: 100%;
+}
+
+#preferencesPanel h4 {
+    color: #eee;
+    margin-top: 5px;
+    margin-bottom: 1px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+#preferencesPanel p.preference-item {
+    margin-bottom: 6px;
+    font-size: 14px;
+    color: #ccc;
+    line-height: 1.3;
+}
+
+#preferencesPanel button#pinPreferencesBtn {
+    background: rgba(50, 50, 50, 0.5);
+    color: #d4d4d4;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Calibre', 'Arial', sans-serif;
+    font-size: 14px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    margin-right: auto;
+    align-self: flex-end;
+}
+
+#preferencesPanel button#pinPreferencesBtn:hover {
+    background-color: rgba(70, 70, 70, 0.7);
+}
+
+#preferencesPanel #panelProviderDetails {
+    text-align: left;
+    margin-top: 5px;
+    width: 100%;
+    background-color: rgba(37, 37, 37, 0.2);
+}
+
+#preferencesPanel h4 {
+    color: #eee;
+    margin-top: 8px;
+    margin-bottom: 3px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+
+
+#preferencesPanel h3.iridescent-effect {
+    background: none !important;
+    -webkit-background-clip: initial !important;
+    background-clip: initial !important;
+    color: white !important;
+    animation: softGlow 2s ease-in-out infinite alternate;
+    background-size: auto !important;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.6);
+}
+
+@keyframes softGlow {
+    0% {
+        text-shadow: 0 0 7px rgba(255, 255, 255, 0.7);
+    }
+    100% {
+        text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+    }
+}
+
+#preferencesPanel h4 + p.preference-item,
+#preferencesPanel h4 + p:not(.preference-item) {
+    margin-top: 2px;
+    margin-bottom: 6px;
+}
+
+#preferencesPanel p.preference-item {
+    margin-bottom: 6px;
+    font-size: 14px;
+    color: #ccc;
+    line-height: 1.3;
+}
+
+#preferencesPanel .preference-subcategory {
+    margin-bottom: 0.5em;
+    margin-top: 1em;
+}
+
+#preferencesPanel .preference-item-detail {
+    margin-bottom: 0.2em;
+}
+
+#preferencesPanel .preference-item-detail.no-preference {
+    font-style: italic;
+}
+
+#providerPreferencesSection {
+    display: none !important;
+}

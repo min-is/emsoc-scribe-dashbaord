@@ -1,0 +1,171 @@
+.pinned-box {
+    position: fixed;
+    top: 100px;
+    left: 200px;
+    background-color: rgba(37, 37, 37, 0.2);
+    backdrop-filter: blur(10px);
+    color: #d4d4d4;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    padding: 10px 18px 10px 10px;
+    z-index: 40;
+    cursor: grab;
+    width: 300px;
+    max-height: 80vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    border-bottom: none;
+}
+
+.pinned-box .pinned-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #f0f0f0;
+    margin-bottom: 10px;
+    padding: 5px 10px 10px 10px;
+    font-size: 1.1em;
+    font-weight: normal;
+    background-color: transparent;
+    border-radius: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.pinned-box.pinned {
+    display: block;
+    display: flex;
+}
+
+.pinned-box .pinned-header h3 {
+    margin: 0;
+    font-weight: normal;
+    color: white !important;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
+    animation: softGlowPinned 2s ease-in-out infinite alternate;
+}
+
+.pinned-box .pinned-header h3::before {
+    content: none !important;
+    background-image: none !important;
+    background-clip: initial !important;
+    -webkit-background-clip: initial !important;
+    color: inherit !important;
+    opacity: 1 !important;
+    animation: none !important;
+}
+
+.pinned-box .pinned-details h4:first-child {
+    margin-top: 0;
+    margin-bottom: auto;
+}
+
+.pinned-box .pinned-details h4 {
+    color: #eee;
+    margin-top: 3px;
+    margin-bottom: 2px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+
+.pinned-box .pinned-details > h4,
+.pinned-box .pinned-details > p.preference-item,
+.pinned-box .pinned-details > p:not(.preference-item) {
+    margin-left: 10px;
+    margin-bottom: 4px;
+}
+
+.pinned-box .pinned-details p.preference-item {
+    margin-bottom: 4px;
+    font-size: 16px;
+    color: #ccc;
+    line-height: 1.4;
+}
+
+.pinned-box .pinned-details p.preference-item strong {
+    color: #eee;
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+
+.pinned-box #unpinPreferencesBtn:hover {
+    background-color: rgba(70, 70, 70, 0.7);
+}
+
+#unpinIcon {
+    cursor: pointer;
+    margin-left: 10px;
+    font-size: 0.8em;
+    opacity: 0.7;
+    transition: opacity 0.2s ease-in-out;
+}
+
+#unpinIcon:hover {
+    opacity: 1;
+}
+
+#providerDetails #pinPreferencesBtn {
+    background: rgba(70, 70, 70, 0.5);
+    color: #d4d4d4;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Calibre', 'Arial', sans-serif;
+    font-size: 16px;
+    margin-top: 0;
+    margin-bottom: 10px;
+    transition: background-color 0.2s ease-in-out;
+    align-self: flex-end;
+    width: auto;
+    display: block;
+    text-align: right;
+}
+
+#providerDetails #pinPreferencesBtn:hover {
+    background-color: rgba(90, 90, 90, 0.7);
+}
+
+#pinnedPreferences .preference-subcategory {
+    margin-bottom: 0.5em;
+    margin-top: 1em;
+}
+
+#pinnedPreferences .preference-item-detail {
+    margin-bottom: 0.2em;
+}
+
+#pinnedPreferences .preference-item-detail.no-preference {
+    font-style: italic;
+}
+
+
+#pinnedPreferences .pinned-details p.preference-item-detail {
+    margin-top: 1px !important;
+    margin-bottom: 10px !important;
+    line-height: 1.2;
+}
+
+#pinnedPreferences .pinned-details p.preference-item-detail + p.preference-item-detail {
+    margin-top: 1px !important;
+    margin-bottom: 1px !important;
+}
+
+#pinnedPreferences .pinned-details p.preference-item-detail.no-preference {
+    margin-top: 1px !important;
+    margin-bottom: 10px !important;
+}
+
+
+@keyframes softGlowPinned {
+    0% {
+        text-shadow: 0 0 7px rgba(255, 255, 255, 0.7);
+    }
+    100% {
+        text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+    }
+}
