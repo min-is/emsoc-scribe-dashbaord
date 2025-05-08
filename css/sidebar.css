@@ -73,6 +73,7 @@
     z-index: 1;
     transition: color 0.3s ease, background-color 0.2s ease-in-out;
     line-height: 1.0;
+    will-change: transform;
 }
 
 #providerList .provider-item::before {
@@ -107,6 +108,7 @@
     font-style: inherit;
     text-align: inherit;
     text-transform: inherit;
+    will-change: transform, opacity, background-position;
 }
 
 #providerList .provider-item:hover::before {

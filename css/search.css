@@ -1,6 +1,9 @@
 #searchInput {
     font-family: 'Calibre', 'Arial', sans-serif;
     width: 100%;
+    position: absolute;
+    bottom: 474px;
+    left: 535px;
     padding: 15px;
     margin-bottom: 0;
     border: none;
@@ -8,10 +11,46 @@
     box-sizing: border-box;
     font-size: 20px;
     outline: none;
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(37, 37, 37, 0.95);
+    backdrop-filter: blur(2px);
     color: #f0f0f0;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
     transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+#searchInput:focus {
+    background-color: rgba(37, 37, 37, 0.95);
+    backdrop-filter: blur(2px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    border-color: transparent;
+}
+
+#searchContainer #searchInput::placeholder {
+    font-family: 'Calibre', 'Arial', sans-serif;
+    color: #aaa; /* Keep a visible base color */
+    background: linear-gradient(
+        90deg,
+        #89bdd3, /* A softer blue */
+        #e0b0b0, /* A softer red */
+        #f5deb3, /* A softer yellow */
+        #e0eee0, /* A softer green */
+        #89bdd3    /* Back to the first color */
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent; /* Make the actual text transparent to show the gradient */
+    background-size: 300% 100%; /* Adjust size for slower animation */
+    animation: subtle-shimmer 10s linear infinite; /* Animation runs by default */
+    opacity: 1; /* Reduce intensity */
+    font-style: normal;
+    font-weight: normal;
+    font-size: 20px;
+}
+
+
+@keyframes subtle-shimmer {
+    0% { background-position: 0 0; }
+    100% { background-position: 100% 0; } /* Adjust end position */
 }
 
 #providerSearchInput::placeholder {
@@ -22,20 +61,17 @@
     font-size: 14px;
 }
 
-#searchInput:focus {
-    background-color: rgba(255, 255, 255, 0.2);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    border-color: transparent;
-}
-
 #suggestions {
     position: absolute;
-    top: calc(100% + 5px);
-    left: 0;
-    right: 0;
+    top: -420px; /* Align top with searchInput's bottom + spacing */
+    left: 535px;          /* Align left with searchInput's left */
+    right: auto;           /* Remove the right: 0; */
+    width: 100%;          /* Make it the same width as the search input (if it's 100%) */
+    /* If searchInput has a fixed width, use that here instead, e.g., width: 300px; */
     border: none;
     border-radius: 8px;
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: rgba(37, 37, 37, 0.95);
+    backdrop-filter: blur(2px);
     margin-bottom: 0;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
     text-align: left;

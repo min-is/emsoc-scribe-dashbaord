@@ -31,11 +31,8 @@ body {
 }
 
 .container {
-    background-color: rgba(37, 37, 37, 0.3);
-    backdrop-filter: blur(15px);
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     text-align: center;
     width: 60%;
     max-width: 500px;
