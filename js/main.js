@@ -14,6 +14,16 @@ const mouse = {
 };
 let canvas, ctx, dpr;
 
+function debounce(func, delay) {
+    let timeoutId;
+    return function(...args) {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+            func.apply(this, args);
+        }, delay);
+    };
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('searchInput');
     const suggestionsDiv = document.getElementById('suggestions');
@@ -29,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
     particlesArray = initParticles(canvas, ctx, dpr, numberOfParticles);
     animateParticles();
 
-    window.addEventListener('resize', () => {
+    const handleResize = () => {
         const desiredWidth = window.innerWidth;
         const desiredHeight = window.innerHeight;
         canvas.width = desiredWidth * dpr;
@@ -38,7 +48,9 @@ document.addEventListener('DOMContentLoaded', () => {
         canvas.style.height = `${desiredHeight}px`;
         ctx.scale(dpr, dpr);
         particlesArray = initParticles(canvas, ctx, dpr, numberOfParticles);
-    });
+    };
+
+    window.addEventListener('resize', debounce(handleResize, 100)); // Debounced listener
 
     window.addEventListener('mousemove', (event) => {
         mouse.x = event.clientX;
