@@ -63,8 +63,8 @@
 
 #suggestions {
     position: absolute;
-    top: -420px; /* Align top with searchInput's bottom + spacing */
-    left: 535px;          /* Align left with searchInput's left */
+    top: -320px; /* Align top with searchInput's bottom + spacing */
+    left: 435px;          /* Align left with searchInput's left */
     right: auto;           /* Remove the right: 0; */
     width: 100%;          /* Make it the same width as the search input (if it's 100%) */
     /* If searchInput has a fixed width, use that here instead, e.g., width: 300px; */
