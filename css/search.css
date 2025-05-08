@@ -1,9 +1,9 @@
 #searchInput {
     font-family: 'Calibre', 'Arial', sans-serif;
-    width: 100%;
+    width: 300px;
     position: fixed;
-    bottom: 315px;
-    left: 290px;
+    top: 20px;
+    right: 20px;
     padding: 10px;
     margin-bottom: 0;
     border: none;
