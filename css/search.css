@@ -10,7 +10,7 @@
     border: none;
     border-radius: 12px;
     box-sizing: border-box;
-    font-size: 16px;
+    font-size: 12px;
     caret-color: rgba(255, 255, 255, 0.51);
     outline: none;
     background-color: rgba(37, 37, 37, 0.95);
@@ -29,21 +29,21 @@
 
 #searchContainer #searchInput::placeholder {
     font-family: 'Calibre', 'Arial', sans-serif;
-    color: #aaa; /* Keep a visible base color */
+    color: #aaa;
     background: linear-gradient(
         90deg,
-        #89bdd3, /* A softer blue */
-        #e0b0b0, /* A softer red */
-        #f5deb3, /* A softer yellow */
-        #e0eee0, /* A softer green */
-        #89bdd3    /* Back to the first color */
+        #89bdd3,
+        #e0b0b0,
+        #f5deb3,
+        #e0eee0,
+        #89bdd3
     );
     -webkit-background-clip: text;
     background-clip: text;
-    color: transparent; /* Make the actual text transparent to show the gradient */
-    background-size: 400% 100%; /* Adjust size for slower animation */
-    animation: subtle-shimmer 15s linear infinite; /* Animation runs by default */
-    opacity: 1; /* Reduce intensity */
+    color: transparent;
+    background-size: 400% 100%;
+    animation: subtle-shimmer 15s linear infinite;
+    opacity: 1;
     font-style: normal;
     font-size: 18px;
     font-weight: normal;
@@ -54,7 +54,7 @@
 
 @keyframes subtle-shimmer {
     0% { background-position: 0 0; }
-    100% { background-position: 100% 0; } /* Adjust end position */
+    100% { background-position: 100% 0; }
 }
 
 #providerSearchInput::placeholder {
@@ -67,7 +67,7 @@
 
 #suggestions {
     position: fixed;
-    top: 80px; /* Incorrect calculation */
+    top: 80px;
     width: 440px;
     right: 30px;
     border-radius: 8px;
