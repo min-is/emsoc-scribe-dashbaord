@@ -5,7 +5,7 @@ function generatePreferenceDetailsHTML(preferences) {
 
     const displayCategory = (categoryKey, preferenceData) => {
         let formattedCategory = categoryKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-        if (categoryKey === 'hpi_elements') formattedCategory = 'HPI Elements';
+        if (categoryKey === 'hpi_elements') formattedCategory = 'HPI';
         else if (categoryKey === 'mdm') formattedCategory = 'MDM/ED Course';
         else if (categoryKey === 'note_pref') formattedCategory = 'General Preferences';
         else if (categoryKey === 'other_pref') formattedCategory = 'Other Preferences';
@@ -139,7 +139,7 @@ function displayProviderPreferences(preferences, container) {
 
     function displayCategory(categoryKey, preferenceData, container) {
         let formattedCategory = categoryKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-        if (categoryKey === 'hpi_elements') formattedCategory = 'HPI Elements';
+        if (categoryKey === 'hpi_elements') formattedCategory = 'HPI';
         else if (categoryKey === 'mdm') formattedCategory = 'MDM/ED Course';
         else if (categoryKey === 'note_pref') formattedCategory = 'General Preferences';
         else if (categoryKey === 'other_pref') formattedCategory = 'Other Preferences';
