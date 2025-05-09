@@ -2,14 +2,16 @@
     font-family: 'Calibre', 'Arial', sans-serif;
     width: 440px;
     position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 10px;
+    top: 17px;
+    right: 30px;
+    padding: 15px;
+    padding-left: 20px;
     margin-bottom: 0;
     border: none;
-    border-radius: 8px;
+    border-radius: 12px;
     box-sizing: border-box;
-    font-size: 20px;
+    font-size: 18px;
+    caret-color: rgba(255, 255, 255, 0.51);
     outline: none;
     background-color: rgba(37, 37, 37, 0.95);
     backdrop-filter: blur(2px);
@@ -43,8 +45,10 @@
     animation: subtle-shimmer 15s linear infinite; /* Animation runs by default */
     opacity: 1; /* Reduce intensity */
     font-style: normal;
+    font-size: 18px;
     font-weight: normal;
     font-size: 20px;
+    text-indent: 8px;
 }
 
 
@@ -64,7 +68,7 @@
 #suggestions {
     position: fixed;
     top: 80px; /* Incorrect calculation */
-    right: 20px;
+    right: 30px;
     left: auto;
     width: 440px;
     border: none;
@@ -103,7 +107,12 @@
 }
 
 #results {
-    margin-top: 20px;
+    position: fixed; /* Use fixed positioning */
+    top: auto;      /* Reset top */
+    left: auto;     /* Align with the right of the search bar */
+    right: auto;    /* Reset right */
+    width: 300px;   /* Match the width of the search bar */
+    margin-top: 10px; /* Add some space between suggestions and results */
     padding: 20px;
     border: none;
     border-radius: 8px;
@@ -125,6 +134,9 @@
     opacity: 1;
     transform: translateY(0);
     display: block;
+    /* Remove any top/left that might have been set by dragging */
+    top: auto !important;
+    left: 20px !important;
 }
 
 #results h3 {
