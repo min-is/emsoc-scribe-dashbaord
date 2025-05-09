@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
         resultsDiv.appendChild(descriptionParagraph);
         if (medication.alternate_names && medication.alternate_names.length > 0) {
             const alternateNamesParagraph = document.createElement('p');
-            alternateNamesParagraph.innerHTML = `<strong>Also known as:</strong> <span class="detail-label">${medication.alternate_names.join(', ')}</span>`;
+            alternateNamesParagraph.innerHTML = `<strong>Alternative names:</strong> <span class="detail-label">${medication.alternate_names.join(', ')}</span>`;
             resultsDiv.appendChild(alternateNamesParagraph);
         }
         const mechanismHeadline = document.createElement('h4');

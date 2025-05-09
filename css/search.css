@@ -68,10 +68,8 @@
 #suggestions {
     position: fixed;
     top: 80px; /* Incorrect calculation */
-    right: 30px;
-    left: auto;
     width: 440px;
-    border: none;
+    right: 30px;
     border-radius: 8px;
     background-color: rgba(37, 37, 37, 0.95);
     backdrop-filter: blur(2px);
@@ -106,26 +104,27 @@
     color: #a7d1fa;
 }
 
+
+
+
 #results {
-    position: fixed; /* Use fixed positioning */
-    top: auto;      /* Reset top */
-    left: auto;     /* Align with the right of the search bar */
-    right: auto;    /* Reset right */
-    width: 300px;   /* Match the width of the search bar */
-    margin-top: 10px; /* Add some space between suggestions and results */
-    padding: 20px;
+    position: fixed;
+    right: 30px;
+    top: 80px;
+    width: 410px;
+    margin-top: 10px;
+    padding: 15px;
     border: none;
     border-radius: 8px;
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: rgba(50, 50, 50, 0.2);
     backdrop-filter: blur(8px);
     text-align: left;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     font-size: 18px;
     opacity: 0;
     transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
-    transform: translateY(20px);
     display: none;
-    max-height: 400px;
+    max-height: 700px;
     overflow-y: auto;
     z-index: 1;
 }
@@ -134,46 +133,54 @@
     opacity: 1;
     transform: translateY(0);
     display: block;
-    /* Remove any top/left that might have been set by dragging */
-    top: auto !important;
-    left: 20px !important;
 }
 
 #results h3 {
-    color: #a7d1fa;
+    color: white;
     margin-top: 0;
     margin-bottom: 15px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     padding-bottom: 10px;
+    font-weight: normal;
 }
 
 #results h4 {
     color: #eee;
-    margin-top: 15px;
+    margin-top: 8px;
     margin-bottom: 8px;
-    font-size: 20px;
-    font-weight: bold;
+    font-size: 18px;
+    font-weight: normal;
+    animation: softGlowPinned 2s ease-in-out infinite alternate;
 }
 
 #results p {
-    font-size: 18px;
-    line-height: 1.6;
+    font-size: 17px;
+    line-height: 1.4;
     color: #ccc;
     margin-bottom: 10px;
+    margin-top: 4px;
 }
 
 #results strong {
-    color: #eee;
-    font-weight: bold;
+    color: #89bdd3;
+    font-weight: normal;
     margin-right: 5px;
 }
 
 .error {
     color: #e57373;
-    font-weight: bold;
 }
 
 #results p.detail-label {
     font-size: 16px;
     color: #ccc;
+}
+
+@keyframes softGlowPinned {
+    0% {
+        text-shadow: 0 0 7px rgba(255, 255, 255, 0.5);
+    }
+    100% {
+        text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+    }
 }
