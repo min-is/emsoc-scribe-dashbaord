@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
         descriptionParagraph.textContent = medication.description;
         resultsDiv.appendChild(descriptionParagraph);
         if (medication.alternate_names && medication.alternate_names.length > 0) {
-            const alternateNamesParagraph = document.createElement('p');
+            const alternateNamesParagraph = document.createElement('palt');
             alternateNamesParagraph.innerHTML = `<strong>Alternative names:</strong> <span class="detail-label">${medication.alternate_names.join(', ')}</span>`;
             resultsDiv.appendChild(alternateNamesParagraph);
         }

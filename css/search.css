@@ -104,9 +104,6 @@
     color: #a7d1fa;
 }
 
-
-
-
 #results {
     position: fixed;
     right: 30px;
@@ -157,6 +154,14 @@
     font-size: 17px;
     line-height: 1.4;
     color: #ccc;
+    margin-bottom: 10px;
+    margin-top: 4px;
+}
+
+#results palt{
+    font-size: 7px;
+    line-height: 1.4;
+    color: #89bdd3;
     margin-bottom: 10px;
     margin-top: 4px;
 }
