@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const panelHTML = createHpiAssistantPanelHTML(); // From dom-manipulation.js
                 const tempDiv = document.createElement('div');
                 tempDiv.innerHTML = panelHTML;
-                hpiPanelElement = tempDiv.firstChild;
+                hpiPanelElement = tempDiv.children[0];
                 document.body.appendChild(hpiPanelElement);
 
                 makeDraggable(hpiPanelElement); // From utils.js
