@@ -29,14 +29,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const suggestionsDiv = document.getElementById('suggestions');
     const resultsDiv = document.getElementById('results');
 
-    fetchAndDisplayProviders(); // This function should be in dom-manipulation.js
+    fetchAndDisplayProviders(); // This function is in api-service.js
 
     // --- Canvas Setup ---
-    const canvasData = setupCanvas();
+    const canvasData = setupCanvas(); // from utils.js
     canvas = canvasData.canvas;
     ctx = canvasData.ctx;
     dpr = canvasData.dpr;
-    particlesArray = initParticles(canvas, ctx, dpr, numberOfParticles);
+    particlesArray = initParticles(canvas, ctx, dpr, numberOfParticles); // from utils.js
     animateParticles();
 
     const handleResize = () => {
@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
         canvas.style.width = `${desiredWidth}px`;
         canvas.style.height = `${desiredHeight}px`;
         ctx.scale(dpr, dpr);
-        particlesArray = initParticles(canvas, ctx, dpr, numberOfParticles);
+        particlesArray = initParticles(canvas, ctx, dpr, numberOfParticles); // from utils.js
     };
 
     window.addEventListener('resize', debounce(handleResize, 100)); // Debounced listener
@@ -60,9 +60,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function animateParticles() {
         ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
         for (let i = 0; i < particlesArray.length; i++) {
-            particlesArray[i].update(canvas, mouse);
+            particlesArray[i].update(canvas, mouse); // from utils.js (Particle class method)
         }
-        connectParticles(ctx, particlesArray, mouse, connectDistance);
+        connectParticles(ctx, particlesArray, mouse, connectDistance); // from utils.js
         requestAnimationFrame(animateParticles);
     }
 
@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(`/medication/${name}`);
             if (response.ok) {
                 const medication = await response.json();
-                displayMedicationDetails(medication);
+                displayMedicationDetails(medication); // This will call the function from dom-manipulation.js
                 resultsDiv.classList.add('show');
             } else {
                 const errorData = await response.json();
@@ -130,29 +130,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function displayMedicationDetails(medication) {
-        resultsDiv.innerHTML = '';
-        const title = document.createElement('h3');
-        title.textContent = medication.name;
-        resultsDiv.appendChild(title);
-        const overviewHeadline = document.createElement('h4');
-        overviewHeadline.textContent = 'Overview';
-        resultsDiv.appendChild(overviewHeadline);
-        const descriptionParagraph = document.createElement('p');
-        descriptionParagraph.textContent = medication.description;
-        resultsDiv.appendChild(descriptionParagraph);
-        if (medication.alternate_names && medication.alternate_names.length > 0) {
-            const alternateNamesParagraph = document.createElement('palt');
-            alternateNamesParagraph.innerHTML = `<strong>Alternative names:</strong> <span class="detail-label">${medication.alternate_names.join(', ')}</span>`;
-            resultsDiv.appendChild(alternateNamesParagraph);
-        }
-        const mechanismHeadline = document.createElement('h4');
-        mechanismHeadline.textContent = 'Mechanism of Action';
-        resultsDiv.appendChild(mechanismHeadline);
-        if (medication.mechanism_of_action) {
-            const mechanismParagraph = document.createElement('p');
-            mechanismParagraph.innerHTML = `<span class="detail-label">${medication.mechanism_of_action}</span>`;
-            resultsDiv.appendChild(mechanismParagraph);
-        }
-    }
+    // Removed the local displayMedicationDetails function from here.
+    // It will use the one from dom-manipulation.js
 });
