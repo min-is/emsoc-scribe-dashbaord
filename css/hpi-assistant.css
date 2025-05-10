@@ -1,24 +1,23 @@
-/* In betadash/css/hpi-assistant.css */
 .draggable-panel {
     position: fixed;
-    top: 150px; /* Initial position */
-    left: 300px; /* Initial position */
-    background-color: rgba(37, 37, 37, 0.8); /* Slightly more opaque for inputs */
+    top: 150px;
+    left: 300px;
+    background-color: rgba(37, 37, 37, 0.4);
     backdrop-filter: blur(8px);
     color: #d4d4d4;
     border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-    padding: 0; /* Header and content will have their own padding */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    padding: 0;
     z-index: 40;
     cursor: grab;
-    width: 400px; /* Adjust as needed */
+    width: 250px;
     max-height: 80vh;
-    display: none; /* Initially hidden */
+    display: none;
     flex-direction: column;
     font-family: 'Calibre', 'Arial', sans-serif;
 }
 
-.draggable-panel.active { /* Class to show the panel */
+.draggable-panel.active {
     display: flex;
 }
 
@@ -42,7 +41,7 @@
     font-size: 1.1em;
     font-weight: normal;
     color: white;
-     text-shadow: 0 0 5px rgba(255, 255, 255, 0.7); /* Optional glow */
+     text-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
 }
 
 .close-panel-btn {
@@ -88,8 +87,8 @@
 .hpi-input-group input[type="text"]:focus,
 .hpi-input-group textarea:focus {
     outline: none;
-    border-color: rgba(100, 181, 246, 0.7); /* A light blue for focus */
-    box-shadow: 0 0 5px rgba(100, 181, 246, 0.3);
+    border-color: rgba(255, 203, 164, 0.7);
+    box-shadow: 0 0 5px rgba(218, 173, 139, 0.3);
 }
 
 .hpi-input-group textarea {
@@ -100,12 +99,12 @@
 .panel-button {
     display: block;
     width: 100%;
-    padding: 10px;
-    margin-top: 10px;
-    background-color: #007aff; /* A primary button color */
+    padding: 5px;
+    margin-top: 5px;
+    background-color: rgba(255, 255, 255, 0.7); /* A primary button color */
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 3px;
     font-family: 'Calibre', 'Arial', sans-serif;
     font-size: 1em;
     cursor: pointer;
@@ -113,7 +112,7 @@
 }
 
 .panel-button:hover {
-    background-color: #005ecb; /* Darker shade on hover */
+    background-color: #3f3f3f; /* Darker shade on hover */
 }
 
 .hpi-result-area {
