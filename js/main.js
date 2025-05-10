@@ -14,7 +14,6 @@ const mouse = {
     radius: 150
 };
 let canvas, ctx, dpr;
-// REMOVED: const toggleHpiAssistantBtn = document.getElementById('toggleHpiAssistantBtn'); from global scope
 
 function debounce(func, delay) {
     let timeoutId;
@@ -143,41 +142,77 @@ document.addEventListener('DOMContentLoaded', () => {
                 const panelHTML = createHpiAssistantPanelHTML(); // From dom-manipulation.js
                 const tempDiv = document.createElement('div');
                 tempDiv.innerHTML = panelHTML;
-                hpiPanelElement = tempDiv.children[0];
-                document.body.appendChild(hpiPanelElement);
+                hpiPanelElement = tempDiv.children[0]; // Corrected assignment
+                
+                if (hpiPanelElement) {
+                    document.body.appendChild(hpiPanelElement);
+                    makeDraggable(hpiPanelElement); // From utils.js
 
-                makeDraggable(hpiPanelElement); // From utils.js
+                    // Add event listener for the close button on this specific panel
+                    const closeHpiPanelBtn = hpiPanelElement.querySelector('#closeHpiPanelBtn');
+                    if (closeHpiPanelBtn) {
+                        closeHpiPanelBtn.addEventListener('click', () => {
+                            hpiPanelElement.classList.remove('active');
+                        });
+                    }
 
-                // Add event listener for the close button on this specific panel
-                const closeHpiPanelBtn = hpiPanelElement.querySelector('#closeHpiPanelBtn');
-                if (closeHpiPanelBtn) {
-                    closeHpiPanelBtn.addEventListener('click', () => {
-                        hpiPanelElement.classList.remove('active');
-                    });
-                }
+                    // Event listener for the "Generate HPI" button
+                    const generateHpiBtn = hpiPanelElement.querySelector('#generateHpiBtn');
+                    if (generateHpiBtn) {
+                        generateHpiBtn.addEventListener('click', async () => { // Make this async
+                            const chiefComplaint = hpiPanelElement.querySelector('#hpiChiefComplaint').value;
+                            const additionalSymptoms = hpiPanelElement.querySelector('#hpiAdditionalSymptoms').value;
+                            const onset = hpiPanelElement.querySelector('#hpiOnset').value;
+                            const otherNotes = hpiPanelElement.querySelector('#hpiOtherNotes').value;
+                            const resultArea = hpiPanelElement.querySelector('#hpiAssistantResult');
 
-                // Event listener for the "Generate HPI" button (Phase 1: just collect data)
-                const generateHpiBtn = hpiPanelElement.querySelector('#generateHpiBtn');
-                if (generateHpiBtn) {
-                    generateHpiBtn.addEventListener('click', () => {
-                        const chiefComplaint = hpiPanelElement.querySelector('#hpiChiefComplaint').value;
-                        const additionalSymptoms = hpiPanelElement.querySelector('#hpiAdditionalSymptoms').value;
-                        const onset = hpiPanelElement.querySelector('#hpiOnset').value;
-                        const otherNotes = hpiPanelElement.querySelector('#hpiOtherNotes').value;
-                        const resultArea = hpiPanelElement.querySelector('#hpiAssistantResult');
+                            // 1. Indicate loading state
+                            resultArea.textContent = 'Generating HPI...';
+                            generateHpiBtn.disabled = true;
+                            generateHpiBtn.textContent = 'Generating...';
 
-                        // For now, just display collected data for testing
-                        resultArea.textContent = `Collected Data:\nChief Complaint: ${chiefComplaint}\nAdditional Symptoms: ${additionalSymptoms}\nOnset: ${onset}\nOther Notes: ${otherNotes}`;
+                            const hpiData = {
+                                chiefComplaint: chiefComplaint,
+                                additionalSymptoms: additionalSymptoms,
+                                onset: onset,
+                                otherNotes: otherNotes
+                            };
 
-                        // Later, this is where we'll call the backend API
-                        console.log({ chiefComplaint, additionalSymptoms, onset, otherNotes });
-                    });
+                            try {
+                                const response = await fetch('/generate-hpi', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify(hpiData),
+                                });
+
+                                if (response.ok) {
+                                    const responseData = await response.json();
+                                    resultArea.textContent = responseData.generated_hpi || "No HPI generated.";
+                                } else {
+                                    const errorData = await response.json();
+                                    console.error('Error from server:', errorData);
+                                    resultArea.textContent = `Error: ${errorData.error || 'Failed to generate HPI. Status: ' + response.status}`;
+                                }
+                            } catch (error) {
+                                console.error('Network or other error fetching HPI:', error);
+                                resultArea.textContent = 'Error: Could not connect to the server to generate HPI.';
+                            } finally {
+                                // 3. Revert loading state
+                                generateHpiBtn.disabled = false;
+                                generateHpiBtn.textContent = 'Generate HPI';
+                            }
+                        });
+                    }
+                } else {
+                    console.error("Failed to create HPI panel element from HTML string.");
                 }
             }
             // Toggle visibility
             if (hpiPanelElement && hpiPanelElement.classList.contains('active')) {
                 hpiPanelElement.classList.remove('active');
-            } else if (hpiPanelElement) { // Added safety check for hpiPanelElement
+            } else if (hpiPanelElement) { 
                 hpiPanelElement.classList.add('active');
             }
         });
