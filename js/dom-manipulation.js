@@ -199,3 +199,37 @@ function displayMedicationDetails(medication) {
         resultsDiv.appendChild(mechanismParagraph);
     }
 }
+
+// Add this function to dom-manipulation.js
+function createHpiAssistantPanelHTML() {
+    let html = `
+        <div id="hpiAssistantPanel" class="draggable-panel">
+            <div class="panel-header">
+                <h3>HPI Assistant</h3>
+                <span class="close-panel-btn" id="closeHpiPanelBtn">&times;</span>
+            </div>
+            <div class="panel-content">
+                <div class="hpi-input-group">
+                    <label for="hpiChiefComplaint">Chief Complaint:</label>
+                    <input type="text" id="hpiChiefComplaint" name="hpiChiefComplaint" placeholder="e.g., Chest pain">
+                </div>
+                <div class="hpi-input-group">
+                    <label for="hpiAdditionalSymptoms">Additional Symptoms:</label>
+                    <input type="text" id="hpiAdditionalSymptoms" name="hpiAdditionalSymptoms" placeholder="e.g., Shortness of breath, nausea">
+                </div>
+                <div class="hpi-input-group">
+                    <label for="hpiOnset">Onset:</label>
+                    <input type="text" id="hpiOnset" name="hpiOnset" placeholder="e.g., 2 hours ago, Yesterday morning">
+                </div>
+                <div class="hpi-input-group">
+                    <label for="hpiOtherNotes">Other Notes / Details:</label>
+                    <textarea id="hpiOtherNotes" name="hpiOtherNotes" rows="4" placeholder="Enter any other relevant details, context, or 'word vomit' here..."></textarea>
+                </div>
+                <button id="generateHpiBtn" class="panel-button">Generate HPI</button>
+                <div id="hpiAssistantResult" class="hpi-result-area">
+                    </div>
+            </div>
+        </div>
+    `;
+    return html;
+}

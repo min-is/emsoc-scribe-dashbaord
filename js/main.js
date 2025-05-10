@@ -5,6 +5,7 @@ let preferencesPanel = null;
 let panelOpen = false;
 let currentlyPinnedProviderName = null;
 let particlesArray = [];
+let hpiPanelElement = null;
 const numberOfParticles = 110;
 const connectDistance = 120;
 const mouse = {
@@ -13,6 +14,7 @@ const mouse = {
     radius: 150
 };
 let canvas, ctx, dpr;
+const toggleHpiAssistantBtn = document.getElementById('toggleHpiAssistantBtn');
 
 function debounce(func, delay) {
     let timeoutId;
@@ -128,6 +130,53 @@ document.addEventListener('DOMContentLoaded', () => {
             resultsDiv.innerHTML = '<p class="error">Failed to fetch medication details.</p>';
             resultsDiv.classList.add('show');
         }
+    }
+
+    if (toggleHpiAssistantBtn) {
+        toggleHpiAssistantBtn.addEventListener('click', () => {
+            if (!hpiPanelElement) {
+                // Create panel if it doesn't exist
+                const panelHTML = createHpiAssistantPanelHTML(); // From dom-manipulation.js
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = panelHTML;
+                hpiPanelElement = tempDiv.firstChild;
+                document.body.appendChild(hpiPanelElement);
+    
+                makeDraggable(hpiPanelElement); // From utils.js
+    
+                // Add event listener for the close button on this specific panel
+                const closeHpiPanelBtn = hpiPanelElement.querySelector('#closeHpiPanelBtn');
+                if (closeHpiPanelBtn) {
+                    closeHpiPanelBtn.addEventListener('click', () => {
+                        hpiPanelElement.classList.remove('active');
+                    });
+                }
+    
+                // Event listener for the "Generate HPI" button (Phase 1: just collect data)
+                const generateHpiBtn = hpiPanelElement.querySelector('#generateHpiBtn');
+                if (generateHpiBtn) {
+                    generateHpiBtn.addEventListener('click', () => {
+                        const chiefComplaint = hpiPanelElement.querySelector('#hpiChiefComplaint').value;
+                        const additionalSymptoms = hpiPanelElement.querySelector('#hpiAdditionalSymptoms').value;
+                        const onset = hpiPanelElement.querySelector('#hpiOnset').value;
+                        const otherNotes = hpiPanelElement.querySelector('#hpiOtherNotes').value;
+                        const resultArea = hpiPanelElement.querySelector('#hpiAssistantResult');
+    
+                        // For now, just display collected data for testing
+                        resultArea.textContent = `Collected Data:\nChief Complaint: ${chiefComplaint}\nAdditional Symptoms: ${additionalSymptoms}\nOnset: ${onset}\nOther Notes: ${otherNotes}`;
+    
+                        // Later, this is where we'll call the backend API
+                        console.log({ chiefComplaint, additionalSymptoms, onset, otherNotes });
+                    });
+                }
+            }
+            // Toggle visibility
+            if (hpiPanelElement.classList.contains('active')) {
+                hpiPanelElement.classList.remove('active');
+            } else {
+                hpiPanelElement.classList.add('active');
+            }
+        });
     }
 
     // Removed the local displayMedicationDetails function from here.

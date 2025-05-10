@@ -1,0 +1,130 @@
+/* In betadash/css/hpi-assistant.css */
+.draggable-panel {
+    position: fixed;
+    top: 150px; /* Initial position */
+    left: 300px; /* Initial position */
+    background-color: rgba(37, 37, 37, 0.8); /* Slightly more opaque for inputs */
+    backdrop-filter: blur(8px);
+    color: #d4d4d4;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    padding: 0; /* Header and content will have their own padding */
+    z-index: 40;
+    cursor: grab;
+    width: 400px; /* Adjust as needed */
+    max-height: 80vh;
+    display: none; /* Initially hidden */
+    flex-direction: column;
+    font-family: 'Calibre', 'Arial', sans-serif;
+}
+
+.draggable-panel.active { /* Class to show the panel */
+    display: flex;
+}
+
+.draggable-panel:active {
+    cursor: grabbing;
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background-color: rgba(50, 50, 50, 0.5);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.panel-header h3 {
+    margin: 0;
+    font-size: 1.1em;
+    font-weight: normal;
+    color: white;
+     text-shadow: 0 0 5px rgba(255, 255, 255, 0.7); /* Optional glow */
+}
+
+.close-panel-btn {
+    font-size: 1.5em;
+    color: #aaa;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.close-panel-btn:hover {
+    color: #fff;
+}
+
+.panel-content {
+    padding: 15px;
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+.hpi-input-group {
+    margin-bottom: 15px;
+}
+
+.hpi-input-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 0.9em;
+    color: #ccc;
+}
+
+.hpi-input-group input[type="text"],
+.hpi-input-group textarea {
+    width: calc(100% - 20px); /* Full width minus padding */
+    padding: 8px 10px;
+    border-radius: 5px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background-color: rgba(20, 20, 20, 0.5);
+    color: #f0f0f0;
+    font-family: 'Calibre', 'Arial', sans-serif;
+    font-size: 1em;
+}
+
+.hpi-input-group input[type="text"]:focus,
+.hpi-input-group textarea:focus {
+    outline: none;
+    border-color: rgba(100, 181, 246, 0.7); /* A light blue for focus */
+    box-shadow: 0 0 5px rgba(100, 181, 246, 0.3);
+}
+
+.hpi-input-group textarea {
+    resize: vertical;
+    min-height: 60px;
+}
+
+.panel-button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background-color: #007aff; /* A primary button color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-family: 'Calibre', 'Arial', sans-serif;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.panel-button:hover {
+    background-color: #005ecb; /* Darker shade on hover */
+}
+
+.hpi-result-area {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: rgba(20, 20, 20, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    min-height: 50px;
+    font-size: 0.95em;
+    line-height: 1.5;
+    white-space: pre-wrap; /* To preserve formatting from GPT */
+    color: #e0e0e0;
+}
