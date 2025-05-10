@@ -5,7 +5,7 @@ let preferencesPanel = null;
 let panelOpen = false;
 let currentlyPinnedProviderName = null;
 let particlesArray = [];
-let hpiPanelElement = null;
+let hpiPanelElement = null; // To keep track of the HPI panel element
 const numberOfParticles = 110;
 const connectDistance = 120;
 const mouse = {
@@ -14,7 +14,7 @@ const mouse = {
     radius: 150
 };
 let canvas, ctx, dpr;
-const toggleHpiAssistantBtn = document.getElementById('toggleHpiAssistantBtn');
+// REMOVED: const toggleHpiAssistantBtn = document.getElementById('toggleHpiAssistantBtn'); from global scope
 
 function debounce(func, delay) {
     let timeoutId;
@@ -27,6 +27,9 @@ function debounce(func, delay) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Get button elements AFTER the DOM is fully loaded
+    const toggleHpiAssistantBtn = document.getElementById('toggleHpiAssistantBtn');
+
     const searchInput = document.getElementById('searchInput');
     const suggestionsDiv = document.getElementById('suggestions');
     const resultsDiv = document.getElementById('results');
@@ -132,6 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // --- HPI Assistant Button Logic ---
     if (toggleHpiAssistantBtn) {
         toggleHpiAssistantBtn.addEventListener('click', () => {
             if (!hpiPanelElement) {
@@ -141,9 +145,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 tempDiv.innerHTML = panelHTML;
                 hpiPanelElement = tempDiv.firstChild;
                 document.body.appendChild(hpiPanelElement);
-    
+
                 makeDraggable(hpiPanelElement); // From utils.js
-    
+
                 // Add event listener for the close button on this specific panel
                 const closeHpiPanelBtn = hpiPanelElement.querySelector('#closeHpiPanelBtn');
                 if (closeHpiPanelBtn) {
@@ -151,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         hpiPanelElement.classList.remove('active');
                     });
                 }
-    
+
                 // Event listener for the "Generate HPI" button (Phase 1: just collect data)
                 const generateHpiBtn = hpiPanelElement.querySelector('#generateHpiBtn');
                 if (generateHpiBtn) {
@@ -161,24 +165,23 @@ document.addEventListener('DOMContentLoaded', () => {
                         const onset = hpiPanelElement.querySelector('#hpiOnset').value;
                         const otherNotes = hpiPanelElement.querySelector('#hpiOtherNotes').value;
                         const resultArea = hpiPanelElement.querySelector('#hpiAssistantResult');
-    
+
                         // For now, just display collected data for testing
                         resultArea.textContent = `Collected Data:\nChief Complaint: ${chiefComplaint}\nAdditional Symptoms: ${additionalSymptoms}\nOnset: ${onset}\nOther Notes: ${otherNotes}`;
-    
+
                         // Later, this is where we'll call the backend API
                         console.log({ chiefComplaint, additionalSymptoms, onset, otherNotes });
                     });
                 }
             }
             // Toggle visibility
-            if (hpiPanelElement.classList.contains('active')) {
+            if (hpiPanelElement && hpiPanelElement.classList.contains('active')) {
                 hpiPanelElement.classList.remove('active');
-            } else {
+            } else if (hpiPanelElement) { // Added safety check for hpiPanelElement
                 hpiPanelElement.classList.add('active');
             }
         });
+    } else {
+        console.error("HPI Assistant button (#toggleHpiAssistantBtn) not found. Check ID in HTML and ensure it's correct.");
     }
-
-    // Removed the local displayMedicationDetails function from here.
-    // It will use the one from dom-manipulation.js
 });
