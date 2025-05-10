@@ -200,7 +200,6 @@ function displayMedicationDetails(medication) {
     }
 }
 
-// Add this function to dom-manipulation.js
 function createHpiAssistantPanelHTML() {
     let html = `
         <div id="hpiAssistantPanel" class="draggable-panel">
@@ -210,21 +209,42 @@ function createHpiAssistantPanelHTML() {
             </div>
             <div class="panel-content">
                 <div class="hpi-input-group">
-                    <label for="hpiChiefComplaint">Chief Complaint:</label>
-                    <input type="text" id="hpiChiefComplaint" name="hpiChiefComplaint" placeholder="e.g., Chest pain">
+                    <label for="hpiGender">1. Gender:</label>
+                    <input type="text" id="hpiGender" name="hpiGender" placeholder="e.g., Male, Female, Non-binary">
                 </div>
                 <div class="hpi-input-group">
-                    <label for="hpiAdditionalSymptoms">Additional Symptoms:</label>
-                    <input type="text" id="hpiAdditionalSymptoms" name="hpiAdditionalSymptoms" placeholder="e.g., Shortness of breath, nausea">
+                    <label for="hpiPastMedicalHistory">2. Past Medical History (PMH):</label>
+                    <textarea id="hpiPastMedicalHistory" name="hpiPastMedicalHistory" rows="3" placeholder="e.g., Hypertension, Diabetes Type 2, Asthma. Enter 'None' if none."></textarea>
                 </div>
                 <div class="hpi-input-group">
-                    <label for="hpiOnset">Onset:</label>
-                    <input type="text" id="hpiOnset" name="hpiOnset" placeholder="e.g., 2 hours ago, Yesterday morning">
+                    <label for="hpiChiefComplaint">3. Chief Complaint:</label>
+                    <input type="text" id="hpiChiefComplaint" name="hpiChiefComplaint" placeholder="e.g., Chest pain, Abdominal pain">
                 </div>
                 <div class="hpi-input-group">
-                    <label for="hpiOtherNotes">Other Notes / Details:</label>
-                    <textarea id="hpiOtherNotes" name="hpiOtherNotes" rows="4" placeholder="Enter any other relevant details, context, or 'word vomit' here..."></textarea>
+                    <label for="hpiOnsetTiming">4. Onset/Timing:</label>
+                    <input type="text" id="hpiOnsetTiming" name="hpiOnsetTiming" placeholder="e.g., 2 hours ago, Yesterday morning, For the past week">
                 </div>
+                <div class="hpi-input-group">
+                    <label for="hpiAccompaniedBy">5. Accompanied By / History By:</label>
+                    <input type="text" id="hpiAccompaniedBy" name="hpiAccompaniedBy" placeholder="e.g., Wife at bedside, Patient alone, EMS">
+                </div>
+                <div class="hpi-input-group">
+                    <label for="hpiAdditionalSymptoms">6. Other Symptoms (if applicable):</label>
+                    <input type="text" id="hpiAdditionalSymptoms" name="hpiAdditionalSymptoms" placeholder="e.g., Fever (Tmax=101F), chills, nausea">
+                </div>
+                <div class="hpi-input-group">
+                    <label for="hpiContext">7. Context / Word Vomit (narrative):</label>
+                    <textarea id="hpiContext" name="hpiContext" rows="4" placeholder="Enter patient's narrative, detailed description of events, 'word vomit'..."></textarea>
+                </div>
+                <div class="hpi-input-group">
+                    <label for="hpiPertinentNegatives">8. Pertinent Negatives:</label>
+                    <textarea id="hpiPertinentNegatives" name="hpiPertinentNegatives" rows="3" placeholder="e.g., Denies chest pain, shortness of breath, headache."></textarea>
+                </div>
+                <div class="hpi-input-group">
+                    <label for="hpiCurrentMedications">9. Current Medications:</label>
+                    <textarea id="hpiCurrentMedications" name="hpiCurrentMedications" rows="3" placeholder="e.g., Lisinopril 10mg daily, Metformin 500mg BID. Enter 'None' if none."></textarea>
+                </div>
+
                 <button id="generateHpiBtn" class="panel-button">Generate HPI</button>
                 <div id="hpiAssistantResult" class="hpi-result-area">
                     </div>
