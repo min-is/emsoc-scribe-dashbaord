@@ -2,6 +2,8 @@ from flask import Flask, request, jsonify, send_from_directory
 from fuzzywuzzy import fuzz
 import os
 import json
+# If you plan to use the OpenAI library, you'd import it here later:
+# import openai 
 
 app = Flask(__name__, static_folder='.', static_url_path='')
 
@@ -112,6 +114,51 @@ def get_provider_details(provider_id):
         return jsonify(provider_data[provider_id]['preferences'])
     else:
         return jsonify({"error": "Provider not found"}), 404
+
+@app.route('/generate-hpi', methods=['POST'])
+def generate_hpi_route():
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "No input data provided"}), 400
+
+        chief_complaint = data.get('chiefComplaint', '')
+        additional_symptoms = data.get('additionalSymptoms', '')
+        onset = data.get('onset', '')
+        other_notes = data.get('otherNotes', '')
+
+        # **Placeholder for GPT Integration**
+        # In a real implementation, you would:
+        # 1. Retrieve your OpenAI API key securely (e.g., from environment variables)
+        #    openai.api_key = os.getenv("OPENAI_API_KEY")
+        # 2. Construct a detailed prompt using the input fields and your pre-defined structure.
+        #    prompt_text = f"Generate a professional HPI based on the following details:\n" \
+        #                  f"Chief Complaint: {chief_complaint}\n" \
+        #                  f"Additional Symptoms: {additional_symptoms}\n" \
+        #                  f"Onset: {onset}\n" \
+        #                  f"Other Notes: {other_notes}\n\n" \
+        #                  f"Please format the HPI clearly and professionally." 
+        #    (This is a basic example; your actual prompt will be more tailored)
+        # 3. Make the API call to OpenAI:
+        #    response = openai.ChatCompletion.create(
+        #        model="gpt-3.5-turbo", # Or your preferred model
+        #        messages=[{"role": "user", "content": prompt_text}]
+        #    )
+        #    generated_hpi_text = response.choices[0].message.content.strip()
+        
+        # For now, we'll return a mock response:
+        mock_hpi_text = f"Formatted HPI based on:\n" \
+                        f"- Chief Complaint: {chief_complaint}\n" \
+                        f"- Additional Symptoms: {additional_symptoms}\n" \
+                        f"- Onset: {onset}\n" \
+                        f"- Other Notes: {other_notes}\n\n" \
+                        f"(This is a mock response from the server. GPT integration is pending.)"
+
+        return jsonify({"generated_hpi": mock_hpi_text})
+
+    except Exception as e:
+        print(f"Error in /generate-hpi: {e}") # Log the error for debugging
+        return jsonify({"error": "An internal server error occurred"}), 500
 
 
 if __name__ == '__main__':
