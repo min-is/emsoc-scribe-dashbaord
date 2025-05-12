@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify, send_from_directory
 from fuzzywuzzy import fuzz
 import os
 import json
-import openai
+from openai import OpenAI, APIError, AuthenticationError, RateLimitError, BadRequestError
 
 app = Flask(__name__, static_folder='.', static_url_path='')
 
@@ -113,7 +113,7 @@ def get_provider_details(provider_id):
         return jsonify(provider_data[provider_id]['preferences'])
     else:
         return jsonify({"error": "Provider not found"}), 404
-
+    
 @app.route('/generate-hpi', methods=['POST'])
 def generate_hpi_route():
     try:
@@ -189,14 +189,17 @@ def generate_hpi_route():
         
         full_prompt_for_gpt = user_prompt_instructions + patient_data_for_prompt
 
+        # --- Actual GPT API Call (Updated for OpenAI library v1.0.0+) ---
         try:
-            openai.api_key = os.getenv("OPENAI_API_KEY")
-            if not openai.api_key:
-                print("Error: OPENAI_API_KEY environment variable not found.") # For server-side logging
+            api_key = os.getenv("OPENAI_API_KEY")
+            if not api_key:
+                print("Error: OPENAI_API_KEY environment variable not found.")
                 return jsonify({"error": "OpenAI API key not configured on the server"}), 500
 
-            completion = openai.ChatCompletion.create(
-                model="gpt-3.5-turbo",
+            client = OpenAI(api_key=api_key) # Initialize client with the API key
+
+            completion = client.chat.completions.create( # Use the client instance
+                model="gpt-3.5-turbo", # Or your preferred model
                 messages=[
                     {"role": "system", "content": system_message_content},
                     {"role": "user", "content": full_prompt_for_gpt}
@@ -205,10 +208,19 @@ def generate_hpi_route():
             generated_text = completion.choices[0].message.content.strip()
             return jsonify({"generated_hpi": generated_text})
 
-        except openai.error.OpenAIError as e:
-            print(f"OpenAI API call error: {e}")
-            return jsonify({"error": f"Error communicating with model: {str(e)}"}), 500
-        except Exception as e:
+        except AuthenticationError as e:
+            print(f"OpenAI Authentication Error: {e}")
+            return jsonify({"error": f"OpenAI Authentication Error: Please check your API key and account status. ({str(e)})"}), 500
+        except RateLimitError as e:
+            print(f"OpenAI Rate Limit Error: {e}")
+            return jsonify({"error": f"OpenAI Rate Limit Exceeded: Please try again later or check your plan. ({str(e)})"}), 500
+        except BadRequestError as e: # Often for issues with the request itself (e.g. prompt too long, bad model name)
+            print(f"OpenAI Bad Request Error: {e}")
+            return jsonify({"error": f"OpenAI Bad Request: {str(e)}"}), 400 # Return 400 for bad client request
+        except APIError as e: # Catch other OpenAI API errors
+            print(f"OpenAI API Error: {e}")
+            return jsonify({"error": f"Error communicating with AI model: {str(e)}"}), 500
+        except Exception as e: # Catch other unexpected errors during the API call phase
             print(f"Unexpected error during AI call: {e}")
             return jsonify({"error": "An unexpected error occurred while generating HPI."}), 500
 
@@ -216,5 +228,5 @@ def generate_hpi_route():
         print(f"Error in /generate-hpi route: {e}")
         return jsonify({"error": "An internal server error occurred in /generate-hpi"}), 500
 
-if __name__ == '__main__': 
+if __name__ == '__main__':
     app.run(debug=True)
