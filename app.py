@@ -210,7 +210,6 @@ def generate_hpi_route():
                     {"role": "system", "content": system_message_content},
                     {"role": "user", "content": full_prompt_for_gpt}
                 ],
-                temperature = 0.3
             )
             generated_text = completion.choices[0].message.content.strip()
             return jsonify({"generated_hpi": generated_text})
