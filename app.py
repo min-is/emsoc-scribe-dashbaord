@@ -136,15 +136,21 @@ def generate_hpi_route():
             "for an adult emergency department in Southern California. Follow the provided format, syntax, "
             "and style meticulously. Convert times to 24-hour format. Format Tmax in parentheses if provided "
             "(e.g., fever (Tmax = 102F)). When NBNB is mentioned for vomiting, use 'NBNB' directly. "
-            "When a user types 's/p' it stands for 'status post,' and 'r/o' stands for 'rule out.'"
+            "When a user types 's/p' it stands for 'status post,' and 'r/o' stands for 'rule(d) out.'"
+            "If a user writes that the patient has someone assisting them with their history, introduce them by "
+            "saying 'Per (accompanant) providing additional history at bedside...'."
+            "If the patient has a history of serious mental disability or is coming in for any altered mental condition and unable to give a history"
+            "Write: Patient history is limited secondary to developmental delay/altered mental status/clinical condition/etc.. (choose the best one).)"
             "Correct grammatical errors, spelling, and improve terminology for clarity and professionalism, "
             "aiming for the quality of HPIs from esteemed institutions. Ensure the narrative is smooth and effective. "
             "Avoid awkward third-person phrasing like 'The patient states that...' where possible, instead "
             "favoring sentence starters like 'Patient reports that', 'States that', 'Endorses that', 'He/She notes that', etc. "
+            "Again, it is IMPERATIVE that you do not start sentences with 'The patient'"
             "After the HPI, provide a new line titled 'Differential diagnoses includes: ' followed by a list of 4-5 "
             "differential diagnoses from an Emergency Medicine perspective with brief (1 sentence) explanations. "
             "Acceptable ways to display differential diagnoses are using the title (e.g., 'Viral gastroenteritis') or statements "
             "like 'Also consider,' 'Doubt,' 'Considered but ruled out.' Keep it concise."
+            "The first letter of your reponse should always be lowercase (w)."
         )
 
         user_prompt_instructions = (
