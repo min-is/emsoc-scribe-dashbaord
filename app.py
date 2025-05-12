@@ -128,7 +128,7 @@ def generate_hpi_route():
         accompanied_by = data.get('accompaniedBy', '')
         other_symptoms = data.get('additionalSymptoms', '') 
         context = data.get('otherNotes', '') 
-        pertinent_negatives = data.get('pertinentNegatives', '')
+        pertinent_negatives = data.get('pertinentNegatives', '') 
         current_medications = data.get('currentMedications', '')
 
         system_message_content = (
@@ -204,12 +204,13 @@ def generate_hpi_route():
 
             client = OpenAI(api_key=api_key) # Initialize client with the API key
 
-            completion = client.chat.completions.create( # Use the client instance
-                model="gpt-3.5-turbo", # Or your preferred model
+            completion = client.chat.completions.create(
+                model="o4-mini",
                 messages=[
                     {"role": "system", "content": system_message_content},
                     {"role": "user", "content": full_prompt_for_gpt}
-                ]
+                ],
+                temperature = 0.3
             )
             generated_text = completion.choices[0].message.content.strip()
             return jsonify({"generated_hpi": generated_text})
