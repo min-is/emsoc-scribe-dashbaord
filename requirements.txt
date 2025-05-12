@@ -1,3 +1,4 @@
 Flask
 fuzzywuzzy
 gunicorn
+openai
