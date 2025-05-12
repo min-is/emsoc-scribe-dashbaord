@@ -2,7 +2,6 @@ from flask import Flask, request, jsonify, send_from_directory
 from fuzzywuzzy import fuzz
 import os
 import json
-import openai
 
 app = Flask(__name__, static_folder='.', static_url_path='')
 
@@ -243,13 +242,15 @@ def generate_hpi_route():
             "- Diagnosis 3: Contextual factors may suggest this.\n"
             "- Diagnosis 4: Pertinent negatives might point away from alternatives, making this more likely."
         )
+        
+        # To see the full prompt being constructed for debugging:
+        # print(mock_hpi_construct + mock_generated_hpi) 
 
         return jsonify({"generated_hpi": mock_generated_hpi, "debug_prompt_sent": mock_hpi_construct + mock_generated_hpi}) # Sending the debug prompt too for now
 
     except Exception as e:
-        print(f"Error in /generate-hpi: {e}")
+        print(f"Error in /generate-hpi: {e}") # Log the error for debugging
         return jsonify({"error": "An internal server error occurred"}), 500
 
-
-if __name__ == '__main__':
+if __name__ == '__main__': # This line was the issue
     app.run(debug=True)
