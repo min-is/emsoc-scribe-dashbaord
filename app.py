@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, send_from_directory
 from fuzzywuzzy import fuzz
 import os
 import json
+import openai
 
 app = Flask(__name__, static_folder='.', static_url_path='')
 
@@ -120,41 +121,35 @@ def generate_hpi_route():
         if not data:
             return jsonify({"error": "No input data provided"}), 400
 
-        # Extracting all the expected fields
         gender = data.get('gender', '')
         pmh = data.get('pastMedicalHistory', '').strip()
         chief_complaint = data.get('chiefComplaint', '')
-        onset_timing = data.get('onsetTiming', '') # Matched to your new list
+        onset_timing = data.get('onsetTiming', '')
         accompanied_by = data.get('accompaniedBy', '')
-        # 'additionalSymptoms' from frontend can map to 'otherSymptoms' here
         other_symptoms = data.get('additionalSymptoms', '') 
-        context = data.get('otherNotes', '') # 'otherNotes' from frontend maps to 'context'
+        context = data.get('otherNotes', '') 
         pertinent_negatives = data.get('pertinentNegatives', '')
         current_medications = data.get('currentMedications', '')
 
-        # --- Construct the detailed prompt for the GPT model ---
-        
-        # System message (optional, but can help set the stage for the AI)
         system_message_content = (
             "You are an expert medical scribe assistant tasked with writing a perfect medical HPI "
             "for an adult emergency department in Southern California. Follow the provided format, syntax, "
-            "and style meticulously. Convert times to 24-hour format. Format Tmax in parentheses if provided. "
+            "and style meticulously. Convert times to 24-hour format. Format Tmax in parentheses if provided "
+            "(e.g., fever (Tmax = 102F)). When NBNB is mentioned for vomiting, use 'NBNB' directly. "
+            "When a user types 's/p' it stands for 'status post,' and 'r/o' stands for 'rule out.'"
             "Correct grammatical errors, spelling, and improve terminology for clarity and professionalism, "
             "aiming for the quality of HPIs from esteemed institutions. Ensure the narrative is smooth and effective. "
             "Avoid awkward third-person phrasing like 'The patient states that...' where possible, instead "
             "favoring sentence starters like 'Patient reports that', 'States that', 'Endorses that', 'He/She notes that', etc. "
-            "Whenever a temperature is given in context of a fever complaint (e.g., 102F), you are to format it as (Tmax = 102F)."
-            "A sentence that looks like 'he complains of one day of fever' should look like 'he complains of one day of fever (Tmax = 102F)."
-            "Whenever NBNB comes up in the context of vomiting, do not write 'non-bilious, non-bloody.' Just keep it as 'NBNB.'"
-            "After the HPI, provide a list of 4-5 differential diagnoses from an Emergency Medicine perspective with brief explanations."
-            "The only acceptable ways to display the differential diagnoses are just using the title of the diagnosis like 'Viral gastroenteritis'."
-            "However, you may also only use statements such as 'Also consider,' 'Doubt,' 'Considered but ruled out.' Keep it concise here."
+            "After the HPI, provide a new line titled 'Differential diagnoses includes: ' followed by a list of 4-5 "
+            "differential diagnoses from an Emergency Medicine perspective with brief (1 sentence) explanations. "
+            "Acceptable ways to display differential diagnoses are using the title (e.g., 'Viral gastroenteritis') or statements "
+            "like 'Also consider,' 'Doubt,' 'Considered but ruled out.' Keep it concise."
         )
 
-        # User message part 1
         user_prompt_instructions = (
             "Format and write HPIs in the same syntax and method as the sample. "
-            "Begin every HPI with 'with no significant past medical history' (if past medical history is empty/none) "
+            "Begin every HPI with 'with no significant past medical history' (if past medical history is empty/none/similar) "
             "or 'with a past medical history of {pertinent PMH}'.\n\n"
             "Sample Input Data Format:\n"
             "1. Gender: male\n"
@@ -168,9 +163,9 @@ def generate_hpi_route():
             "9. Currently on eliquis\n\n"
             "Sample Output for the data above:\n"
             "\"with a past medical history of hypertension, hyperlipidemia, and chronic kidney disease stage III who presents to the Emergency Department "
-            "complaining of one week of generalized weakness, worse since yesterday evening. Per wife, who is providing additional history at bedside, "
-            "states that she has noticed that patient has been more fatigued and lethargic over the past week, and worse since last night, and looked very "
-            "pale today morning. Patient states that he has also been having subjective fevers, chills, and a mild itchy rash to the left elbow. He denies any "
+            "complaining of one week of generalized weakness, worse since yesterday evening. Per wife, who is providing additional history at bedside, " # Matched your example
+            "states that she has noticed that patient has been more fatigued and lethargic over the past week, and worse since last night, and looked very " # Matched your example
+            "pale today morning. Patient states that he has also been having subjective fevers, chills, and a mild itchy rash to the left elbow. He denies any " # Matched your example (subjective fevers)
             "recent nausea, vomiting, diarrhea, urinary symptoms, or focal neuro deficits. Patient is currently taking Eliquis.\n\n"
             "Differential diagnoses includes:\n"
             "- Sepsis: Given fever, chills, weakness, and lethargy, infection leading to sepsis is a concern.\n"
@@ -179,11 +174,10 @@ def generate_hpi_route():
             "- Viral Syndrome: Fever, chills, fatigue, and rash can be seen with various viral illnesses.\"\n\n"
             "--- Now, generate an HPI for the following patient ---\n"
         )
-
-        # User message part 2
+        
         patient_data_for_prompt = (
             f"1. Gender: {gender}\n"
-            f"2. Past medical history: {pmh if pmh else 'None'}\n"
+            f"2. Past medical history: {pmh if pmh and pmh.lower().strip() not in ['none', 'no significant past medical history', 'no significant pmh', 'n/a', ''] else 'None'}\n" # Improved check for 'None' PMH
             f"3. Chief complaint: {chief_complaint}\n"
             f"4. Onset/timing: {onset_timing}\n"
             f"5. Accompanied by/history by: {accompanied_by}\n"
@@ -195,62 +189,32 @@ def generate_hpi_route():
         
         full_prompt_for_gpt = user_prompt_instructions + patient_data_for_prompt
 
-        # **Placeholder for Actual GPT API Call**
-        # When ready, replace this mock response with the actual OpenAI API call:
-        #
-        # try:
-        #     openai.api_key = os.getenv("OPENAI_API_KEY")
-        #     if not openai.api_key:
-        #         return jsonify({"error": "OpenAI API key not configured"}), 500
-        #
-        #     completion = openai.ChatCompletion.create(
-        #         model="gpt-3.5-turbo", # Or your preferred model, e.g., "gpt-4"
-        #         messages=[
-        #             {"role": "system", "content": system_message_content},
-        #             {"role": "user", "content": full_prompt_for_gpt}
-        #         ]
-        #     )
-        #     generated_text = completion.choices[0].message.content.strip()
-        #     return jsonify({"generated_hpi": generated_text})
-        #
-        # except Exception as e:
-        #     print(f"OpenAI API call error: {e}")
-        #     return jsonify({"error": f"Error calling GPT API: {str(e)}"}), 500
+        try:
+            openai.api_key = os.getenv("OPENAI_API_KEY")
+            if not openai.api_key:
+                print("Error: OPENAI_API_KEY environment variable not found.") # For server-side logging
+                return jsonify({"error": "OpenAI API key not configured on the server"}), 500
 
-        mock_hpi_construct = (
-            f"Prompt that would be sent to GPT:\n"
-            f"System Message: {system_message_content}\n\n"
-            f"User Message:\n{full_prompt_for_gpt}\n\n"
-            f"--- Mock HPI & Diagnoses (Server-side placeholder) ---\n"
-        )
+            completion = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "system", "content": system_message_content},
+                    {"role": "user", "content": full_prompt_for_gpt}
+                ]
+            )
+            generated_text = completion.choices[0].message.content.strip()
+            return jsonify({"generated_hpi": generated_text})
 
-        pmh_intro = "with no significant past medical history"
-        if pmh and pmh.lower() not in ['none', 'no significant pmh', 'n/a', '']:
-            pmh_intro = f"with a past medical history of {pmh}"
-
-        mock_generated_hpi = (
-            f"{pmh_intro} who presents to the ED complaining of {chief_complaint}. "
-            f"The symptoms reportedly started {onset_timing}. "
-            f"Additional history provided by {accompanied_by if accompanied_by else 'patient'}. "
-            f"Patient endorses other symptoms including: {other_symptoms}. "
-            f"Context: {context}. "
-            f"Patient denies {pertinent_negatives if pertinent_negatives else 'any other acute complaints'}. "
-            f"Current medications include: {current_medications if current_medications else 'none stated'}.\n\n"
-            "Differential diagnoses includes:\n"
-            "- Diagnosis 1: Based on chief complaint and onset.\n"
-            "- Diagnosis 2: Considering other symptoms noted.\n"
-            "- Diagnosis 3: Contextual factors may suggest this.\n"
-            "- Diagnosis 4: Pertinent negatives might point away from alternatives, making this more likely."
-        )
-        
-        # To see the full prompt being constructed for debugging:
-        # print(mock_hpi_construct + mock_generated_hpi) 
-
-        return jsonify({"generated_hpi": mock_generated_hpi, "debug_prompt_sent": mock_hpi_construct + mock_generated_hpi}) # Sending the debug prompt too for now
+        except openai.error.OpenAIError as e:
+            print(f"OpenAI API call error: {e}")
+            return jsonify({"error": f"Error communicating with model: {str(e)}"}), 500
+        except Exception as e:
+            print(f"Unexpected error during AI call: {e}")
+            return jsonify({"error": "An unexpected error occurred while generating HPI."}), 500
 
     except Exception as e:
-        print(f"Error in /generate-hpi: {e}") # Log the error for debugging
-        return jsonify({"error": "An internal server error occurred"}), 500
+        print(f"Error in /generate-hpi route: {e}")
+        return jsonify({"error": "An internal server error occurred in /generate-hpi"}), 500
 
-if __name__ == '__main__': # This line was the issue
+if __name__ == '__main__': 
     app.run(debug=True)
