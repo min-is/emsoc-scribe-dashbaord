@@ -142,13 +142,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 const panelHTML = createHpiAssistantPanelHTML(); // From dom-manipulation.js
                 const tempDiv = document.createElement('div');
                 tempDiv.innerHTML = panelHTML;
-                hpiPanelElement = tempDiv.children[0]; // Corrected assignment
+                hpiPanelElement = tempDiv.children[0]; 
                 
                 if (hpiPanelElement) {
                     document.body.appendChild(hpiPanelElement);
                     makeDraggable(hpiPanelElement); // From utils.js
 
-                    // Add event listener for the close button on this specific panel
                     const closeHpiPanelBtn = hpiPanelElement.querySelector('#closeHpiPanelBtn');
                     if (closeHpiPanelBtn) {
                         closeHpiPanelBtn.addEventListener('click', () => {
@@ -156,26 +155,34 @@ document.addEventListener('DOMContentLoaded', () => {
                         });
                     }
 
-                    // Event listener for the "Generate HPI" button
                     const generateHpiBtn = hpiPanelElement.querySelector('#generateHpiBtn');
                     if (generateHpiBtn) {
-                        generateHpiBtn.addEventListener('click', async () => { // Make this async
+                        generateHpiBtn.addEventListener('click', async () => { 
+                            const gender = hpiPanelElement.querySelector('#hpiGender').value;
+                            const pastMedicalHistory = hpiPanelElement.querySelector('#hpiPastMedicalHistory').value;
                             const chiefComplaint = hpiPanelElement.querySelector('#hpiChiefComplaint').value;
+                            const onsetTiming = hpiPanelElement.querySelector('#hpiOnsetTiming').value;
+                            const accompaniedBy = hpiPanelElement.querySelector('#hpiAccompaniedBy').value;
                             const additionalSymptoms = hpiPanelElement.querySelector('#hpiAdditionalSymptoms').value;
-                            const onset = hpiPanelElement.querySelector('#hpiOnset').value;
-                            const otherNotes = hpiPanelElement.querySelector('#hpiOtherNotes').value;
+                            const context = hpiPanelElement.querySelector('#hpiContext').value;
+                            const pertinentNegatives = hpiPanelElement.querySelector('#hpiPertinentNegatives').value;
+                            const currentMedications = hpiPanelElement.querySelector('#hpiCurrentMedications').value;
                             const resultArea = hpiPanelElement.querySelector('#hpiAssistantResult');
 
-                            // 1. Indicate loading state
                             resultArea.textContent = 'Generating HPI...';
                             generateHpiBtn.disabled = true;
                             generateHpiBtn.textContent = 'Generating...';
 
                             const hpiData = {
+                                gender: gender,
+                                pastMedicalHistory: pastMedicalHistory,
                                 chiefComplaint: chiefComplaint,
-                                additionalSymptoms: additionalSymptoms,
-                                onset: onset,
-                                otherNotes: otherNotes
+                                onsetTiming: onsetTiming,
+                                accompaniedBy: accompaniedBy,
+                                otherSymptoms: additionalSymptoms, // app.py maps this to 'otherSymptoms'
+                                context: context,                 // app.py maps this to 'context'
+                                pertinentNegatives: pertinentNegatives,
+                                currentMedications: currentMedications
                             };
 
                             try {
@@ -189,7 +196,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
                                 if (response.ok) {
                                     const responseData = await response.json();
-                                    resultArea.textContent = responseData.generated_hpi || "No HPI generated.";
+                                    let displayText = "";
+                                    if (responseData.debug_prompt_sent) {
+                                        console.log("DEBUG - Data sent to and prompt constructed by server:\n", responseData.debug_prompt_sent);
+                                    }
+                                    displayText += responseData.generated_hpi || "No HPI generated.";
+                                    resultArea.textContent = displayText;
                                 } else {
                                     const errorData = await response.json();
                                     console.error('Error from server:', errorData);
@@ -199,7 +211,6 @@ document.addEventListener('DOMContentLoaded', () => {
                                 console.error('Network or other error fetching HPI:', error);
                                 resultArea.textContent = 'Error: Could not connect to the server to generate HPI.';
                             } finally {
-                                // 3. Revert loading state
                                 generateHpiBtn.disabled = false;
                                 generateHpiBtn.textContent = 'Generate HPI';
                             }
