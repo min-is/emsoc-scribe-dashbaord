@@ -218,7 +218,7 @@ def generate_hpi_route():
             return jsonify({"error": f"OpenAI Bad Request: {str(e)}"}), 400
         except APIError as e: 
             print(f"OpenAI API Error: {e}")
-            return jsonify({"error": f"Error communicating with AI model: {str(e)}"}), 500
+            return jsonify({"error": f"Error communicating with AI model(s): {str(e)}"}), 500
         except Exception as e: 
             print(f"Unexpected error during AI call: {e}")
             return jsonify({"error": "An unexpected error occurred while generating HPI."}), 500
