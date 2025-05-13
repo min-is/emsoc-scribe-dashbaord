@@ -323,6 +323,17 @@ document.addEventListener('DOMContentLoaded', () => {
                                 currentMedications: currentMedications
                             };
 
+                            console.log("HPI Data to send:", hpiData);
+                            const fetchOptions = {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(hpiData)
+                            };
+                            console.log("Fetch options:", fetchOptions);
+
+                            try {
+                                const response = await fetch('/generate-hpi', fetchOptions);
+
                             try {
                                 const response = await fetch('/generate-hpi', { /* ... */ });
                                 if (response.ok) {
