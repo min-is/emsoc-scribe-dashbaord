@@ -5,7 +5,7 @@ function generatePreferenceDetailsHTML(preferences) {
 
     const displayCategory = (categoryKey, preferenceData) => {
         let formattedCategory = categoryKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-        if (categoryKey === 'hpi_elements') formattedCategory = 'HPI';
+        if (categoryKey === 'hpi_elements') formattedCategory = 'HPI Elements';
         else if (categoryKey === 'mdm') formattedCategory = 'MDM/ED Course';
         else if (categoryKey === 'note_pref') formattedCategory = 'General Preferences';
         else if (categoryKey === 'other_pref') formattedCategory = 'Other Preferences';
@@ -57,7 +57,6 @@ function pinCurrentPreferences(providerName, preferences) {
         pinnedPreferences.classList.add('pinned-box');
         pinnedPreferences.dataset.providerId = currentProviderId;
 
-        // container for unpin
         const headerContainer = document.createElement('div');
         headerContainer.classList.add('pinned-header');
 
@@ -66,10 +65,9 @@ function pinCurrentPreferences(providerName, preferences) {
         titleElement.style.fontSize = '1.0em';
         headerContainer.appendChild(titleElement);
 
-        // unpin icon
         const unpinIcon = document.createElement('span');
         unpinIcon.id = 'unpinIcon';
-        unpinIcon.textContent = ' ✕ ';
+        unpinIcon.textContent = ' \u2715 '; 
         unpinIcon.style.cursor = 'pointer';
         unpinIcon.style.marginLeft = '10px';
         headerContainer.appendChild(unpinIcon);
@@ -82,64 +80,50 @@ function pinCurrentPreferences(providerName, preferences) {
         detailsContainer.innerHTML = generatePreferenceDetailsHTML(preferences);
 
         document.body.appendChild(pinnedPreferences);
-        pinnedPreferences.style.display = 'block';
-        makeDraggable(pinnedPreferences);
-        setupUnpinIcon(); // unpin iconclick
+        pinnedPreferences.style.display = 'block'; 
+        makeDraggable(pinnedPreferences); 
+        setupUnpinIcon(); 
         window.currentlyPinnedProviderName = providerName;
 
     } else if (pinnedPreferences && pinnedPreferences.dataset.providerId !== currentProviderId) {
         const titleElement = pinnedPreferences.querySelector('.pinned-header h3');
-        if (titleElement) titleElement.textContent = `${providerName} Preferences`;
+        if (titleElement) titleElement.textContent = `${providerName}`;
         const detailsContainer = pinnedPreferences.querySelector('.pinned-details');
         if (detailsContainer) {
             detailsContainer.innerHTML = generatePreferenceDetailsHTML(preferences);
         }
-        const unpinIcon = pinnedPreferences.querySelector('#unpinIcon');
-        if (unpinIcon) {
-            setupUnpinIcon();
-        }
         pinnedPreferences.dataset.providerId = currentProviderId;
         pinnedPreferences.style.display = 'block';
-        makeDraggable(pinnedPreferences);
         window.currentlyPinnedProviderName = providerName;
     }
 }
 
 function setupUnpinIcon() {
+    // This function might be called multiple times if pinCurrentPreferences is called for updates.
+    // Ensure event listener isn't duplicated or that it handles being called on an existing icon.
+    // A common pattern is to attach to document.body and use event delegation if icons are frequently added/removed.
+    // For now, assuming it's okay or called in a way that doesn't duplicate.
     const unpinIcon = document.getElementById('unpinIcon');
     if (unpinIcon) {
-        unpinIcon.addEventListener('click', () => {
-            let pinnedPreferences = document.getElementById('pinnedPreferences');
-            if (pinnedPreferences) {
-                pinnedPreferences.remove();
-                window.pinnedPreferences = null;
+        unpinIcon.onclick = () => { 
+            let pinnedPreferencesElement = document.getElementById('pinnedPreferences');
+            if (pinnedPreferencesElement) {
+                pinnedPreferencesElement.remove();
+                window.pinnedPreferences = null; 
                 window.currentlyPinnedProviderName = null;
             }
-        });
+        };
     }
 }
 
-function displayProviderPreferences(preferences, container) {
-    container.innerHTML = '';
+function displayProviderPreferences(preferences, container) { 
+    container.innerHTML = ''; 
     const displayOrder = ['note_pref', 'hpi_elements', 'physical_exam', 'mdm', 'other_pref', 'speed'];
     const displayedCategories = new Set();
 
-    displayOrder.forEach(categoryKey => {
-        if (preferences.hasOwnProperty(categoryKey)) {
-            displayCategory(categoryKey, preferences, container);
-            displayedCategories.add(categoryKey);
-        }
-    });
-
-    for (const categoryKey in preferences) {
-        if (preferences.hasOwnProperty(categoryKey) && !displayedCategories.has(categoryKey)) {
-            displayCategory(categoryKey, preferences, container);
-        }
-    }
-
-    function displayCategory(categoryKey, preferenceData, container) {
+    function displayCategoryLocal(categoryKey, preferenceData, targetContainer) {
         let formattedCategory = categoryKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-        if (categoryKey === 'hpi_elements') formattedCategory = 'HPI';
+        if (categoryKey === 'hpi_elements') formattedCategory = 'HPI Elements';
         else if (categoryKey === 'mdm') formattedCategory = 'MDM/ED Course';
         else if (categoryKey === 'note_pref') formattedCategory = 'General Preferences';
         else if (categoryKey === 'other_pref') formattedCategory = 'Other Preferences';
@@ -149,7 +133,7 @@ function displayProviderPreferences(preferences, container) {
         const categoryTitle = document.createElement('h4');
         categoryTitle.textContent = formattedCategory;
         categoryTitle.classList.add('preference-subcategory');
-        container.appendChild(categoryTitle);
+        targetContainer.appendChild(categoryTitle);
 
         const data = preferenceData.hasOwnProperty(categoryKey) ? preferenceData[categoryKey] : null;
 
@@ -158,17 +142,31 @@ function displayProviderPreferences(preferences, container) {
                 const preferenceItem = document.createElement('p');
                 preferenceItem.classList.add('preference-item-detail');
                 preferenceItem.textContent = preference;
-                container.appendChild(preferenceItem);
+                targetContainer.appendChild(preferenceItem);
             });
         } else if (typeof data === 'string') {
             const preferenceItem = document.createElement('p');
             preferenceItem.classList.add('preference-item-detail');
             preferenceItem.textContent = data;
+            targetContainer.appendChild(preferenceItem); 
         } else {
             const noPreference = document.createElement('p');
             noPreference.classList.add('preference-item-detail', 'no-preference');
             noPreference.textContent = `No specific preferences.`;
-            container.appendChild(noPreference);
+            targetContainer.appendChild(noPreference);
+        }
+    }
+
+    displayOrder.forEach(categoryKey => {
+        if (preferences.hasOwnProperty(categoryKey)) {
+            displayCategoryLocal(categoryKey, preferences, container);
+            displayedCategories.add(categoryKey);
+        }
+    });
+
+    for (const categoryKey in preferences) {
+        if (preferences.hasOwnProperty(categoryKey) && !displayedCategories.has(categoryKey)) {
+            displayCategoryLocal(categoryKey, preferences, container);
         }
     }
 }
@@ -186,7 +184,7 @@ function displayMedicationDetails(medication) {
     descriptionParagraph.textContent = medication.description;
     resultsDiv.appendChild(descriptionParagraph);
     if (medication.alternate_names && medication.alternate_names.length > 0) {
-        const alternateNamesParagraph = document.createElement('palt');
+        const alternateNamesParagraph = document.createElement('p'); 
         alternateNamesParagraph.innerHTML = `<strong>Alternative names:</strong> <span class="detail-label">${medication.alternate_names.join(', ')}</span>`;
         resultsDiv.appendChild(alternateNamesParagraph);
     }
@@ -207,47 +205,50 @@ function createHpiAssistantPanelHTML() {
                 <h3>HPI Assistant</h3>
                 <span class="close-panel-btn" id="closeHpiPanelBtn">&times;</span>
             </div>
-            <div class="panel-content">
-                <div class="hpi-input-group">
-                    <label for="hpiGender">1. Gender:</label>
-                    <input type="text" id="hpiGender" name="hpiGender" placeholder="e.g., Male, Female, Non-binary">
-                </div>
-                <div class="hpi-input-group">
-                    <label for="hpiPastMedicalHistory">2. Past Medical History (PMH):</label>
-                    <textarea id="hpiPastMedicalHistory" name="hpiPastMedicalHistory" rows="3" placeholder="e.g., Hypertension, Diabetes Type 2, Asthma. Enter 'None' if none."></textarea>
-                </div>
-                <div class="hpi-input-group">
-                    <label for="hpiChiefComplaint">3. Chief Complaint:</label>
-                    <input type="text" id="hpiChiefComplaint" name="hpiChiefComplaint" placeholder="e.g., Chest pain, Abdominal pain">
-                </div>
-                <div class="hpi-input-group">
-                    <label for="hpiOnsetTiming">4. Onset/Timing:</label>
-                    <input type="text" id="hpiOnsetTiming" name="hpiOnsetTiming" placeholder="e.g., 2 hours ago, Yesterday morning, For the past week">
-                </div>
-                <div class="hpi-input-group">
-                    <label for="hpiAccompaniedBy">5. Accompanied By / History By:</label>
-                    <input type="text" id="hpiAccompaniedBy" name="hpiAccompaniedBy" placeholder="e.g., Wife at bedside, Patient alone, EMS">
-                </div>
-                <div class="hpi-input-group">
-                    <label for="hpiAdditionalSymptoms">6. Other Symptoms (if applicable):</label>
-                    <input type="text" id="hpiAdditionalSymptoms" name="hpiAdditionalSymptoms" placeholder="e.g., Fever (Tmax=101F), chills, nausea">
-                </div>
-                <div class="hpi-input-group">
-                    <label for="hpiContext">7. Context / Word Vomit (narrative):</label>
-                    <textarea id="hpiContext" name="hpiContext" rows="4" placeholder="Enter patient's narrative, detailed description of events, 'word vomit'..."></textarea>
-                </div>
-                <div class="hpi-input-group">
-                    <label for="hpiPertinentNegatives">8. Pertinent Negatives:</label>
-                    <textarea id="hpiPertinentNegatives" name="hpiPertinentNegatives" rows="3" placeholder="e.g., Denies chest pain, shortness of breath, headache."></textarea>
-                </div>
-                <div class="hpi-input-group">
-                    <label for="hpiCurrentMedications">9. Current Medications:</label>
-                    <textarea id="hpiCurrentMedications" name="hpiCurrentMedications" rows="3" placeholder="e.g., Lisinopril 10mg daily, Metformin 500mg BID. Enter 'None' if none."></textarea>
-                </div>
-
-                <button id="generateHpiBtn" class="panel-button">Generate HPI</button>
-                <div id="hpiAssistantResult" class="hpi-result-area">
+            <div class="panel-content hpi-columns-container">
+                <div class="hpi-input-column">
+                    <div class="hpi-input-group">
+                        <label>1. Gender:</label>
+                        <div class="gender-options-container">
+                            <button type="button" class="gender-btn" data-value="Male">Male</button>
+                            <button type="button" class="gender-btn" data-value="Female">Female</button>
+                            <button type="button" class="gender-btn" data-value="Other">Other</button>
+                            <input type="text" id="hpiGenderOtherText" name="hpiGenderOtherText" placeholder="Specify" style="display: none; width: 120px; margin-left: 5px; vertical-align: middle;">
+                        </div>
+                        <input type="hidden" id="hpiGender" name="hpiGender"> </div>
+                    <div class="hpi-input-group">
+                        <label for="hpiPastMedicalHistory">2. Past Medical History (PMH):</label>
+                        <textarea id="hpiPastMedicalHistory" name="hpiPastMedicalHistory" rows="3" placeholder="e.g., hypertension, DM type 2, afib. Enter 'None' if none."></textarea>
                     </div>
+                    <div class="hpi-input-group">
+                        <label for="hpiChiefComplaint">3. Chief Complaint:</label>
+                        <input type="text" id="hpiChiefComplaint" name="hpiChiefComplaint" placeholder="e.g., Chest pain, Abdominal pain">
+                    </div>
+                    <div class="hpi-input-group">
+                        <label for="hpiOnsetTiming">4. Onset/Timing:</label>
+                        <input type="text" id="hpiOnsetTiming" name="hpiOnsetTiming" placeholder="e.g., 2 hours ago, yesterday morning, just PTA">
+                    </div>
+                    <div class="hpi-input-group">
+                        <label for="hpiAdditionalSymptoms">5. Other Symptoms (if applicable):</label>
+                        <input type="text" id="hpiAdditionalSymptoms" name="hpiAdditionalSymptoms" placeholder="e.g., fever (Tmax=101F), chills, nausea">
+                    </div>
+                    <div class="hpi-input-group">
+                        <label for="hpiContext">6. Context / Patient's Story (Details):</label>
+                        <textarea id="hpiContext" name="hpiContext" rows="4" placeholder="Enter the 'word vomit' from your notepad."></textarea>
+                    </div>
+                    <div class="hpi-input-group">
+                        <label for="hpiCurrentMedications">7. Current Medications:</label>
+                        <textarea id="hpiCurrentMedications" name="hpiCurrentMedications" rows="3" placeholder="e.g., Lisinopril 10mg daily, Metformin 500mg BID. Enter 'None' if none."></textarea>
+                    </div>
+                    <div class="hpi-action-buttons-container">
+                        <button type="button" id="clearHpiFieldsBtn" class="panel-button clear-button">Clear Fields</button>
+                        <button type="button" id="generateHpiBtn" class="panel-button generate-button">Generate HPI (Beta)</button>
+                    </div>
+                </div>
+                <div class="hpi-output-column">
+                    <div id="hpiAssistantResult" class="hpi-result-area">
+                    </div>
+                </div>
             </div>
         </div>
     `;

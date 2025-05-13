@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify, send_from_directory
 from fuzzywuzzy import fuzz
 import os
 import json
-from openai import OpenAI, APIError, AuthenticationError, RateLimitError, BadRequestError
+from openai import OpenAI, APIError, AuthenticationError, RateLimitError, BadRequestError 
 
 app = Flask(__name__, static_folder='.', static_url_path='')
 
@@ -113,7 +113,7 @@ def get_provider_details(provider_id):
         return jsonify(provider_data[provider_id]['preferences'])
     else:
         return jsonify({"error": "Provider not found"}), 404
-    
+
 @app.route('/generate-hpi', methods=['POST'])
 def generate_hpi_route():
     try:
@@ -125,10 +125,8 @@ def generate_hpi_route():
         pmh = data.get('pastMedicalHistory', '').strip()
         chief_complaint = data.get('chiefComplaint', '')
         onset_timing = data.get('onsetTiming', '')
-        accompanied_by = data.get('accompaniedBy', '')
-        other_symptoms = data.get('additionalSymptoms', '') 
-        context = data.get('otherNotes', '') 
-        pertinent_negatives = data.get('pertinentNegatives', '') 
+        other_symptoms = data.get('otherSymptoms', '')
+        context = data.get('context', '')
         current_medications = data.get('currentMedications', '')
 
         system_message_content = (
@@ -136,20 +134,20 @@ def generate_hpi_route():
             "for an adult emergency department in Southern California. Follow the provided format, syntax, "
             "and style meticulously. Convert times to 24-hour format. Format Tmax in parentheses if provided "
             "(e.g., fever (Tmax = 102F)). When NBNB is mentioned for vomiting, use 'NBNB' directly. "
-            "When a user types 's/p' it stands for 'status post,' and 'r/o' stands for 'rule(d) out.'"
-            "If a user writes that the patient has someone assisting them with their history, introduce them by "
+            "When a user types 's/p' it stands for 'status post,' and 'r/o' stands for 'rule(d) out.' "
+            "If a user writes that the patient has someone assisting them with their history (usually in the Context field now), introduce them by " # Clarified for context
             "saying 'Per (accompanant) providing additional history at bedside...'."
-            "If the patient has a history of serious mental disability or is coming in for any altered mental condition and unable to give a history"
-            "Write: Patient history is limited secondary to developmental delay/altered mental status/clinical condition/etc.. (choose the best one).)"
+            "If the patient has a history of serious mental disability or is coming in for any altered mental condition and unable to give a history (info likely in Context field now) " # Clarified for context
+            "Write: Patient history is limited secondary to developmental delay/altered mental status/clinical condition/etc.. (choose the best one). "
             "Correct grammatical errors, spelling, and improve terminology for clarity and professionalism, "
             "aiming for the quality of HPIs from esteemed institutions. Ensure the narrative is smooth and effective. "
             "Avoid awkward third-person phrasing like 'The patient states that...' where possible, instead "
             "favoring sentence starters like 'Patient reports that', 'States that', 'Endorses that', 'He/She notes that', etc. "
-            "Again, it is IMPERATIVE that you do not start sentences with 'The patient'"
+            "Again, it is IMPERATIVE that you do not start sentences with 'The patient'. "
             "After the HPI, provide a new line titled 'Differential diagnoses includes: ' followed by a list of 4-5 "
             "differential diagnoses from an Emergency Medicine perspective with brief (1 sentence) explanations. "
             "Acceptable ways to display differential diagnoses are using the title (e.g., 'Viral gastroenteritis') or statements "
-            "like 'Also consider,' 'Doubt,' 'Considered but ruled out.' Keep it concise."
+            "like 'Also consider,' 'Doubt,' 'Considered but ruled out.' Keep it concise. "
             "The first letter of your reponse should always be lowercase (w)."
         )
 
@@ -157,21 +155,19 @@ def generate_hpi_route():
             "Format and write HPIs in the same syntax and method as the sample. "
             "Begin every HPI with 'with no significant past medical history' (if past medical history is empty/none/similar) "
             "or 'with a past medical history of {pertinent PMH}'.\n\n"
-            "Sample Input Data Format:\n"
+            "Sample Input Data Format (Note: 'Accompanied by' and 'Pertinent negatives' are now expected to be part of 'Context' or inferred):\n"
             "1. Gender: male\n"
             "2. Past medical history: hypertension, hyperlipidemia, CKD stage III, afib\n"
             "3. Chief complaint: generalized weakness\n"
             "4. Onset/timing: for the past week but worse since last night\n"
-            "5. Accompanied by: wife\n"
-            "6. Additional symptoms: fever, chills, mild itchy rash to the left elbow\n"
-            "7. Context: pt's wife noticed pt being more fatigued and lethargic over the past week but significantly worse since last night.\n"
-            "8. Denies: nausea, vomiting, diarrhea, urinary symptoms\n"
-            "9. Currently on eliquis\n\n"
-            "Sample Output for the data above:\n"
+            "5. Additional symptoms: fever, chills, mild itchy rash to the left elbow\n"
+            "6. Context: pt's wife noticed pt being more fatigued and lethargic over the past week but significantly worse since last night. Denies nausea, vomiting, diarrhea, urinary symptoms.\n"
+            "7. Currently on eliquis\n\n"
+            "Sample Output for the data above (even if some input details are now part of 'Context'):\n"
             "\"with a past medical history of hypertension, hyperlipidemia, and chronic kidney disease stage III who presents to the Emergency Department "
-            "complaining of one week of generalized weakness, worse since yesterday evening. Per wife, who is providing additional history at bedside, " # Matched your example
-            "states that she has noticed that patient has been more fatigued and lethargic over the past week, and worse since last night, and looked very " # Matched your example
-            "pale today morning. Patient states that he has also been having subjective fevers, chills, and a mild itchy rash to the left elbow. He denies any " # Matched your example (subjective fevers)
+            "complaining of one week of generalized weakness, worse since yesterday evening. Per wife, who is providing additional history at bedside, "
+            "states that she has noticed that patient has been more fatigued and lethargic over the past week, and worse since last night, and looked very "
+            "pale today morning. Patient states that he has also been having subjective fevers, chills, and a mild itchy rash to the left elbow. He denies any "
             "recent nausea, vomiting, diarrhea, urinary symptoms, or focal neuro deficits. Patient is currently taking Eliquis.\n\n"
             "Differential diagnoses includes:\n"
             "- Sepsis: Given fever, chills, weakness, and lethargy, infection leading to sepsis is a concern.\n"
@@ -183,28 +179,25 @@ def generate_hpi_route():
         
         patient_data_for_prompt = (
             f"1. Gender: {gender}\n"
-            f"2. Past medical history: {pmh if pmh and pmh.lower().strip() not in ['none', 'no significant past medical history', 'no significant pmh', 'n/a', ''] else 'None'}\n" # Improved check for 'None' PMH
+            f"2. Past medical history: {pmh if pmh and pmh.lower().strip() not in ['none', 'no significant past medical history', 'no significant pmh', 'n/a', ''] else 'None'}\n"
             f"3. Chief complaint: {chief_complaint}\n"
             f"4. Onset/timing: {onset_timing}\n"
-            f"5. Accompanied by/history by: {accompanied_by}\n"
-            f"6. Other symptoms: {other_symptoms}\n"
-            f"7. Context: {context}\n"
-            f"8. Pertinent negatives: {pertinent_negatives}\n"
-            f"9. Current medications: {current_medications}\n"
+            f"5. Other symptoms: {other_symptoms}\n"
+            f"6. Context: {context}\n"
+            f"7. Current medications: {current_medications}\n"
         )
         
         full_prompt_for_gpt = user_prompt_instructions + patient_data_for_prompt
 
-        # --- Actual GPT API Call (Updated for OpenAI library v1.0.0+) ---
         try:
             api_key = os.getenv("OPENAI_API_KEY")
             if not api_key:
                 print("Error: OPENAI_API_KEY environment variable not found.")
                 return jsonify({"error": "OpenAI API key not configured on the server"}), 500
 
-            client = OpenAI(api_key=api_key) # Initialize client with the API key
+            client = OpenAI(api_key=api_key) 
 
-            completion = client.chat.completions.create(
+            completion = client.chat.completions.create( 
                 model="o4-mini",
                 messages=[
                     {"role": "system", "content": system_message_content},
@@ -220,13 +213,13 @@ def generate_hpi_route():
         except RateLimitError as e:
             print(f"OpenAI Rate Limit Error: {e}")
             return jsonify({"error": f"OpenAI Rate Limit Exceeded: Please try again later or check your plan. ({str(e)})"}), 500
-        except BadRequestError as e: # Often for issues with the request itself (e.g. prompt too long, bad model name)
+        except BadRequestError as e: 
             print(f"OpenAI Bad Request Error: {e}")
-            return jsonify({"error": f"OpenAI Bad Request: {str(e)}"}), 400 # Return 400 for bad client request
-        except APIError as e: # Catch other OpenAI API errors
+            return jsonify({"error": f"OpenAI Bad Request: {str(e)}"}), 400
+        except APIError as e: 
             print(f"OpenAI API Error: {e}")
             return jsonify({"error": f"Error communicating with AI model: {str(e)}"}), 500
-        except Exception as e: # Catch other unexpected errors during the API call phase
+        except Exception as e: 
             print(f"Unexpected error during AI call: {e}")
             return jsonify({"error": "An unexpected error occurred while generating HPI."}), 500
 

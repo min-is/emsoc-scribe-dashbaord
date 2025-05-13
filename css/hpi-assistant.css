@@ -1,20 +1,23 @@
+/* In betadash/css/hpi-assistant.css */
+
 .draggable-panel {
     position: fixed;
-    top: 150px;
-    left: 300px;
-    background-color: rgba(37, 37, 37, 0.4);
+    top: 150px; /* Initial position */
+    left: 250px; /* Adjusted initial position slightly if panel is wider */
+    background-color: rgba(37, 37, 37, 0.85); /* Slightly more opaque for inputs */
     backdrop-filter: blur(8px);
     color: #d4d4d4;
     border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    padding: 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    padding: 0; /* Header and content will have their own padding */
     z-index: 40;
     cursor: grab;
-    width: 300px;
-    max-height: 80vh;
-    display: none;
+    width: 800px; /* << INCREASED WIDTH for two columns, adjust as needed */
+    max-height: 85vh; /* Adjusted max-height */
+    display: none; /* Initially hidden */
     flex-direction: column;
     font-family: 'Calibre', 'Arial', sans-serif;
+    overflow: hidden; /* Prevent scrollbars on the panel itself if columns handle it */
 }
 
 .draggable-panel.active {
@@ -34,6 +37,7 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
+    flex-shrink: 0; /* Prevent header from shrinking */
 }
 
 .panel-header h3 {
@@ -41,7 +45,7 @@
     font-size: 1.1em;
     font-weight: normal;
     color: white;
-     text-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.7); 
 }
 
 .close-panel-btn {
@@ -55,14 +59,32 @@
     color: #fff;
 }
 
-.panel-content {
+.hpi-columns-container { 
+    display: flex;
+    flex-grow: 1;
+    overflow: hidden;
+    min-height: 0;
+}
+
+.hpi-input-column {
+    flex: 1;
     padding: 15px;
     overflow-y: auto;
-    flex-grow: 1;
+    border-right: 1px solid rgba(70, 70, 70, 0.5);
+    display: flex;
+    flex-direction: column;
+}
+
+.hpi-output-column {
+    flex: 1.2;
+    padding: 15px;
+    overflow-y: auto;
+    display: flex; 
+    flex-direction: column;
 }
 
 .hpi-input-group {
-    margin-bottom: 15px;
+    margin-bottom: 12px; 
 }
 
 .hpi-input-group label {
@@ -74,7 +96,7 @@
 
 .hpi-input-group input[type="text"],
 .hpi-input-group textarea {
-    width: calc(100% - 20px); /* Full width minus padding */
+    width: calc(100% - 22px);
     padding: 8px 10px;
     border-radius: 5px;
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -87,8 +109,8 @@
 .hpi-input-group input[type="text"]:focus,
 .hpi-input-group textarea:focus {
     outline: none;
-    border-color: rgba(255, 203, 164, 0.7);
-    box-shadow: 0 0 5px rgba(218, 173, 139, 0.3);
+    border-color: rgba(100, 181, 246, 0.7); 
+    box-shadow: 0 0 5px rgba(100, 181, 246, 0.3);
 }
 
 .hpi-input-group textarea {
@@ -96,34 +118,167 @@
     min-height: 60px;
 }
 
+
+.gender-options-container {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.gender-btn {
+    padding: 6px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background-color: rgba(60, 60, 60, 0.7); 
+    color: #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Calibre', 'Arial', sans-serif;
+    font-size: 0.9em;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s; 
+}
+
+.gender-btn:hover {
+    background-color: rgba(80, 80, 80, 0.9);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.gender-btn.selected {
+    background-color: rgba(70, 70, 70, 0.8); 
+    color: #f0f0f0; 
+    border-color: rgba(255, 179, 126, 0.9);
+    box-shadow: 0 0 8px rgba(255, 179, 126, 0.5);
+}
+
+.hpi-action-buttons-container {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.hpi-action-buttons-container .panel-button {
+    flex: 1;
+    width: auto;
+    margin-top: 0;
+}
+
+.panel-button.clear-button {
+    background-color: rgba(80, 80, 80, 0.8);
+    color: #c0c0c0;
+}
+
+.panel-button.clear-button:hover {
+    background-color: rgba(100, 100, 100, 0.9);
+    background-image: none; 
+    animation: none;
+    color: #e0e0e0;
+    border-color: rgba(255, 255, 255, 0.3); 
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+}
+
+.panel-button.generate-button:hover {
+    background-color: rgba(65, 65, 65, 0.95); 
+    border-color: rgba(255, 255, 255, 0.8); 
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.5); 
+    background-image: linear-gradient(
+        90deg,
+        #ffcc00, #ff9500, #ff2d55, #ffcc00
+    );
+    background-size: 200% auto; 
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent; 
+    animation: iridescentButtonTextShimmer 3s linear infinite; 
+}
+
+.hpi-input-column .hpi-action-buttons-container {
+    margin-top: auto;
+}
+
+
+#hpiGenderOtherText {
+    padding: 6px 8px; 
+    border-radius: 5px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background-color: rgba(20, 20, 20, 0.5);
+    color: #f0f0f0;
+    font-family: 'Calibre', 'Arial', sans-serif;
+    font-size: 0.9em; 
+}
+
+#hpiGenderOtherText:focus {
+    outline: none;
+    border-color: rgba(100, 181, 246, 0.7);
+    box-shadow: 0 0 5px rgba(100, 181, 246, 0.3);
+}
+
 .panel-button {
     display: block;
     width: 100%;
-    padding: 5px;
-    margin-top: 5px;
-    background-color: rgba(255, 255, 255, 0.7);
-    color: rgba(37, 37, 37, 0.8);
-    border: none;
-    border-radius: 3px;
+    padding: 10px 12px; 
+    margin-top: 15px;  
+    background-color: rgba(50, 50, 50, 0.9); 
+    color: #e0e0e0; 
+    border: 1px solid transparent; 
+    border-radius: 5px;
     font-family: 'Calibre', 'Arial', sans-serif;
     font-size: 1em;
+    font-weight: normal; 
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    text-align: center; 
 }
+
+.hpi-input-column .panel-button {
+    margin-top: auto;
+}
+
 
 .panel-button:hover {
-    background-color: #3f3f3f; /* Darker shade on hover */
+    background-color: rgba(65, 65, 65, 0.95); 
+    border-color: rgba(255, 255, 255, 0.8); 
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.5); 
+    background-image: linear-gradient(
+        90deg,
+        #007aff, #4cd964, #ffcc00, #ff9500, #ff2d55, #af52de, #007aff
+    );
+    background-size: 200% auto; 
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent; 
+    animation: iridescentButtonTextShimmer 3s linear infinite; 
 }
 
-.hpi-result-area {
-    margin-top: 20px;
+.panel-button:disabled,
+.panel-button:disabled:hover {
+    background-color: rgba(40, 40, 40, 0.7);
+    color: #777;
+    cursor: not-allowed;
+    border-color: transparent;
+    box-shadow: none;
+    background-image: none;
+    animation: none;
+}
+
+#hpiAssistantResult {
+    flex-grow: 1;
     padding: 10px;
-    background-color: rgba(20, 20, 20, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: rgba(25, 25, 25, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: 5px;
-    min-height: 50px;
+    min-height: 100px;
     font-size: 0.95em;
     line-height: 1.5;
-    white-space: pre-wrap; /* To preserve formatting from GPT */
+    white-space: pre-wrap; 
     color: #e0e0e0;
+    overflow-y: auto;
+}
+
+@keyframes iridescentButtonTextShimmer {
+    0% {
+        background-position: 0% center;
+    }
+    100% {
+        background-position: 200% center;
+    }
 }

@@ -43,7 +43,35 @@ function makeDraggable(element) {
     }
 }
 
-// --- Canvas Setup Functions ---
+let typewriterTimeoutId = null;
+
+function displayTextWithTypewriterEffect(element, text, speed = 20) {
+    if (typewriterTimeoutId) {
+        clearTimeout(typewriterTimeoutId);
+    }
+    element.innerHTML = '';
+    let i = 0;
+    
+    const textWithBreaks = text.replace(/\n/g, '<br>');
+
+    function typeCharacter() {
+        if (i < textWithBreaks.length) {
+            if (textWithBreaks.substring(i, i + 4).toLowerCase() === '<br>') {
+                element.innerHTML += '<br>';
+                i += 4;
+            } else {
+                element.innerHTML += textWithBreaks.charAt(i);
+                i++;
+            }
+            element.scrollTop = element.scrollHeight;
+            typewriterTimeoutId = setTimeout(typeCharacter, speed);
+        } else {
+            typewriterTimeoutId = null;
+        }
+    }
+    typeCharacter();
+}
+
 function setupCanvas() {
     const canvas = document.getElementById('backgroundCanvas');
     const ctx = canvas.getContext('2d');
