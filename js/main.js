@@ -348,7 +348,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                     if (responseData.generated_hpi) {
                                         resultArea.innerHTML = responseData.generated_hpi.replace(/\n/g, '<br>');
                                         saveHpiPanelState();
-                                        displayTextWithTypewriterEffect(resultArea, responseData.generated_hpi, 1); 
+                                        displayTextWithTypewriterEffect(resultArea, responseData.generated_hpi, 0); 
                                     } else {
                                         resultArea.textContent = "No HPI generated.";
                                         saveHpiPanelState(); 
