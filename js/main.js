@@ -6,20 +6,21 @@ let panelOpen = false;
 let currentlyPinnedProviderName = null;
 let particlesArray = [];
 let hpiPanelElement = null; // To keep track of the HPI panel element
-const numberOfParticles = 50; // REDUCED for better performance
-const connectDistance = 100; // REDUCED for less processing
-let animationFrameId; // To control the animation loop
-let isAnimationEnabled = true; // To toggle animation
+const numberOfParticles = 50; 
+const connectDistance = 100; 
+let animationFrameId; 
+let isAnimationEnabled = true; 
 const mouse = {
     x: null,
     y: null,
-    radius: 120 // REDUCED for less processing
+    radius: 120 
 };
 let canvas, ctx, dpr;
 
 // --- START: Auto-Save Functionality ---
 const HPI_ASSISTANT_STORAGE_KEY = 'hpiAssistantState';
 
+// UPDATED: Save only the remaining fields
 function saveHpiPanelState() {
     if (!hpiPanelElement || !hpiPanelElement.classList.contains('active')) {
         return; 
@@ -30,11 +31,7 @@ function saveHpiPanelState() {
         genderOtherText: hpiPanelElement.querySelector('#hpiGenderOtherText').value,
         selectedGenderButtonValue: null,
         pastMedicalHistory: hpiPanelElement.querySelector('#hpiPastMedicalHistory').value,
-        chiefComplaint: hpiPanelElement.querySelector('#hpiChiefComplaint').value,
-        onsetTiming: hpiPanelElement.querySelector('#hpiOnsetTiming').value,
-        additionalSymptoms: hpiPanelElement.querySelector('#hpiAdditionalSymptoms').value,
         context: hpiPanelElement.querySelector('#hpiContext').value,
-        currentMedications: hpiPanelElement.querySelector('#hpiCurrentMedications').value,
         hpiResultHTML: hpiPanelElement.querySelector('#hpiAssistantResult').innerHTML
     };
 
@@ -50,6 +47,7 @@ function saveHpiPanelState() {
     }
 }
 
+// UPDATED: Restore only the remaining fields
 function restoreHpiPanelState() {
     if (!hpiPanelElement) return;
 
@@ -59,11 +57,7 @@ function restoreHpiPanelState() {
             const state = JSON.parse(savedStateJSON);
 
             hpiPanelElement.querySelector('#hpiPastMedicalHistory').value = state.pastMedicalHistory || '';
-            hpiPanelElement.querySelector('#hpiChiefComplaint').value = state.chiefComplaint || '';
-            hpiPanelElement.querySelector('#hpiOnsetTiming').value = state.onsetTiming || '';
-            hpiPanelElement.querySelector('#hpiAdditionalSymptoms').value = state.additionalSymptoms || '';
             hpiPanelElement.querySelector('#hpiContext').value = state.context || '';
-            hpiPanelElement.querySelector('#hpiCurrentMedications').value = state.currentMedications || '';
             
             const resultArea = hpiPanelElement.querySelector('#hpiAssistantResult');
             if (state.hpiResultHTML) {
@@ -110,7 +104,7 @@ function debounce(func, delay) {
 
 // --- START: Animation Control ---
 function startAnimation() {
-    if (!isAnimationEnabled || animationFrameId) return; // Don't start if already running or disabled
+    if (!isAnimationEnabled || animationFrameId) return;
     isAnimationEnabled = true;
     const toggleBtn = document.getElementById('toggleAnimationBtn');
     if(toggleBtn) toggleBtn.textContent = 'FX: On';
@@ -125,12 +119,12 @@ function stopAnimation() {
     if(toggleBtn) toggleBtn.textContent = 'FX: Off';
     cancelAnimationFrame(animationFrameId);
     animationFrameId = null;
-    ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr); // Clear canvas when stopping
+    ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
     canvas.style.display = 'none';
 }
 
 function animateParticles() {
-    if (!isAnimationEnabled) return; // Stop the loop if animation is disabled
+    if (!isAnimationEnabled) return; 
 
     ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
     for (let i = 0; i < particlesArray.length; i++) {
@@ -156,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ctx = canvasData.ctx;
     dpr = canvasData.dpr;
     particlesArray = initParticles(canvas, ctx, dpr, numberOfParticles);
-    startAnimation(); // Start the animation initially
+    startAnimation(); 
 
     if(toggleAnimationBtn){
         toggleAnimationBtn.addEventListener('click', () => {
@@ -270,10 +264,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         });
                     }
 
+                    // UPDATED: Watch only the remaining fields for changes
                     const inputsToSaveOnChange = [
-                        '#hpiPastMedicalHistory', '#hpiChiefComplaint', '#hpiOnsetTiming',
-                        '#hpiAdditionalSymptoms', '#hpiContext', '#hpiCurrentMedications',
-                        '#hpiGenderOtherText'
+                        '#hpiPastMedicalHistory', '#hpiContext', '#hpiGenderOtherText'
                     ];
                     inputsToSaveOnChange.forEach(selector => {
                         const inputElement = hpiPanelElement.querySelector(selector);
@@ -323,24 +316,16 @@ document.addEventListener('DOMContentLoaded', () => {
                                 finalGenderValue = hpiGenderOtherTextInput.value.trim();
                             }
 
+                            // UPDATED: Get values from the remaining fields
                             const pastMedicalHistory = hpiPanelElement.querySelector('#hpiPastMedicalHistory').value;
-                            const chiefComplaint = hpiPanelElement.querySelector('#hpiChiefComplaint').value;
-                            const onsetTiming = hpiPanelElement.querySelector('#hpiOnsetTiming').value;
-                            const additionalSymptoms = hpiPanelElement.querySelector('#hpiAdditionalSymptoms').value;
                             const context = hpiPanelElement.querySelector('#hpiContext').value;
-                            const currentMedications = hpiPanelElement.querySelector('#hpiCurrentMedications').value;
                             
-                            if (!chiefComplaint.trim() || !context.trim()) {
+                            // UPDATED: Validate only the context field
+                            if (!context.trim()) {
                                 resultArea.innerHTML = '';
-                                resultArea.textContent = 'Error: Please enter both a "Chief Complaint" and "Context / Patient\'s Story" before generating the HPI.';
-                                if (!chiefComplaint.trim()) {
-                                    hpiPanelElement.querySelector('#hpiChiefComplaint').classList.add('input-error-highlight');
-                                    setTimeout(() => hpiPanelElement.querySelector('#hpiChiefComplaint').classList.remove('input-error-highlight'), 2000);
-                                }
-                                if (!context.trim()) {
-                                    hpiPanelElement.querySelector('#hpiContext').classList.add('input-error-highlight');
-                                    setTimeout(() => hpiPanelElement.querySelector('#hpiContext').classList.remove('input-error-highlight'), 2000);
-                                }
+                                resultArea.textContent = 'Error: Please enter the "Context / Patient\'s Story" before generating the HPI.';
+                                hpiPanelElement.querySelector('#hpiContext').classList.add('input-error-highlight');
+                                setTimeout(() => hpiPanelElement.querySelector('#hpiContext').classList.remove('input-error-highlight'), 2000);
                                 return;
                             }
                             
@@ -350,14 +335,11 @@ document.addEventListener('DOMContentLoaded', () => {
                             generateHpiBtn.disabled = true;
                             generateHpiBtn.textContent = 'Generating...';
 
+                            // UPDATED: Send only the simplified data
                             const hpiData = {
                                 gender: finalGenderValue,
                                 pastMedicalHistory: pastMedicalHistory,
-                                chiefComplaint: chiefComplaint,
-                                onsetTiming: onsetTiming,
-                                otherSymptoms: additionalSymptoms, 
-                                context: context,                 
-                                currentMedications: currentMedications
+                                context: context
                             };
 
                             const fetchOptions = {
@@ -399,15 +381,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         });
                     }
 
+                    // UPDATED: Clear only the remaining fields
                     const clearHpiFieldsBtn = hpiPanelElement.querySelector('#clearHpiFieldsBtn');
                     if (clearHpiFieldsBtn) {
                         clearHpiFieldsBtn.addEventListener('click', () => {
                             hpiPanelElement.querySelector('#hpiPastMedicalHistory').value = '';
-                            hpiPanelElement.querySelector('#hpiChiefComplaint').value = '';
-                            hpiPanelElement.querySelector('#hpiOnsetTiming').value = '';
-                            hpiPanelElement.querySelector('#hpiAdditionalSymptoms').value = '';
                             hpiPanelElement.querySelector('#hpiContext').value = '';
-                            hpiPanelElement.querySelector('#hpiCurrentMedications').value = '';
                             
                             genderBtns.forEach(btn => btn.classList.remove('selected'));
                             hpiGenderOtherTextInput.style.display = 'none';
@@ -417,7 +396,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             hpiPanelElement.querySelector('#hpiAssistantResult').innerHTML = '';
 
                             saveHpiPanelState(); 
-                            hpiPanelElement.querySelector('#hpiChiefComplaint').focus();
+                            hpiPanelElement.querySelector('#hpiPastMedicalHistory').focus();
                         });
                     }
                 } else {

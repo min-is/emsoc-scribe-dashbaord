@@ -99,10 +99,6 @@ function pinCurrentPreferences(providerName, preferences) {
 }
 
 function setupUnpinIcon() {
-    // This function might be called multiple times if pinCurrentPreferences is called for updates.
-    // Ensure event listener isn't duplicated or that it handles being called on an existing icon.
-    // A common pattern is to attach to document.body and use event delegation if icons are frequently added/removed.
-    // For now, assuming it's okay or called in a way that doesn't duplicate.
     const unpinIcon = document.getElementById('unpinIcon');
     if (unpinIcon) {
         unpinIcon.onclick = () => { 
@@ -198,6 +194,7 @@ function displayMedicationDetails(medication) {
     }
 }
 
+// UPDATED: Function to create the simplified HPI Assistant panel HTML
 function createHpiAssistantPanelHTML() {
     let html = `
         <div id="hpiAssistantPanel" class="draggable-panel">
@@ -215,30 +212,15 @@ function createHpiAssistantPanelHTML() {
                             <button type="button" class="gender-btn" data-value="Other">Other</button>
                             <input type="text" id="hpiGenderOtherText" name="hpiGenderOtherText" placeholder="Specify" style="display: none; width: 120px; margin-left: 5px; vertical-align: middle;">
                         </div>
-                        <input type="hidden" id="hpiGender" name="hpiGender"> </div>
+                        <input type="hidden" id="hpiGender" name="hpiGender">
+                    </div>
                     <div class="hpi-input-group">
                         <label for="hpiPastMedicalHistory">2. Past Medical History (PMH):</label>
-                        <textarea id="hpiPastMedicalHistory" name="hpiPastMedicalHistory" rows="3" placeholder="e.g., hypertension, DM type 2, afib. Enter 'None' if none."></textarea>
+                        <textarea id="hpiPastMedicalHistory" name="hpiPastMedicalHistory" rows="4" placeholder="e.g., hypertension, DM type 2, afib. Enter 'None' if none."></textarea>
                     </div>
                     <div class="hpi-input-group">
-                        <label for="hpiChiefComplaint">3. Chief Complaint:</label>
-                        <input type="text" id="hpiChiefComplaint" name="hpiChiefComplaint" placeholder="e.g., Chest pain, Abdominal pain">
-                    </div>
-                    <div class="hpi-input-group">
-                        <label for="hpiOnsetTiming">4. Onset/Timing:</label>
-                        <input type="text" id="hpiOnsetTiming" name="hpiOnsetTiming" placeholder="e.g., 2 hours ago, yesterday morning, just PTA">
-                    </div>
-                    <div class="hpi-input-group">
-                        <label for="hpiAdditionalSymptoms">5. Other Symptoms (if applicable):</label>
-                        <input type="text" id="hpiAdditionalSymptoms" name="hpiAdditionalSymptoms" placeholder="e.g., fever (Tmax=101F), chills, nausea">
-                    </div>
-                    <div class="hpi-input-group">
-                        <label for="hpiContext">6. Context / Patient's Story (Details):</label>
-                        <textarea id="hpiContext" name="hpiContext" rows="4" placeholder="Enter the 'word vomit' from your notepad."></textarea>
-                    </div>
-                    <div class="hpi-input-group">
-                        <label for="hpiCurrentMedications">7. Current Medications:</label>
-                        <textarea id="hpiCurrentMedications" name="hpiCurrentMedications" rows="3" placeholder="e.g., Lisinopril 10mg daily, Metformin 500mg BID. Enter 'None' if none."></textarea>
+                        <label for="hpiContext">3. Context / Patient's Story:</label>
+                        <textarea id="hpiContext" name="hpiContext" rows="10" placeholder="Enter all details here: chief complaint, onset, timing, symptoms, current medications, etc."></textarea>
                     </div>
                     <div class="hpi-action-buttons-container">
                         <button type="button" id="clearHpiFieldsBtn" class="panel-button clear-button">Clear Fields</button>

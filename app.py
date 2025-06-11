@@ -114,6 +114,7 @@ def get_provider_details(provider_id):
     else:
         return jsonify({"error": "Provider not found"}), 404
 
+# UPDATED: Simplified HPI generation route
 @app.route('/generate-hpi', methods=['POST'])
 def generate_hpi_route():
     try:
@@ -121,37 +122,35 @@ def generate_hpi_route():
         if not data:
             return jsonify({"error": "No input data provided"}), 400
 
+        # Get the simplified data
         gender = data.get('gender', '')
         pmh = data.get('pastMedicalHistory', '').strip()
-        chief_complaint = data.get('chiefComplaint', '')
-        onset_timing = data.get('onsetTiming', '')
-        other_symptoms = data.get('otherSymptoms', '')
-        context = data.get('context', '')
-        current_medications = data.get('currentMedications', '')
+        context = data.get('context', '') # This is the main input now
 
+        if not context:
+            return jsonify({"error": "Context is a required field."}), 400
+
+        # UPDATED: System prompt to reflect the new input structure
         system_message_content = (
             "You are an expert medical scribe tasked with writing a perfect medical HPI "
-            "for an adult emergency department in Southern California. Follow the provided format, syntax, "
-            "and style meticulously. Convert times to 24-hour format wihtout the semicolon (e.g., 2 pm becomes 1400). Format fever Tmax (if given) in parentheses if fever as a complaint is provided "
+            "for an adult emergency department in Southern California. The user will provide raw context about the patient's story. "
+            "From this context, you must extract and synthesize the chief complaint, onset, timing, symptoms, and relevant medications. "
+            "Follow the provided format, syntax, and style meticulously. Convert times to 24-hour format without the semicolon (e.g., 2 pm becomes 1400). Format fever Tmax (if given) in parentheses if fever as a complaint is provided "
             "(e.g., fever (Tmax = 102F)). When NBNB is mentioned for vomiting, use 'NBNB' directly. Do not write 'non-bloody, non-bilious.'"
             "When a user types 's/p' it stands for 'status post,' and 'r/o' stands for 'rule(d) out.' "
             "When giving the onset of symptoms, format it very similar to'three days of {chief complaint},' or '...onset three days ago.'"
             "If the there are two time inputs such as '6 days ago but worse over the past 2 days', write something very similar to 'six days of {chief complaint}, worse over the past two days.'"
-            "If the patient has someone assisting them with their history (usually in the Context field now), introduce them by "
+            "If the patient has someone assisting them with their history (usually in the Context field), introduce them by "
             "saying 'Per (accompanant) providing additional history at bedside...'. You must write the 'providing additional history at bedside part' as this detail is important."
             "If the patient has a history of dialysis and the user provides the days of dialysis format the condition as 'ESRD on hemodialysis (M/W/F).'"
             "The M/W/F can be changed accordingly to user's input; here are the codes for the days SUN/M/T/W/TH/F/SAT"
-            "If the patient has a history of serious mental disability or is coming in for any altered mental condition and unable to give a history (info likely in Context field now) " # Clarified for context
+            "If the patient has a history of serious mental disability or is coming in for any altered mental condition and/or unable to give a history (info likely in Context field) "
             "Write: Patient history is limited secondary to developmental delay/altered mental status/clinical condition/dementia... (choose the best one). "
             "Correct grammatical errors, spelling, and improve terminology for clarity and professionalism, "
             "aiming for the quality of HPIs from esteemed institutions. Ensure the narrative is smooth and effective. "
             "Never use third-person phrasing like 'The patient states that...' where possible, instead "
             "ALWAYS using starters like 'Patient reports that', 'States that', 'Endorses that', 'He/She notes that', etc. "
             "Again, it is IMPERATIVE that you do not start sentences with 'The patient'. "
-            "After the HPI, provide a new line titled 'Differential diagnoses includes: ' followed by a list of 4-5 "
-            "differential diagnoses from an Emergency Medicine perspective."
-            "Acceptable ways to display differential diagnoses are using the title (e.g., 'Viral gastroenteritis') or statements "
-            "like 'Also consider,' 'Doubt,' 'Considered but ruled out.' Keep it concise. "
             "When there are abbreviations used in the HPI, do not write out the full name unless necessary."
             "For example: 'GERD' should be kept as GERD as the full name adds unnecessary fluff to the HPI and can make it harder to read."
             "However, simple abbreviations such as 'Afib' can be written out for better clarity. In general avoid unabbreviateing long names that takes away from the readability of the HPI"
@@ -159,40 +158,28 @@ def generate_hpi_route():
             "The first letter of your reponse should always be lowercase (w)."
         )
 
+        # UPDATED: User instructions and sample data to match the new UI
         user_prompt_instructions = (
-            "Format and write HPIs in a similar tone annd method as the sample. "
+            "Format and write HPIs in a similar tone and method as the sample. "
             "Begin every HPI with 'with no significant past medical history' (if past medical history is empty/none/similar) "
             "or 'with a past medical history of {pertinent PMH}'.\n\n"
-            "Sample Input Data Format (Note: 'Accompanied by' and 'Pertinent negatives' are now expected to be part of 'Context' or inferred):\n"
+            "Sample Input Data Format:\n"
             "1. Gender: male\n"
             "2. Past medical history: hypertension, hyperlipidemia, CKD stage III, esrd on hd (t/th/sat), afib\n"
-            "3. Chief complaint: generalized weakness\n"
-            "4. Onset/timing: for the past week but worse since last night\n"
-            "5. Additional symptoms: fever, chills, and intermittent NBNB vomiting\n"
-            "6. Context: pt's wife noticed pt being more fatigued and lethargic over the past week but significantly worse since last night. Denies nausea, vomiting, diarrhea, urinary symptoms.\n"
-            "7. Currently on eliquis\n\n"
-            "Sample Output for the data above (even if some input details are now part of 'Context'):\n"
+            "3. Context: pt's wife noticed pt being more fatigued and lethargic over the past week but significantly worse since last night. pt has had generalized weakness for a week. Denies nausea, vomiting, diarrhea, urinary symptoms. pt has had subjective fevers, chills, and intermittent NBNB vomiting since 0900 today. currently on eliquis.\n\n"
+            "Sample Output for the data above:\n"
             "\"with a past medical history of hypertension, hyperlipidemia, chronic kidney disease stage III, and ESRD on hemodialyis (T/TH/SAT) who presents to the Emergency Department "
             "complaining of one week of generalized weakness, worse since yesterday evening. Per wife who is providing additional history at bedside, "
             "states that she has noticed that patient has been more fatigued and lethargic over the past week. States that patient did not want to eat last night and looked very "
             "pale today morning. Patient states that he has also been having subjective fevers, chills, and intermittent episodes of NBNB vomiting since 0900 today. He denies any "
             "recent nausea, vomiting, diarrhea, urinary symptoms, or focal neuro deficits. Currently taking Eliquis and is followed by Dr. Kolski (cardiology).\n\n"
-            "Differential diagnoses includes:\n"
-            "- Sepsis\n"
-            "- Consider Anemia\n"
-            "- Considered but doubt adverse drug reaction\n"
-            "- Viral Syndrome\"\n\n"
-            "--- Now, generate an HPI for the following patient ---\n"
         )
         
+        # UPDATED: Simplified patient data string
         patient_data_for_prompt = (
             f"1. Gender: {gender}\n"
             f"2. Past medical history: {pmh if pmh and pmh.lower().strip() not in ['none', 'no significant past medical history', 'no significant pmh', 'n/a', ''] else 'None'}\n"
-            f"3. Chief complaint: {chief_complaint}\n"
-            f"4. Onset/timing: {onset_timing}\n"
-            f"5. Other symptoms: {other_symptoms}\n"
-            f"6. Context: {context}\n"
-            f"7. Current medications: {current_medications}\n"
+            f"3. Context: {context}\n"
         )
         
         full_prompt_for_gpt = user_prompt_instructions + patient_data_for_prompt
