@@ -12,7 +12,7 @@
     padding: 0;
     z-index: 40;
     cursor: grab;
-    width: 650px; /* << REDUCED WIDTH */
+    width: 650px; /* << UPDATED WIDTH */
     max-height: 85vh;
     display: none;
     flex-direction: column;
@@ -104,19 +104,20 @@
     color: #f0f0f0;
     font-family: 'Calibre', 'Arial', sans-serif;
     font-size: 1em;
+    transition: border-color 0.3s, box-shadow 0.3s; /* Added transition for smooth glow */
 }
 
+/* UPDATED: Changed focus glow to orange */
 .hpi-input-group input[type="text"]:focus,
 .hpi-input-group textarea:focus {
     outline: none;
-    border-color: rgba(100, 181, 246, 0.7); 
-    box-shadow: 0 0 5px rgba(100, 181, 246, 0.3);
+    border-color: rgba(255, 179, 126, 0.9);
+    box-shadow: 0 0 8px rgba(255, 179, 126, 0.5);
 }
 
 .hpi-input-group textarea {
     resize: vertical;
 }
-
 
 .gender-options-container {
     display: flex;
@@ -152,8 +153,8 @@
 .hpi-action-buttons-container {
     display: flex;
     gap: 10px;
-    margin-top: auto; /* Push buttons to the bottom */
-    padding-top: 15px; /* Add space above buttons */
+    margin-top: auto;
+    padding-top: 15px;
 }
 
 .hpi-action-buttons-container .panel-button {
@@ -201,7 +202,6 @@
     animation: iridescentButtonTextShimmer 3s linear infinite; 
 }
 
-
 #hpiGenderOtherText {
     padding: 6px 8px; 
     border-radius: 5px;
@@ -214,8 +214,8 @@
 
 #hpiGenderOtherText:focus {
     outline: none;
-    border-color: rgba(100, 181, 246, 0.7);
-    box-shadow: 0 0 5px rgba(100, 181, 246, 0.3);
+    border-color: rgba(255, 179, 126, 0.9);
+    box-shadow: 0 0 8px rgba(255, 179, 126, 0.5);
 }
 
 .panel-button:disabled,
@@ -229,8 +229,9 @@
     animation: none;
 }
 
-.hpi-output-header {
-    margin-bottom: 10px;
+/* ADDED: Styles for the new footer containing the copy button */
+.hpi-output-footer {
+    margin-top: 10px;
     display: flex;
     justify-content: flex-end;
 }
