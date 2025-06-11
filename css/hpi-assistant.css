@@ -2,22 +2,22 @@
 
 .draggable-panel {
     position: fixed;
-    top: 150px; /* Initial position */
-    left: 250px; /* Adjusted initial position slightly if panel is wider */
-    background-color: rgba(37, 37, 37, 0.85); /* Slightly more opaque for inputs */
+    top: 150px;
+    left: 250px;
+    background-color: rgba(37, 37, 37, 0.85);
     backdrop-filter: blur(8px);
     color: #d4d4d4;
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-    padding: 0; /* Header and content will have their own padding */
+    padding: 0;
     z-index: 40;
     cursor: grab;
-    width: 800px; /* << INCREASED WIDTH for two columns, adjust as needed */
-    max-height: 85vh; /* Adjusted max-height */
-    display: none; /* Initially hidden */
+    width: 500px; /* << REDUCED WIDTH */
+    max-height: 85vh;
+    display: none;
     flex-direction: column;
     font-family: 'Calibre', 'Arial', sans-serif;
-    overflow: hidden; /* Prevent scrollbars on the panel itself if columns handle it */
+    overflow: hidden;
 }
 
 .draggable-panel.active {
@@ -37,7 +37,7 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
-    flex-shrink: 0; /* Prevent header from shrinking */
+    flex-shrink: 0;
 }
 
 .panel-header h3 {
@@ -115,7 +115,6 @@
 
 .hpi-input-group textarea {
     resize: vertical;
-    min-height: 60px;
 }
 
 
@@ -153,13 +152,30 @@
 .hpi-action-buttons-container {
     display: flex;
     gap: 10px;
-    margin-top: 15px;
+    margin-top: auto; /* Push buttons to the bottom */
+    padding-top: 15px; /* Add space above buttons */
 }
 
 .hpi-action-buttons-container .panel-button {
     flex: 1;
     width: auto;
     margin-top: 0;
+}
+
+.panel-button {
+    display: block;
+    width: 100%;
+    padding: 10px 12px; 
+    background-color: rgba(50, 50, 50, 0.9); 
+    color: #e0e0e0; 
+    border: 1px solid transparent; 
+    border-radius: 5px;
+    font-family: 'Calibre', 'Arial', sans-serif;
+    font-size: 1em;
+    font-weight: normal; 
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    text-align: center; 
 }
 
 .panel-button.clear-button {
@@ -169,30 +185,20 @@
 
 .panel-button.clear-button:hover {
     background-color: rgba(100, 100, 100, 0.9);
-    background-image: none; 
-    animation: none;
     color: #e0e0e0;
     border-color: rgba(255, 255, 255, 0.3); 
     box-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
 }
 
 .panel-button.generate-button:hover {
-    background-color: rgba(65, 65, 65, 0.95); 
     border-color: rgba(255, 255, 255, 0.8); 
     box-shadow: 0 0 8px rgba(255, 255, 255, 0.5); 
-    background-image: linear-gradient(
-        90deg,
-        #ffcc00, #ff9500, #ff2d55, #ffcc00
-    );
+    background-image: linear-gradient(90deg, #ffcc00, #ff9500, #ff2d55, #ffcc00);
     background-size: 200% auto; 
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent; 
     animation: iridescentButtonTextShimmer 3s linear infinite; 
-}
-
-.hpi-input-column .hpi-action-buttons-container {
-    margin-top: auto;
 }
 
 
@@ -212,43 +218,6 @@
     box-shadow: 0 0 5px rgba(100, 181, 246, 0.3);
 }
 
-.panel-button {
-    display: block;
-    width: 100%;
-    padding: 10px 12px; 
-    margin-top: 15px;  
-    background-color: rgba(50, 50, 50, 0.9); 
-    color: #e0e0e0; 
-    border: 1px solid transparent; 
-    border-radius: 5px;
-    font-family: 'Calibre', 'Arial', sans-serif;
-    font-size: 1em;
-    font-weight: normal; 
-    cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-    text-align: center; 
-}
-
-.hpi-input-column .panel-button {
-    margin-top: auto;
-}
-
-
-.panel-button:hover {
-    background-color: rgba(65, 65, 65, 0.95); 
-    border-color: rgba(255, 255, 255, 0.8); 
-    box-shadow: 0 0 8px rgba(255, 255, 255, 0.5); 
-    background-image: linear-gradient(
-        90deg,
-        #007aff, #4cd964, #ffcc00, #ff9500, #ff2d55, #af52de, #007aff
-    );
-    background-size: 200% auto; 
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent; 
-    animation: iridescentButtonTextShimmer 3s linear infinite; 
-}
-
 .panel-button:disabled,
 .panel-button:disabled:hover {
     background-color: rgba(40, 40, 40, 0.7);
@@ -258,6 +227,23 @@
     box-shadow: none;
     background-image: none;
     animation: none;
+}
+
+.hpi-output-header {
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.panel-button.copy-button {
+    width: auto;
+    padding: 6px 12px;
+    font-size: 0.9em;
+    background-color: rgba(80, 80, 80, 0.8);
+}
+
+.panel-button.copy-button:hover {
+    background-color: rgba(100, 100, 100, 0.9);
 }
 
 #hpiAssistantResult {

@@ -194,7 +194,7 @@ function displayMedicationDetails(medication) {
     }
 }
 
-// UPDATED: Function to create the simplified HPI Assistant panel HTML
+// UPDATED: Added a "Copy Text" button to the output column
 function createHpiAssistantPanelHTML() {
     let html = `
         <div id="hpiAssistantPanel" class="draggable-panel">
@@ -228,6 +228,9 @@ function createHpiAssistantPanelHTML() {
                     </div>
                 </div>
                 <div class="hpi-output-column">
+                    <div class="hpi-output-header">
+                        <button type="button" id="copyHpiTextBtn" class="panel-button copy-button">Copy Text</button>
+                    </div>
                     <div id="hpiAssistantResult" class="hpi-result-area">
                     </div>
                 </div>

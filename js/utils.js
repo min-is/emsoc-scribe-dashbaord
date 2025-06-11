@@ -43,34 +43,7 @@ function makeDraggable(element) {
     }
 }
 
-let typewriterTimeoutId = null;
-
-function displayTextWithTypewriterEffect(element, text, speed = 20) {
-    if (typewriterTimeoutId) {
-        clearTimeout(typewriterTimeoutId);
-    }
-    element.innerHTML = '';
-    let i = 0;
-    
-    const textWithBreaks = text.replace(/\n/g, '<br>');
-
-    function typeCharacter() {
-        if (i < textWithBreaks.length) {
-            if (textWithBreaks.substring(i, i + 4).toLowerCase() === '<br>') {
-                element.innerHTML += '<br>';
-                i += 4;
-            } else {
-                element.innerHTML += textWithBreaks.charAt(i);
-                i++;
-            }
-            element.scrollTop = element.scrollHeight;
-            typewriterTimeoutId = setTimeout(typeCharacter, speed);
-        } else {
-            typewriterTimeoutId = null;
-        }
-    }
-    typeCharacter();
-}
+// REMOVED: displayTextWithTypewriterEffect function as it is no longer needed.
 
 function setupCanvas() {
     const canvas = document.getElementById('backgroundCanvas');
@@ -89,25 +62,23 @@ function setupCanvas() {
 function initParticles(canvas, ctx, dpr, numberOfParticles) {
     const particlesArray = [];
     for (let i = 0; i < numberOfParticles; i++) {
-        const size = (Math.random() * 2) + 1; // Slightly smaller particles
+        const size = (Math.random() * 2) + 1;
         const x = Math.random() * (canvas.width / dpr - size * 2) + size;
         const y = Math.random() * (canvas.height / dpr - size * 2) + size;
-        const vx = (Math.random() - 0.5) * 0.4; // Slightly slower
-        const vy = (Math.random() - 0.5) * 0.4; // Slightly slower
+        const vx = (Math.random() - 0.5) * 0.4;
+        const vy = (Math.random() - 0.5) * 0.4;
         particlesArray.push(new Particle(x, y, size, 'rgba(255, 255, 255, 0.8)', vx, vy));
     }
     return particlesArray;
 }
 
 function connectParticles(ctx, particlesArray, mouse, connectDistance) {
-    // Using squared distances for comparison to avoid Math.sqrt, which is computationally expensive.
     const connectDistanceSq = connectDistance * connectDistance;
     const mouseRadiusSq = mouse.radius * mouse.radius;
 
-    ctx.lineWidth = 0.5; // Thinner lines for better performance
+    ctx.lineWidth = 0.5;
 
     for (const particle of particlesArray) {
-        // Check distance to mouse
         const dxMouse = mouse.x - particle.x;
         const dyMouse = mouse.y - particle.y;
         const distMouseSq = dxMouse * dxMouse + dyMouse * dyMouse;
@@ -120,7 +91,6 @@ function connectParticles(ctx, particlesArray, mouse, connectDistance) {
             ctx.stroke();
         }
 
-        // Check distance to other particles
         for (const otherParticle of particlesArray) {
             if (particle !== otherParticle) {
                 const dx = particle.x - otherParticle.x;
@@ -149,7 +119,7 @@ class Particle {
         this.vx = vx;
         this.vy = vy;
     }
-    draw(ctx) { // Pass context to draw method
+    draw(ctx) {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fillStyle = this.color;
@@ -165,7 +135,6 @@ class Particle {
         if (this.x > canvasWidth || this.x < 0) this.vx = -this.vx;
         if (this.y > canvasHeight || this.y < 0) this.vy = -this.vy;
         
-        // No need to check mouse distance here as it's handled in connectParticles
         const ctx = canvas.getContext('2d');
         this.draw(ctx);
     }

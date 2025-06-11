@@ -20,7 +20,6 @@ let canvas, ctx, dpr;
 // --- START: Auto-Save Functionality ---
 const HPI_ASSISTANT_STORAGE_KEY = 'hpiAssistantState';
 
-// UPDATED: Save only the remaining fields
 function saveHpiPanelState() {
     if (!hpiPanelElement || !hpiPanelElement.classList.contains('active')) {
         return; 
@@ -47,7 +46,6 @@ function saveHpiPanelState() {
     }
 }
 
-// UPDATED: Restore only the remaining fields
 function restoreHpiPanelState() {
     if (!hpiPanelElement) return;
 
@@ -264,7 +262,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         });
                     }
 
-                    // UPDATED: Watch only the remaining fields for changes
                     const inputsToSaveOnChange = [
                         '#hpiPastMedicalHistory', '#hpiContext', '#hpiGenderOtherText'
                     ];
@@ -316,11 +313,9 @@ document.addEventListener('DOMContentLoaded', () => {
                                 finalGenderValue = hpiGenderOtherTextInput.value.trim();
                             }
 
-                            // UPDATED: Get values from the remaining fields
                             const pastMedicalHistory = hpiPanelElement.querySelector('#hpiPastMedicalHistory').value;
                             const context = hpiPanelElement.querySelector('#hpiContext').value;
                             
-                            // UPDATED: Validate only the context field
                             if (!context.trim()) {
                                 resultArea.innerHTML = '';
                                 resultArea.textContent = 'Error: Please enter the "Context / Patient\'s Story" before generating the HPI.';
@@ -335,7 +330,6 @@ document.addEventListener('DOMContentLoaded', () => {
                             generateHpiBtn.disabled = true;
                             generateHpiBtn.textContent = 'Generating...';
 
-                            // UPDATED: Send only the simplified data
                             const hpiData = {
                                 gender: finalGenderValue,
                                 pastMedicalHistory: pastMedicalHistory,
@@ -355,9 +349,9 @@ document.addEventListener('DOMContentLoaded', () => {
                                     const responseData = await response.json();
                                     
                                     if (responseData.generated_hpi) {
+                                        // REMOVED: Typewriter effect
                                         resultArea.innerHTML = responseData.generated_hpi.replace(/\n/g, '<br>');
                                         saveHpiPanelState();
-                                        displayTextWithTypewriterEffect(resultArea, responseData.generated_hpi, 0); 
                                     } else {
                                         resultArea.textContent = "No HPI generated.";
                                         saveHpiPanelState(); 
@@ -381,7 +375,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         });
                     }
 
-                    // UPDATED: Clear only the remaining fields
                     const clearHpiFieldsBtn = hpiPanelElement.querySelector('#clearHpiFieldsBtn');
                     if (clearHpiFieldsBtn) {
                         clearHpiFieldsBtn.addEventListener('click', () => {
@@ -399,6 +392,40 @@ document.addEventListener('DOMContentLoaded', () => {
                             hpiPanelElement.querySelector('#hpiPastMedicalHistory').focus();
                         });
                     }
+                    
+                    // ADDED: Logic for the new "Copy Text" button
+                    const copyHpiTextBtn = hpiPanelElement.querySelector('#copyHpiTextBtn');
+                    if (copyHpiTextBtn) {
+                        copyHpiTextBtn.addEventListener('click', () => {
+                            const resultArea = hpiPanelElement.querySelector('#hpiAssistantResult');
+                            const textToCopy = resultArea.innerHTML.replace(/<br\s*[\/]?>/gi, "\n"); // Convert <br> to newlines
+
+                            if (!textToCopy) return; // Don't copy if there's no text
+
+                            // Create a temporary textarea to hold the text
+                            const tempTextArea = document.createElement('textarea');
+                            tempTextArea.value = textToCopy;
+                            document.body.appendChild(tempTextArea);
+                            tempTextArea.select();
+                            
+                            try {
+                                document.execCommand('copy');
+                                copyHpiTextBtn.textContent = 'Copied!';
+                                setTimeout(() => {
+                                    copyHpiTextBtn.textContent = 'Copy Text';
+                                }, 2000); // Revert button text after 2 seconds
+                            } catch (err) {
+                                console.error('Failed to copy text: ', err);
+                                copyHpiTextBtn.textContent = 'Error';
+                                setTimeout(() => {
+                                    copyHpiTextBtn.textContent = 'Copy Text';
+                                }, 2000);
+                            }
+
+                            document.body.removeChild(tempTextArea);
+                        });
+                    }
+
                 } else {
                     console.error("Failed to create HPI panel element from HTML string.");
                 }
