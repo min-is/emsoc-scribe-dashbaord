@@ -6,12 +6,14 @@ let panelOpen = false;
 let currentlyPinnedProviderName = null;
 let particlesArray = [];
 let hpiPanelElement = null; // To keep track of the HPI panel element
-const numberOfParticles = 110;
-const connectDistance = 120;
+const numberOfParticles = 50; // REDUCED for better performance
+const connectDistance = 100; // REDUCED for less processing
+let animationFrameId; // To control the animation loop
+let isAnimationEnabled = true; // To toggle animation
 const mouse = {
     x: null,
     y: null,
-    radius: 150
+    radius: 120 // REDUCED for less processing
 };
 let canvas, ctx, dpr;
 
@@ -20,7 +22,6 @@ const HPI_ASSISTANT_STORAGE_KEY = 'hpiAssistantState';
 
 function saveHpiPanelState() {
     if (!hpiPanelElement || !hpiPanelElement.classList.contains('active')) {
-        // console.log("HPI Panel not active or doesn't exist, not saving.");
         return; 
     }
 
@@ -44,7 +45,6 @@ function saveHpiPanelState() {
     
     try {
         localStorage.setItem(HPI_ASSISTANT_STORAGE_KEY, JSON.stringify(state));
-        // console.log('HPI state saved:', state); 
     } catch (e) {
         console.error('Error saving HPI state to localStorage:', e);
     }
@@ -57,7 +57,6 @@ function restoreHpiPanelState() {
         const savedStateJSON = localStorage.getItem(HPI_ASSISTANT_STORAGE_KEY);
         if (savedStateJSON) {
             const state = JSON.parse(savedStateJSON);
-            // console.log('HPI state restoring:', state);
 
             hpiPanelElement.querySelector('#hpiPastMedicalHistory').value = state.pastMedicalHistory || '';
             hpiPanelElement.querySelector('#hpiChiefComplaint').value = state.chiefComplaint || '';
@@ -109,11 +108,46 @@ function debounce(func, delay) {
     };
 }
 
+// --- START: Animation Control ---
+function startAnimation() {
+    if (!isAnimationEnabled || animationFrameId) return; // Don't start if already running or disabled
+    isAnimationEnabled = true;
+    const toggleBtn = document.getElementById('toggleAnimationBtn');
+    if(toggleBtn) toggleBtn.textContent = 'FX: On';
+    canvas.style.display = 'block';
+    animateParticles();
+}
+
+function stopAnimation() {
+    if (!animationFrameId) return;
+    isAnimationEnabled = false;
+    const toggleBtn = document.getElementById('toggleAnimationBtn');
+    if(toggleBtn) toggleBtn.textContent = 'FX: Off';
+    cancelAnimationFrame(animationFrameId);
+    animationFrameId = null;
+    ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr); // Clear canvas when stopping
+    canvas.style.display = 'none';
+}
+
+function animateParticles() {
+    if (!isAnimationEnabled) return; // Stop the loop if animation is disabled
+
+    ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
+    for (let i = 0; i < particlesArray.length; i++) {
+        particlesArray[i].update(canvas, mouse);
+    }
+    connectParticles(ctx, particlesArray, mouse, connectDistance);
+    animationFrameId = requestAnimationFrame(animateParticles);
+}
+// --- END: Animation Control ---
+
+
 document.addEventListener('DOMContentLoaded', () => {
     const toggleHpiAssistantBtn = document.getElementById('toggleHpiAssistantBtn');
     const searchInput = document.getElementById('searchInput');
     const suggestionsDiv = document.getElementById('suggestions');
     const resultsDiv = document.getElementById('results');
+    const toggleAnimationBtn = document.getElementById('toggleAnimationBtn');
 
     fetchAndDisplayProviders();
 
@@ -122,7 +156,17 @@ document.addEventListener('DOMContentLoaded', () => {
     ctx = canvasData.ctx;
     dpr = canvasData.dpr;
     particlesArray = initParticles(canvas, ctx, dpr, numberOfParticles);
-    animateParticles();
+    startAnimation(); // Start the animation initially
+
+    if(toggleAnimationBtn){
+        toggleAnimationBtn.addEventListener('click', () => {
+            if (isAnimationEnabled) {
+                stopAnimation();
+            } else {
+                startAnimation();
+            }
+        });
+    }
 
     const handleResize = () => {
         const desiredWidth = window.innerWidth;
@@ -140,15 +184,6 @@ document.addEventListener('DOMContentLoaded', () => {
         mouse.x = event.clientX;
         mouse.y = event.clientY;
     });
-
-    function animateParticles() {
-        ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
-        for (let i = 0; i < particlesArray.length; i++) {
-            particlesArray[i].update(canvas, mouse);
-        }
-        connectParticles(ctx, particlesArray, mouse, connectDistance);
-        requestAnimationFrame(animateParticles);
-    }
 
     if (searchInput && suggestionsDiv && resultsDiv) {
         searchInput.addEventListener('input', async () => {
@@ -272,7 +307,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         const otherButton = hpiPanelElement.querySelector('.gender-btn[data-value="Other"]');
                         if (otherButton && otherButton.classList.contains('selected')) {
                             hpiGenderHiddenInput.value = hpiGenderOtherTextInput.value.trim();
-                            // Debounced save is already attached to this input by inputsToSaveOnChange
                         }
                     });
 
@@ -326,24 +360,17 @@ document.addEventListener('DOMContentLoaded', () => {
                                 currentMedications: currentMedications
                             };
 
-                            // --- ADDED CONSOLE LOGS FOR DEBUGGING FETCH ---
-                            console.log("HPI Data to send to /generate-hpi:", hpiData);
                             const fetchOptions = {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify(hpiData)
                             };
-                            console.log("Fetch options for /generate-hpi:", fetchOptions);
-                            // --- END ADDED CONSOLE LOGS ---
 
                             try {
-                                const response = await fetch('/generate-hpi', fetchOptions); // Use fetchOptions
+                                const response = await fetch('/generate-hpi', fetchOptions);
 
                                 if (response.ok) {
                                     const responseData = await response.json();
-                                    if (responseData.debug_prompt_sent) {
-                                        console.log("DEBUG - Data sent to and prompt constructed by server:\n", responseData.debug_prompt_sent);
-                                    }
                                     
                                     if (responseData.generated_hpi) {
                                         resultArea.innerHTML = responseData.generated_hpi.replace(/\n/g, '<br>');
@@ -354,16 +381,16 @@ document.addEventListener('DOMContentLoaded', () => {
                                         saveHpiPanelState(); 
                                     }
                                 } else {
-                                    const errorData = await response.json(); // This might fail if response is not JSON (e.g. HTML 404 page)
+                                    const errorData = await response.json(); 
                                     console.error('Error from server (status not OK):', response.status, response.statusText, errorData);
                                     resultArea.innerHTML = ''; 
                                     resultArea.textContent = `Error: ${errorData.error || 'Failed to generate HPI. Status: ' + response.status}`;
                                     saveHpiPanelState(); 
                                 }
-                            } catch (error) { // This catch block will handle network errors and JSON parsing errors
-                                console.error('Network or other error fetching HPI (e.g., JSON parse error if server sent HTML 404):', error);
+                            } catch (error) { 
+                                console.error('Network or other error fetching HPI:', error);
                                 resultArea.innerHTML = ''; 
-                                resultArea.textContent = 'Error: Could not connect to the server or received an invalid response.'; // Updated message
+                                resultArea.textContent = 'Error: Could not connect to the server or received an invalid response.';
                                 saveHpiPanelState(); 
                             } finally {
                                 generateHpiBtn.disabled = false;
