@@ -12,7 +12,7 @@
     padding: 0;
     z-index: 40;
     cursor: grab;
-    width: 500px; /* << REDUCED WIDTH */
+    width: 650px; /* << REDUCED WIDTH */
     max-height: 85vh;
     display: none;
     flex-direction: column;
