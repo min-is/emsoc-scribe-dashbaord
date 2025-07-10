@@ -1,22 +1,3 @@
-/* --- Luminous-style Header Buttons --- */
-#toggleSidebarBtn, 
-#toggleHpiAssistantBtn {
-    background: none;
-    border: none;
-    color: #9e9e9e; /* Luminous secondary text color */
-    font-family: 'IBM Plex Mono', 'Courier New', 'monospace';
-    font-size: 16px;
-    cursor: pointer;
-    padding: 0;
-    transition: color 0.2s ease-in-out;
-}
-
-#toggleSidebarBtn:hover, 
-#toggleHpiAssistantBtn:hover {
-    color: #ffffff; /* Luminous hover color */
-}
-
-
 /* --- Sidebar Panel --- */
 #sidebar {
     position: fixed;

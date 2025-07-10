@@ -1,19 +1,19 @@
 /* --- Luminous Style Foundation --- */
 body {
   font-family: 'IBM Plex Mono', 'Courier New', 'monospace';
-  color: #d4d4d4; /* Standard light gray text */
-  background-color: #000000; /* Solid black background */
+  color: #d4d4d4;
+  background-color: #000000;
   margin: 0;
   overflow: hidden;
 }
 
-/* Hide the default H1 title */
 h1 {
   display: none;
 }
 
-/* --- New Header Layout --- */
+/* --- Consolidated Header Styles --- */
 #header {
+    box-sizing: border-box; /* Ensures padding is included in the element's total width and height */
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -21,12 +21,43 @@ h1 {
     position: fixed;
     top: 0;
     left: 0;
-    right: 0;
+    width: 100%; /* Explicitly set width */
+    height: 75px; /* Explicitly set height */
     z-index: 10;
-    border-bottom: 1px solid #333; /* ADD THIS LINE */
+    border-bottom: 1px solid #333;
 }
 
-#header-left {
+#header-left,
+#header-right {
     display: flex;
-    gap: 25px; /* Space between the buttons */
+    align-items: center;
+    gap: 25px;
+}
+
+/* --- Unified Icon Button Style --- */
+#toggleSidebarBtn,
+#toggleHpiAssistantBtn,
+#search-icon-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    color: #9e9e9e;
+    transition: color 0.2s ease-in-out;
+}
+
+#toggleSidebarBtn:hover,
+#toggleHpiAssistantBtn:hover,
+#search-icon-btn:hover {
+    color: #ffffff;
+}
+
+/* --- Unified SVG Icon Style --- */
+#toggleSidebarBtn svg,
+#toggleHpiAssistantBtn svg,
+#search-icon-btn svg {
+    width: 24px;  /* Explicit size in CSS */
+    height: 24px;
+    stroke: currentColor; /* Inherit the color from the parent button */
 }
