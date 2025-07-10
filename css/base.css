@@ -19,48 +19,19 @@
 }
 
 body {
+    /* Set the primary font and soft white text color */
     font-family: 'Calibre', 'Arial', sans-serif;
-    margin: 0;
-    overflow: hidden;
-    background-color: #1e1e1e;
     color: #d4d4d4;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
+
+    /* Set the dark background color */
+    background-color: #1e1e1e;
+
+    /* Basic body setup */
+    margin: 0;
+    overflow: hidden; /* Prevents scrollbars from the main body */
 }
 
-.container {
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-    width: 60%;
-    max-width: 500px;
-    position: relative;
-    z-index: 1;
-}
-
+/* Keep the main h1 hidden as per original design */
 h1 {
     display: none;
-}
-
-/* ADDED: Style for the new animation toggle button */
-#toggleAnimationBtn {
-    position: fixed;
-    bottom: 15px;
-    right: 15px;
-    background: rgba(50, 50, 50, 0.5);
-    color: #d4d4d4;
-    border: none;
-    padding: 8px 12px; /* Smaller padding */
-    border-radius: 5px;
-    cursor: pointer;
-    z-index: 30;
-    font-family: 'Calibre', 'Arial', sans-serif;
-    font-size: 14px; /* Smaller font size */
-    transition: background-color 0.2s ease-in-out;
-}
-
-#toggleAnimationBtn:hover {
-    background-color: rgba(70, 70, 70, 0.7);
 }
