@@ -17,12 +17,13 @@ h1 {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 30px; /* More padding for a spacious look */
+    padding: 20px 30px;
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     z-index: 10;
+    border-bottom: 1px solid #333; /* ADD THIS LINE */
 }
 
 #header-left {
