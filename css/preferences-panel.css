@@ -1,58 +1,53 @@
-/* --- PROVIDER DETAILS (within the sidebar) --- */
+/* --- Provider Details (within the sidebar) --- */
 #providerDetails {
   padding: 0;
-  border-top: 1px solid var(--border-color); /* Add a separator */
+  border-top: 1px solid #333; /* Separator from the list above */
   margin-top: 15px;
 }
 
 #providerDetails h3 {
-  color: var(--primary-text-color);
-  margin: 15px 0 10px 0;
+  color: #ffffff;
+  margin: 15px 15px 10px 15px;
   font-size: 18px;
   font-weight: 600;
-  padding: 0 15px;
 }
 
 #providerDetails h4 {
-  color: var(--primary-text-color);
-  margin-top: 15px;
-  margin-bottom: 5px;
+  color: #d4d4d4;
+  margin: 15px 15px 5px 15px;
   font-size: 16px;
   font-weight: 600;
-  padding: 0 15px;
 }
 
 #providerDetails .preference-item {
-  margin-bottom: 5px;
+  margin: 0 15px 8px 15px;
   font-size: 15px;
-  color: var(--secondary-text-color);
+  color: #9e9e9e;
   line-height: 1.5;
-  padding: 0 15px;
 }
 
 #providerDetails .preference-item strong {
-  color: var(--primary-text-color);
+  color: #d4d4d4;
   font-weight: 600;
 }
 
-/* --- PREFERENCES PANEL (The pop-out panel) --- */
-/* This panel is not currently used, but we'll style it for consistency */
+/* --- Legacy Preferences Panel (Styling for consistency, though it may be unused) --- */
 #preferencesPanel {
   position: fixed;
   top: 70px;
   left: 280px;
   width: 320px;
   max-height: calc(100vh - 90px);
-  background-color: var(--panel-background-color);
-  border: 1px solid var(--border-color);
-  color: var(--primary-text-color);
+  background-color: #1c1c1c; /* Luminous panel color */
+  border: 1px solid #333;
+  color: #d4d4d4;
   z-index: 21;
   transition: opacity 0.2s ease-in-out;
   padding: 15px;
   border-radius: 8px;
   overflow-y: auto;
   opacity: 0;
-  pointer-events: none; /* Hidden and non-interactive by default */
+  pointer-events: none;
 }
 
 #preferencesPanel.open {
@@ -60,47 +55,7 @@
   pointer-events: auto;
 }
 
-#preferencesPanel h3,
-#preferencesPanel h4 {
-  color: var(--primary-text-color);
-  margin: 0 0 10px 0;
-  font-weight: 600;
-  border-bottom: 1px solid var(--border-color);
-  padding-bottom: 10px;
-}
-
-#preferencesPanel p.preference-item {
-  color: var(--secondary-text-color);
-  font-size: 15px;
-  line-height: 1.5;
-}
-
-/* --- BUTTONS IN PANELS --- */
-/* A unified style for buttons within these preference views */
-#providerPreferencesSection button,
-#preferencesPanel button#pinPreferencesBtn {
-    background-color: transparent;
-    color: var(--secondary-text-color);
-    border: 1px solid var(--border-color);
-    padding: 8px 12px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-family: var(--font-primary);
-    font-size: 14px;
-    margin-top: 15px;
-    transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-#providerPreferencesSection button:hover,
-#preferencesPanel button#pinPreferencesBtn:hover {
-    background-color: var(--accent-color);
-    border-color: var(--accent-color);
-    color: white;
-}
-
-/* --- CLEANUP AND HIDING --- */
-
-/* This section was marked as unused in the original file, so we'll keep it hidden */
+/* Hide the section marked as unused in the original file */
 #providerPreferencesSection {
   display: none !important;
 }
