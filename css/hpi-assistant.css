@@ -1,138 +1,224 @@
-/* --- UNIFIED SEARCH INPUT --- */
-#searchInput {
-  font-family: var(--font-primary);
-  width: 440px;
+/* --- HPI ASSISTANT PANEL --- */
+.draggable-panel {
   position: fixed;
-  top: 15px; /* Adjusted for a cleaner top margin */
-  right: 20px;
-  padding: 12px 15px;
-  margin-bottom: 0;
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  box-sizing: border-box;
-  font-size: 16px;
-  outline: none;
+  top: 150px;
+  left: 300px;
   background-color: var(--panel-background-color);
+  border: 1px solid var(--border-color);
   color: var(--primary-text-color);
-  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 40;
+  cursor: grab;
+  width: 700px; /* Wider for better usability */
+  max-height: 80vh;
+  display: none;
+  flex-direction: column;
+  font-family: var(--font-primary);
+  overflow: hidden; /* Prevents internal content from spilling out */
 }
 
-#searchInput:focus {
+.draggable-panel.active {
+  display: flex;
+}
+
+.draggable-panel:active {
+  cursor: grabbing;
+}
+
+/* --- PANEL HEADER --- */
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background-color: transparent; /* No separate bg color */
+  border-bottom: 1px solid var(--border-color);
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  flex-shrink: 0;
+}
+
+.panel-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--primary-text-color);
+  text-shadow: none; /* Removed glow */
+}
+
+.close-panel-btn {
+  font-size: 1.5em;
+  color: var(--secondary-text-color);
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.close-panel-btn:hover {
+  color: var(--primary-text-color);
+}
+
+/* --- PANEL CONTENT COLUMNS --- */
+.hpi-columns-container {
+  display: flex;
+  flex-grow: 1;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.hpi-input-column,
+.hpi-output-column {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.hpi-input-column {
+  border-right: 1px solid var(--border-color);
+}
+
+/* --- INPUTS AND TEXTAREAS --- */
+.hpi-input-group {
+  margin-bottom: 15px;
+}
+
+.hpi-input-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--secondary-text-color);
+}
+
+.hpi-input-group input[type="text"],
+.hpi-input-group textarea,
+#hpiGenderOtherText {
+  width: calc(100% - 22px);
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid var(--border-color);
+  background-color: var(--background-color); /* Matches main bg */
+  color: var(--primary-text-color);
+  font-family: var(--font-primary);
+  font-size: 15px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.hpi-input-group input[type="text"]:focus,
+.hpi-input-group textarea:focus,
+#hpiGenderOtherText:focus {
+  outline: none;
   border-color: var(--accent-color);
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.4); /* Subtle focus ring */
 }
 
-/* --- PLACEHOLDER STYLES --- */
-/* Unified placeholder style for both search inputs */
-#searchInput::placeholder,
-#providerSearchInput::placeholder {
-  font-family: var(--font-primary);
-  color: var(--secondary-text-color);
-  font-size: 16px;
-  font-weight: normal;
-  font-style: normal;
-  opacity: 1;
-  /* Removed the animated gradient for a cleaner look */
+.hpi-input-group textarea {
+  resize: vertical;
+  min-height: 80px;
 }
 
-/* --- SUGGESTIONS DROPDOWN --- */
-#suggestions {
-  position: fixed;
-  top: 65px; /* Positioned below the search bar */
-  width: 440px;
-  right: 20px;
-  border-radius: 8px;
-  background-color: var(--panel-background-color);
+/* --- GENDER BUTTONS --- */
+.gender-options-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.gender-btn {
+  padding: 8px 12px;
   border: 1px solid var(--border-color);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  text-align: left;
-  z-index: 10;
-  opacity: 0;
-  transition: opacity 0.2s ease-in-out;
-  max-height: 280px;
-  overflow-y: auto;
-  padding: 5px; /* Padding for the container */
-}
-
-#suggestions.show {
-  opacity: 1;
-}
-
-.suggestion-item {
-  padding: 10px 15px;
+  background-color: transparent;
+  color: var(--secondary-text-color);
+  border-radius: 5px;
   cursor: pointer;
-  font-size: 15px;
-  color: var(--primary-text-color);
-  border-radius: 5px; /* Rounded corners for each item */
-  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+  font-size: 14px;
+  transition: all 0.2s;
 }
 
-.suggestion-item:hover {
+.gender-btn:hover {
+  border-color: var(--accent-color);
+  color: var(--primary-text-color);
+}
+
+.gender-btn.selected {
   background-color: var(--accent-color);
+  border-color: var(--accent-color);
+  color: white;
+  box-shadow: none;
+}
+
+/* --- ACTION BUTTONS (Generate, Clear, Copy) --- */
+.hpi-action-buttons-container {
+  display: flex;
+  gap: 10px;
+  margin-top: auto; /* Pushes buttons to the bottom */
+  padding-top: 15px;
+}
+
+.panel-button {
+  flex: 1;
+  padding: 10px 12px;
+  background-color: var(--border-color);
+  color: var(--primary-text-color);
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.panel-button:hover {
+  background-color: var(--secondary-text-color);
+  border-color: var(--secondary-text-color);
+}
+
+.panel-button.generate-button {
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
   color: white;
 }
 
-/* --- RESULTS PANEL --- */
-#results {
-  position: fixed;
-  right: 20px;
-  top: 65px; /* Aligned with suggestions dropdown */
-  width: 440px;
-  margin-top: 10px;
-  padding: 20px;
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  background-color: var(--panel-background-color);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  text-align: left;
-  font-size: 16px;
-  opacity: 0;
-  transition: opacity 0.3s ease-in-out;
-  display: none;
-  max-height: calc(100vh - 100px); /* Ensure it doesn't overflow the screen */
-  overflow-y: auto;
-  z-index: 9; /* Below suggestions */
+.panel-button.generate-button:hover {
+  background-color: var(--accent-color-hover);
+  border-color: var(--accent-color-hover);
 }
 
-#results.show {
-  opacity: 1;
-  display: block;
+.panel-button.copy-button {
+  width: auto;
+  flex: 0 1 auto; /* Don't grow, just fit content */
+  padding: 6px 12px;
+  font-size: 14px;
 }
 
-#results h3 {
-  color: var(--primary-text-color);
-  margin-top: 0;
-  margin-bottom: 15px;
-  border-bottom: 1px solid var(--border-color);
-  padding-bottom: 10px;
-  font-weight: 600; /* Bolder for titles */
-  font-size: 18px;
-}
-
-#results h4 {
-  color: var(--primary-text-color);
-  margin-top: 15px;
-  margin-bottom: 5px;
-  font-size: 16px;
-  font-weight: 600;
-  /* Removed softGlow animation */
-}
-
-#results p,
-#results palt {
-  font-size: 15px;
-  line-height: 1.5;
+.panel-button:disabled,
+.panel-button:disabled:hover {
+  background-color: var(--border-color);
   color: var(--secondary-text-color);
-  margin-bottom: 10px;
-  margin-top: 0;
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
-#results strong {
+/* --- RESULT DISPLAY --- */
+#hpiAssistantResult {
+  flex-grow: 1;
+  padding: 10px;
+  background-color: var(--background-color);
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  min-height: 150px;
+  font-size: 15px;
+  line-height: 1.6;
+  white-space: pre-wrap;
   color: var(--primary-text-color);
-  font-weight: 600; /* Bolder for emphasis */
-  margin-right: 8px;
+  overflow-y: auto;
 }
 
-.error {
-  color: #F87171; /* A clear error color */
+.hpi-output-footer {
+  margin-top: 10px;
+  display: flex;
+  justify-content: flex-end;
 }

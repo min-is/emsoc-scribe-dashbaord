@@ -1,19 +1,27 @@
-/* For WebKit-based browsers (Chrome, Safari) */
+/* --- MINIMALIST SCROLLBAR --- */
+/* For WebKit-based browsers (Chrome, Safari, Edge) */
 ::-webkit-scrollbar {
-    width: 4px; /* Adjust width as needed */
-    background-color: transparent; /* Make the track transparent */
+  width: 6px; /* A bit more subtle */
+  height: 6px;
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+  border-radius: 6px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: rgba(100, 100, 100, 0.5); /* Dark gray thumb with some transparency */
-    border-radius: 4px; /* Rounded corners for the thumb */
+  background-color: var(--border-color); /* Using our dark gray border color */
+  border-radius: 6px;
+  border: 1px solid var(--panel-background-color); /* Creates a nice inset look */
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(150, 150, 150, 0.7); /* Slightly lighter on hover */
+  background-color: var(--secondary-text-color); /* Slightly lighter on hover */
 }
 
-/* Optional: Style the corners */
+/* Optional: Style the corners, though often not visible */
 ::-webkit-scrollbar-corner {
-    background-color: transparent;
+  background-color: transparent;
 }
