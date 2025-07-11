@@ -11,9 +11,9 @@ h1 {
   display: none;
 }
 
-/* --- Consolidated Header Styles --- */
-#header {
-    box-sizing: border-box; /* Ensures padding is included in the element's total width and height */
+/* --- Final Header Structure --- */
+#top-bar {
+    box-sizing: border-box;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -21,14 +21,14 @@ h1 {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%; /* Explicitly set width */
-    height: 75px; /* Explicitly set height */
+    width: 100%;
+    height: 75px;
     z-index: 10;
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid #333; /* This is the only line that should be visible */
 }
 
-#header-left,
-#header-right {
+#nav-group-left,
+#nav-group-right {
     display: flex;
     align-items: center;
     gap: 25px;
@@ -57,7 +57,7 @@ h1 {
 #toggleSidebarBtn svg,
 #toggleHpiAssistantBtn svg,
 #search-icon-btn svg {
-    width: 24px;  /* Explicit size in CSS */
+    width: 24px;
     height: 24px;
-    stroke: currentColor; /* Inherit the color from the parent button */
+    stroke: currentColor; /* This makes the icon inherit the button's color */
 }
